@@ -22,6 +22,7 @@ class RaptorNode {
 		aop.before(con,'/Raptor/controller2',function(req,res,next){
 			res.end('before')
 		})
+		
 	}
 }
 module.exports=RaptorNode
