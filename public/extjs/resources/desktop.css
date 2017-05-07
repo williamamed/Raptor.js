@@ -1,0 +1,530 @@
+/*!
+* Ext JS Library 4.0
+* Copyright(c) 2006-2011 Sencha Inc.
+* licensing@sencha.com
+* http://www.sencha.com/license
+*/
+
+html, body {
+	background:#3d71b8 url(../desktop/images/atencion.png) repeat left top;
+        background-attachment: fixed;
+    background-size: 100% 100%;
+    font: normal 12px Tahoma, Geneva, sans-serif;
+	margin: 0;
+	padding: 0;
+	border: 0 none;
+	overflow: hidden;
+	height: 100%;
+}
+.ux-wallpaper {
+    background:#3d71b8 url(../desktop/images/atencion.png);background-attachment: fixed;
+    background-size: 100% 100%;
+    
+}
+
+#center{
+height:115px;
+width:670px;
+position:absolute;
+bottom:40px;
+
+background-image:url("../../Base_Imagenes/center.png");
+left: 50%;
+margin-left:-450px;
+
+}
+
+
+#poweredby {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+    z-index: 15000;
+
+    /* IE 5-7 */
+    filter: alpha(opacity=70);
+    /* Netscape */
+    -moz-opacity: 0.7;
+    /* Safari 1.x */
+    -khtml-opacity: 0.7;
+    /* Good browsers */
+    opacity: 0.7;
+}
+
+#poweredby div {
+    position: relative;
+    width: 150px;
+    height: 25px;
+    background-image: url(../images/powered-by-ext-js.png);
+    background-repeat: no-repeat;
+}
+
+/* The simple background image PNG does not work in IE6-8, but does in IE9 */
+.x-ie6 #poweredby div,
+.x-ie7 #poweredby div,
+.x-ie8 #poweredby div {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/powered-by-ext-js.png', sizingMethod='scale');
+}
+
+/*----------------------------------------------------
+    Start Button
+*/
+
+.ux-start-button-icon {
+    background-image: url(../images/taskbar/sencha.gif) !important;
+    background-image: url(../desktop/images/jc_blue.png) !important;
+    background-color: transparent;
+}
+
+.ux-start-button .x-btn-arrow {
+    background-image: none;
+}
+
+.ux-start-button .x-btn-arrow-right {
+    padding-left: 10px;
+}
+
+.ux-taskbar {
+    padding-left: 4px !important;
+    
+}
+
+/*
+    Start Button (Black)
+*/
+
+
+.ux-start-button em {
+    margin-top: 5px;
+}
+
+.ux-start-button .x-btn-inner {
+    color: black;
+    font-size:11px;
+    font-weight: bold;
+}
+
+ .ux-start-button {
+   
+    border-radius: 8px 8px 8px 8px;
+    border-color: black;
+     height: 28px;
+    padding: 0px;
+    display: block;
+    
+    background-color: rgb(248,195,0);
+    
+ background-image: -moz-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+	background-image: -ms-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+	background-image: -o-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,.15)), color-stop(49%, rgba(255,255,255,.15)), color-stop(51%, rgba(0,0,0,.1)), to(rgba(0,0,0,.15)));
+	background-image: -webkit-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+	background-image: linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+	
+	border: 1px solid rgb(248,195,0);
+	
+	
+
+	text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.ux-btn-fo{
+background-color: #d3e1f1;
+border: 1px solid #d3e1f1;
+}
+
+.btn-presionado-inicio{
+background-color: #d3e1f1;
+border: 1px solid #d3e1f1;
+}
+
+
+.tarea-barra {
+   background-color: rgb(27,87,170);
+    background-image:-moz-linear-gradient(top, rgba(255,255,200,0.5), rgba(255,255,200,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+    border-radius: 3px 3px 3px 3px;
+    
+	border-style: outset;
+	border: 1px solid #333;
+    padding-left: 5px;
+    height:25px;
+  
+}
+.tarea-barra-hover {
+   background-color: rgb(27,70,165);
+   
+   background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), color-stop(49%, rgba(255,255,255,0.2)), color-stop(51%, rgba(0,0,0,0.05)), to(rgba(0,0,0,0.15)));
+	background-image: -moz-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -o-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -ms-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+    
+   
+  
+    
+  
+}
+
+
+.tarea-barra-activa {
+    background: rgb(131,130,129);
+   
+    border-style: inset;
+    border-color: black !important;
+   
+  
+    
+  
+}
+
+.menu-activo{
+ background:red;
+}
+
+.btn-presionado{
+ background:blue;
+
+}
+
+
+
+
+.x-btn-green {
+     border-color: #06D31B;
+     background-image: none;
+     background-color: #06D31B;
+}
+
+.x-btn-default-medium .x-btn-inner {
+     font-size: 14px;
+     font-weight: bold;
+     font-family: helvetica,arial,verdana,sans-serif;
+     color: white;
+     padding: 0 8px;
+}
+
+.x-btn-default-medium .x-btn-inner {
+     font-size: 14px;
+     font-weight: bold;
+     font-family: helvetica,arial,verdana,sans-serif;
+     color: white;
+     padding: 0 8px;
+}
+
+
+/*----------------------------------------------------
+    Start Menu
+*/
+
+.ux-start-menu-toolbar .x-btn-inner {
+    text-align: left;
+    color: white;
+}
+
+.ux-start-menu-toolbar {
+    padding: 4px !important;
+    background:rgba(100,100,100,0.5) ;
+    /*background-image: -moz-linear-gradient(top, rgba(255,255,200,0.5), rgba(255,255,200,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));*/
+}
+
+/*----------------------------------------------------
+    TaskBar
+*/
+
+.ux-taskbar .x-toolbar {
+    background: transparent none;
+    border-color: transparent;
+}
+
+.x-ie6 .ux-taskbar .x-toolbar {
+    border-color: #d3e1f1;
+}
+
+.ux-desktop-windowbar .x-btn-inner,
+.x-nbr .ux-desktop-windowbar .x-btn-icon-text-left button {
+    text-align: left !important;
+    
+}
+
+
+
+.ux-taskbar .x-toolbar {
+    height: 28px;
+}
+
+.ux-taskbar {
+    height: 28px;
+    padding: 0;
+   /* 
+    border: 1px solid #777;
+	border-color: rgba(0,0,0,0.2);
+	border-bottom-color: #333;
+	border-bottom-color: rgba(0,0,0,0.4);
+	color: #fff;
+	-moz-box-shadow: inset 0 0.08em 0 rgba(255,255,255,0.4), inset 0 0 0.1em rgba(255,255,255,0.9);
+	-webkit-box-shadow: inset 0 0.08em 0 rgba(255,255,255,0.4), inset 0 0 0.1em rgba(255,255,255,0.9);
+	box-shadow: inset 0 0.08em 0 rgba(255,255,255,0.4), inset 0 0 0.1em rgba(255,255,255,0.9);
+	
+	font: bold 100%/2.1 "Lucida Grande", Tahoma, sans-serif;
+	
+	z-index: 100;
+
+	-moz-border-radius: .3em;
+	-webkit-border-radius: .3em;
+	border-radius: .3em;
+	background-color:black;
+       
+
+    background-image: -webkit-gradient(linear, left top, left bottom, from(red), color-stop(49%, rgba(255,255,255,0.2)), color-stop(51%,blue), to(rgba(0,0,0,0.15)));
+   background-image: -moz-linear-gradient(top, rgba(102,102,153,1), rgba(102,102,153,0.5) 49%, rgba(0,0,0,0.5) 51%, rgba(0,0,0,1));
+  background-image: -webkit-linear-gradient(top, rgba(255,255,200,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+  /background-image: -o-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+  background-image: -ms-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+
+
+   */
+}
+
+.x-toolbar .x-toolbar {
+    padding: 0;
+}
+
+.x-toolbar{
+
+height:30px;
+}
+
+/*
+    TaskBar (Black)
+*/
+
+.barraTituloMenu .x-panel-header {
+    color:white !important;
+    border-color: #7b7b7b;
+     background-color: #7b7b7b;
+    
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), color-stop(49%, rgba(255,255,255,0.2)), color-stop(51%, rgba(0,0,0,0.05)), to(rgba(0,0,0,0.15)));
+	background-image: -moz-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -o-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -ms-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+}
+
+.barraTituloMenu .x-panel-header-text{
+	
+	color:white;
+}
+
+
+.ux-taskbar {
+   /* background: transparent url('../images/taskbar/black/taskbar-start-panel-bg.gif') repeat-x left top;*/
+/*background-image: -moz-linear-gradient(top, rgba(102,102,153,1), rgba(102,102,153,0.5) 49%, rgba(0,0,0,0.5) 51%, rgba(0,0,0,1));*/
+    border-color: transparent;
+    
+    color: #50894f;
+    background-color: rgb(27,87,187);
+    
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), color-stop(49%, rgba(255,255,255,0.2)), color-stop(51%, rgba(0,0,0,0.05)), to(rgba(0,0,0,0.15)));
+	background-image: -moz-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -o-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: -ms-linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.05) 51%, rgba(0,0,0,0.15));
+    
+    /*height: 30px;*/
+}
+
+.sin-borde{
+ border-color: red;
+ background:blue;
+}
+
+ .ux-taskbar .x-splitter {
+    background: transparent url(../images/taskbar/black/taskbar-split-h.gif) no-repeat scroll 0 -2px;
+}
+
+ .ux-taskbar .x-toolbar-text {
+    color: white !important;
+}
+
+ .ux-taskbar .x-btn-default-toolbar-small-over {
+    background-color: yellow;
+}
+
+ .ux-taskbar .x-btn-inner {
+    color: white;
+}
+
+ .ux-taskbar .x-btn-pressed .x-btn-inner, .ux-taskbar .x-btn-over .x-btn-inner {
+    color: black;
+}
+
+/*----------------------------------------------------
+    Tray Clock
+*/
+
+.ux-desktop-trayclock {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/*----------------------------------------------------
+    Desktop DataView
+*/
+
+
+
+.ux-wallpaper-tiled {
+    background-repeat: repeat;
+}
+
+.ux-desktop-shortcut {
+    cursor: pointer;
+    text-align: center;
+    padding: 8px;
+    margin: 8px;
+    width: 64px;
+}
+
+.ux-desktop-shortcut-icon {
+    width: 48px;
+    height: 48px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+
+.ux-desktop-shortcut-text {
+    font: normal 10px tahoma,arial,verdana,sans-serif;
+    text-decoration: none;
+    padding-top: 5px;
+    color: white;
+}
+
+.x-view-over .ux-desktop-shortcut-text {
+    text-decoration: underline;
+    
+}
+
+
+/*----------------------------------------------------
+    Various icon classes
+*/
+
+.accordion-shortcut {
+    background-image: url(../images/im48x48.png);
+}
+
+.cpu-shortcut {
+    background-image: url(../images/statusLarge.png);
+}
+
+.grid-shortcut {
+    background-image: url(../images/grid48x48.png);
+}
+
+.notepad-shortcut {
+    background-image: url(../images/notepadLarge.png);
+    width: 46px;
+    height: 46px;
+}
+
+.x-ie6 .accordion-shortcut {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/im48x48.png', sizingMethod='scale');
+}
+
+.x-ie6 .cpu-shortcut {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/statusLarge.png', sizingMethod='scale');
+}
+
+.x-ie6 .grid-shortcut {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/grid48x48.png', sizingMethod='scale');
+}
+
+.x-ie6 .notepad-shortcut {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/notepadLarge.png', sizingMethod='scale');
+}
+
+.video {
+    background-image: url(../images/gears.gif);
+}
+
+.bogus {
+    background-image: url( ../images/bogus.png ) !important;
+}
+
+.notepad {
+    background-image: url( ../images/bogus.png ) !important;
+}
+
+.logout {
+    background-image: url(../desktop/images/logout.gif ) !important;
+}
+
+.settings {
+    background-image: url( ../desktop/images/gears.gif ) !important;
+}
+
+
+.icon-grid {
+    background-image:url( ../images/grid.png ) !important;
+}
+.add {
+    background-image:url(../../shared/icons/fam/add.gif) !important;
+}
+.option {
+    background-image:url(../../shared/icons/fam/plugin.gif) !important;
+}
+.remove {
+    background-image:url(../../shared/icons/fam/delete.gif) !important;
+}
+.save {
+    background-image:url(../../shared/icons/save.gif) !important;
+}
+.accordion {
+    background-image:url(../images/accordian.gif) !important;
+}
+.tabs {
+    background-image:url(../images/tabs.gif) !important;
+}
+
+/*----------------------------------------------------
+    IM window icons
+*/
+
+.user {
+    background-image:url( ../../shared/icons/fam/user.gif ) !important;
+}
+
+.user-add {
+    background-image:url(../../shared/icons/fam/user_add.gif) !important;
+}
+
+.user-delete {
+    background-image:url(../../shared/icons/fam/user_delete.gif) !important;
+}
+
+.connect {
+    background-image:url(../../shared/icons/fam/connect.gif) !important;
+}
+
+.user-girl {
+    background-image:url(../../shared/icons/fam/user_female.gif) !important;
+}
+
+.user-kid {
+    background-image:url(../../shared/icons/fam/user_green.gif) !important;
+}
+
+.user-suit {
+    background-image:url(../../shared/icons/fam/user_suit.gif) !important;
+}

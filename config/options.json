@@ -1,0 +1,18 @@
+{
+	"mode":"development",
+	"database":{
+		"state": "on",
+		"name":"goatjs",
+		"user":"root",
+		"password":"root",
+		"options":{
+			"host":"127.0.0.1"
+		},
+		"api":true
+	},
+	"port":4440,
+	"secret":"raptorjssecurity",
+	"socketio":{
+		"active": false
+	}
+}

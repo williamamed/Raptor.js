@@ -13,7 +13,7 @@ module.exports={
 	*
 	*/
 	database:{
-		state: 'off',
+		state: 'on',
 		name:'goatjs',
 		user:'root',
 		password:'root',
