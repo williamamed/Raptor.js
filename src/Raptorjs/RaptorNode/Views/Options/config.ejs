@@ -1,126 +1,175 @@
      
       <div class="starter-template" style="margin-top: 50px">
         <h1>Configuración del framework</h1>
-        <p class="lead text-muted">la configuración puede ser editada de forma manual en el archivo config/options.json</p>
+        <p class="text-muted">la configuración puede ser editada de forma manual en el archivo config/options.json</p>
        
       </div>
 
       <div class="container-fluid">
-      <%- R.plugin('raptorpanel_options') %>
-            <form class="form-horizontal" method="POST" action="config/process">
+
+      
+            <form id="raptor-config-form" class="form-horizontal" method="POST" >
 
                 <div class="row">
                     <div class="col-md-4">
-                        <label data-toggle="tooltip" data-placement="top" title="Name of your project, its used to create a session name too" class="control-label" for="proyect">Nombre del proyecto</label>
+                        <label data-toggle="tooltip" data-placement="top" title="EL nombre de proyecto es usado para identificar la aplicación" class="control-label" for="proyect">Nombre del proyecto</label>
                         <div class="controls">
-                            <input class="form-control" name="proyect" type="text" id="proyect" placeholder="..." value="<%- options.name %>">
+                            <input class="form-control" name="proyect" type="text" id="proyect" placeholder="..." value="<%- options.proyectName %>">
                         </div>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
+                      <h3>Base de datos</h3>
+                </div>
+                <div class="row">
                     <div class="col-md-4">
-                        <label data-toggle="tooltip" data-placement="top" title="Driver to use in the database connection" class="control-label" for="driver">Dialecto</label>
+                        <label data-toggle="tooltip" data-placement="top" title="Dialecto a utilizar por sequelize para conexión con la base de datos" class="control-label" for="driver">Dialecto</label>
                         <div class="controls">
                             <select class="form-control" name="driver" id="driver">
-                                <option >pgsql</option>
+                                <option >postgres</option>
                                 <option >mysql</option>
                                 <option >sqlite</option>
+                                <option >mssql</option>
+                                <option >mariadb</option>
                             </select>
                         </div>
 
 
                     </div>
                  
-                    </div>     
+                </div>     
 
 
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label data-toggle="tooltip" data-placement="top" title="Database name to connect with" class="control-label" for="inputDB">Nombre DB</label>
-                            <div class="controls">
-                                <input class="form-control" name="db" type="text" id="inputDB" placeholder="" value="<%- options.database.name%>">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Nombre de la base de datos con la se conectará" class="control-label" for="inputDB">Nombre DB</label>
+                        <div class="controls">
+                            <input class="form-control" name="db" type="text" id="inputDB" placeholder="" value="<%- options.database.name%>">
+                        </div>
+                    </div>
+                   
+                   <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Dirección e la base de datos" class="control-label" for="inputHost">Host</label>
+                        <div class="controls">
+                            <input name="host" class="form-control" type="text" id="inputHost" placeholder="" value="<%- options.database.options.host %>">
+                        </div>
+                    </div>
+
+                     <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Puerto de la base de datos" class="control-label" for="inputPort">Port</label>
+                        <div class="controls">
+                            <input name="portDB" class="form-control" type="text" id="inputPort" placeholder="" value="<%- options.database.options.port %>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                   
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Usuario para conectar con la base de datos" class="control-label" for="inputUser">Usuario</label>
+                        <div class="controls">
+                            <input name="user" class="form-control" type="text" id="inputUser" placeholder="" value="<%- options.database.user %>">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Contraseña de la base de datos" class="control-label" for="inputPass">Contraseña</label>
+                        <div class="controls">
+                            <input name="password" class="form-control" type="password" id="inputPass" placeholder="" value="<%- options.database.password %>">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    
+
+                </div>
+
+                <hr>
+                <div class="row">
+                  <h3>Raptor</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Secret key, used to create protections agains CSRF, encryptions tokens etc.." class="control-label" for="inputSecret">Secret</label>
+                        <div class="input-group">
+                            <input name="secret" class="form-control" type="text" id="inputSecret" placeholder="" value="<%- options.secret %>">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" class="" id="Generator" type="button">Generate!</button>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Determina si socket.io estará activo" class="control-label" for="socketio">Socket.io</label>
+                        <div class="controls">
+                            <div class="switch has-switch" data-on-label="Sí" data-off-label="No" data-on="primary" data-off="danger">
+                                <% if(options.socketio && options.socketio.active){ %>
+                                    <input name="socketio" checked="checked" type="checkbox">
+                                <% }else{ %>
+                                    <input name="socketio" type="checkbox">
+                                 <% } %>
                             </div>
                         </div>
-                       
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label data-toggle="tooltip" data-placement="top" title="Database host address" class="control-label" for="inputHost">Host</label>
-                            <div class="controls">
-                                <input name="host" class="form-control" type="text" id="inputHost" placeholder="" value="<%- options.database.options.host %>">
-                            </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Puerto de conexión http que utilizará Raptor.js" class="control-label" for="raptorPort">Puerto http</label>
+                        <div class="controls">
+                            <input name="portHttp" class="form-control" type="text" id="raptorPort" placeholder="" value="<%- options.port %>">
                         </div>
-
                     </div>
+                </div>
+                <%- R.plugin('raptorpanel_options') %>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label data-toggle="tooltip" data-placement="top" title="Database port to connect with" class="control-label" for="inputPort">Port</label>
-                            <div class="controls">
-                                <input name="port" class="form-control" type="text" id="inputPort" placeholder="" value="<%- options.database.options.port %>">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label data-toggle="tooltip" data-placement="top" title="Database user" class="control-label" for="inputUser">Usuario</label>
-                            <div class="controls">
-                                <input name="usera" class="form-control" type="text" id="inputUser" placeholder="" value="<%- options.database.user %>">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label data-toggle="tooltip" data-placement="top" title="Database password" class="control-label" for="inputPass">Contraseña</label>
-                            <div class="controls">
-                                <input name="passworda" class="form-control" type="password" id="inputPass" placeholder="" value="<%- options.database.password %>">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label data-toggle="tooltip" data-placement="top" title="Secret key, used to create protections agains CSRF, encryptions tokens etc.." class="control-label" for="inputSecret">Secret</label>
-                            <div class="input-group">
-                                <input name="secret" class="form-control" type="text" id="inputSecret" placeholder="" value="<%- options.secret %>">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" class="" id="Generator" type="button">Generate!</button>
-                                </span>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
-                        <div class="col-md-4">
-                            <button type="submit" id="btn-config" class="btn btn-success"><i class="icon-raptor-configure icon-white" style="margin-right: 5px"></i>Configurar</button>
-                        </div>
-
-                    </div>
-
-
-
-                </form>     
+            </form> 
+             <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
+                <div class="col-md-4">
+                    <button  id="btn-config" class="btn btn-success"><i class="icon-raptor-configure icon-white" style="margin-right: 5px"></i>Configurar</button>
+                </div>
+                
+            </div>    
        </div>
 
        <script type="text/javascript">
         $(document.body).ready(function() {
+            $('#raptor-config-form').FormUIR({
+                url:'/raptor/config/process'
+            })
+            $('.switch').switchUIR();
 
-           
+            $('#raptor-config-form').on('form.success',function(form,data){
+                 $('#btn-config').removeAttr('disabled');
+                 console.log(arguments)
+                 UIR.load.hide()
+                 Raptor.msg.info(data.text,true)
+            })
+            $('#raptor-config-form').on('form.error',function(form,data){
+                console.log(arguments)
+                 $('#btn-config').removeAttr('disabled');
+                 UIR.load.hide()
+                 Raptor.msg.error(data.responseText,true)
+            })
+
             $('#Generator').click(generateSecret);
-            $('#driver').val("<%- options.database.dialect%>");
+            
+            $('#driver').val("<%- options.database.options.dialect %>");
           
             $('#btn-config').click(function() {
                 $(this).attr({disabled: true});
+                UIR.load.show('Salvando configuracion .....')
+                $('#raptor-config-form').formUIR('submit');
+               
             })
             //if (window.parent)
            //     window.parent.Interactive.show('raptor.configuration.conf');

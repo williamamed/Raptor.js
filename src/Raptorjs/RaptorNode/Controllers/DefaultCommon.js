@@ -13,10 +13,10 @@ module.exports={
 		var replacer = this.R.app.get('json replacer');
 		var spaces = this.R.app.get('json spaces');
 		var body = JSON.stringify(options, replacer, spaces);
-
+		/**
 		var fd=fs.openSync(this.R.basePath+'/config/options8.json','w')
 		fs.writeSync(fd,body);
-		fs.closeSync(fd);
-		return "hola controller second"
+		fs.closeSync(fd);*/
+		res.send("hola controller second")
 	}
 }

@@ -1,18 +1,21 @@
 {
-	"mode":"development",
-	"database":{
-		"state": "on",
-		"name":"goatjs",
-		"user":"root",
-		"password":"root",
-		"options":{
-			"host":"127.0.0.1"
-		},
-		"api":true
-	},
-	"port":4440,
-	"secret":"raptorjssecurity",
-	"socketio":{
-		"active": false
-	}
+  "mode": "development",
+  "database": {
+    "state": "on",
+    "name": "goatjs",
+    "user": "root",
+    "password": "root",
+    "options": {
+      "host": "127.0.0.1",
+      "port": null,
+      "dialect": "mysql"
+    },
+    "api": true
+  },
+  "port": 4440,
+  "secret": "j2i%8c#2d99*92kf53b*6g915kkcek@g",
+  "socketio": {
+    "active": false
+  },
+  "proyectName": "Raptor.js"
 }
