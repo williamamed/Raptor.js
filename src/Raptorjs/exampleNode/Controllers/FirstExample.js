@@ -17,23 +17,31 @@ class FirstExample extends Controller{
 	indexAction(req,res,next){
 		var self=this;
 		
+		
+//		req.language.config.default = "en";
+		req.language.setDefaultLanguage("es");
+		//req.language.setUsePreferedLanguage(false);
+		//req.language.setLanguageComponent('exampleNode');
+		//req.language.setLanguageFilePath('C:\\Repos\\Raptor.js\\src\\Raptorjs\\RaptorNode\\i18n\\language.json');
+		//req.language.changeConfig({default:"en",usePrefered:true,});
+		return req.language.getTranslation("prueba");
 		 
 
-		this.R.getModels('exampleNode').cars.findAll({
-			    include: [{
-			        model: this.R.getModels('exampleNode').users
-			    }]
-			}).then(function(cars) {
-				
-				res.end(JSON.stringify(cars[0]))
-				
-				//res.render('exampleNode:hola/deep',{
-				//  	msg: cars[0].get('name')
-				//})
-			}).catch(function(err){
-				next(err);
-			})
-		//return "hola mundo controller";
+		//this.R.getModels('exampleNode').cars.findAll({
+		//	    include: [{
+		//	        model: this.R.getModels('exampleNode').users
+		//	    }]
+		//	}).then(function(cars) {
+		//		
+		//		res.end(JSON.stringify(cars[0]))
+		//		
+		//		//res.render('exampleNode:hola/deep',{
+		//		//  	msg: cars[0].get('name')
+		//		//})
+		//	}).catch(function(err){
+		//		next(err);
+		//	})
+		////return "hola mundo controller";
 	}
 }
 
