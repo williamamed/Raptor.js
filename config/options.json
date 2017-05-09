@@ -19,7 +19,8 @@
   },
   "language":{
     "default": "es",
-    "usePrefered": false
+    "usePrefered": false,
+    "i18nLocation": "/i18n/language.json"
   },
   "proyectName": "MiNode"
 }
