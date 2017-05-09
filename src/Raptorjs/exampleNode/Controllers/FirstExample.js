@@ -24,6 +24,7 @@ class FirstExample extends Controller{
 		//req.language.setLanguageComponent('exampleNode');
 		//req.language.setLanguageFilePath('C:\\Repos\\Raptor.js\\src\\Raptorjs\\RaptorNode\\i18n\\language.json');
 		//req.language.changeConfig({default:"en",usePrefered:true,});
+		req.language.getCurrentLanguage();
 		return req.language.getTranslation("prueba");
 		 
 
