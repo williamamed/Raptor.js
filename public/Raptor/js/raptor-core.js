@@ -1,7 +1,7 @@
 
-
-Raptor={
-	msg:{
+if(!Raptor)
+	Raptor={};
+Raptor.msg:{
 		info: function(text,floating,position){
 			if(floating){
 				var msg=$('<div>');
@@ -46,5 +46,5 @@ Raptor={
 				},10*1000)
 			}
 		}
-	}
+	
 }
