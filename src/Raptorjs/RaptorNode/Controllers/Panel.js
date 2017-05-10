@@ -49,7 +49,7 @@ class PanelController extends Controller{
 		res.render('RaptorNode:Panel/index',function(err, str){
 		    if (err) return req.next(err);
 		    
-		    res.send('<!DOCTYPE html><html><head><meta charset="utf-8"><script type="text/javascript">Raptor={get:function(){alert("sss")}}</script>'+str)
+		    res.send(str)
 		  });
 
 	}

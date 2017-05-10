@@ -18,7 +18,8 @@ Ext.define('Generate.model.GenericModel', {
            
         }
     }
-});Ext.define('Generate.model.GenericTreeModel', {
+});
+Ext.define('Generate.model.GenericTreeModel', {
     extend: 'Ext.data.Model',
     fields: ['id','text','namespace','vendor'],
     
@@ -35,10 +36,12 @@ Ext.define('Generate.model.GenericModel', {
         }
     }
 });
+
 Ext.define('Generate.store.Generic', {
     extend: 'Ext.data.Store',
     model: 'Generate.model.GenericModel'
-});Ext.define('Generate.store.GenericTreeStore', {
+});
+Ext.define('Generate.store.GenericTreeStore', {
     extend: 'Ext.data.TreeStore',
     model: 'Generate.model.GenericTreeModel',
     autoLoad: true,
@@ -46,7 +49,8 @@ Ext.define('Generate.store.Generic', {
         text: "src",
         expandable:true
     }
-});Ext.define('Generate.view.GenericList', {
+});
+Ext.define('Generate.view.GenericList', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.genericlist',
     
@@ -79,6 +83,7 @@ Ext.define('Generate.store.Generic', {
         this.callParent();
     }
 });
+
 
 Ext.define('Generate.view.GenericTree', {
     extend: 'Ext.tree.Panel',
@@ -115,6 +120,7 @@ Ext.define('Generate.view.GenericTree', {
         this.callParent();
     }
 });
+
  Ext.define('Generate.view.GenericWindow',{
         extend:'Ext.Window',
         width:300,
@@ -187,6 +193,7 @@ Ext.define('Generate.view.GenericTree', {
     })
 
 
+
 Ext.define('Generate.view.Viewport', {
     extend: 'Ext.container.Viewport',
     layout: 'fit',
@@ -207,7 +214,8 @@ Ext.define('Generate.view.Viewport', {
         
         this.callParent();
     }
-});Ext.define('Generate.controller.Generic', {
+});
+Ext.define('Generate.controller.Generic', {
     extend: 'Ext.app.Controller',
     stores: ['Generic'],
     models: ['GenericModel'],

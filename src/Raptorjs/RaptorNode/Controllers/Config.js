@@ -73,7 +73,7 @@ class ConfigController extends Controller{
 				return false;
 		});
 
-		
+
 		var replacer = this.R.app.get('json replacer');
 		var spaces = this.R.app.get('json spaces');
 		var body = JSON.stringify(options, replacer, spaces);
