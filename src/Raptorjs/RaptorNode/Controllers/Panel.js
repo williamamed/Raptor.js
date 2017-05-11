@@ -45,8 +45,8 @@ class PanelController extends Controller{
 			console.log('aut')
 		else
 			console.log('no aut')*/
-		console.log('lenguage',req.language.getCurrentLanguage())
 
+		
 		res.render('RaptorNode:Panel/index',function(err, str){
 		    if (err) return req.next(err);
 		    

@@ -66,13 +66,17 @@ class ConfigController extends Controller{
 		req.mapOption('host','database.options.host',options);
 		req.mapOption('db','database.name',options);
 		req.mapOption('socketio','socketio.active',options,function(value){
-
 			if(value && value==="true")
 				return true;
 			else
 				return false;
 		});
-
+		req.mapOption('activebd','database.state',options,function(value){
+			if(value && value==="true")
+				return 'on';
+			else
+				return 'off';
+		});
 
 		var replacer = this.R.app.get('json replacer');
 		var spaces = this.R.app.get('json spaces');
@@ -82,7 +86,7 @@ class ConfigController extends Controller{
 		fs.writeSync(fd,body);
 		fs.closeSync(fd);
 		res.json({
-			text:'La configuración para Raptor.js fue establecida con éxito !!'
+			text:'La configuración para Raptor.js fue establecida con éxito !!, Por favor revise la consola y verifique el funcionamiento de su nueva configuración.'
 		})
 	}
 

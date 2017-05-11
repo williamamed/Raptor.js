@@ -17,9 +17,9 @@
   "socketio": {
     "active": false
   },
-  "language":{
+  "language": {
     "default": "es",
     "usePrefered": false
   },
-  "proyectName": "MiNode"
+  "proyectName": "ProyectoA"
 }

@@ -101,8 +101,7 @@ UIR.Controller('RUX.Home', {
         
         UIR.namespace('RUX');
         RUX.openUI=$.proxy(this.openFunction,this);
-        
-        //Raptor.language('es','holamundo')
+     
     }
 })
 .Run(function() {

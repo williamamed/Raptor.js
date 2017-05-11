@@ -1,7 +1,7 @@
 
-if(!Raptor)
+if(!window.Raptor)
 	Raptor={};
-Raptor.msg:{
+Raptor.msg={
 		info: function(text,floating,position){
 			if(floating){
 				var msg=$('<div>');

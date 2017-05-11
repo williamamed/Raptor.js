@@ -22,7 +22,12 @@ class RaptorNode {
 		aop.before(con,'/Raptor/controller2',function(req,res,next){
 			res.end('before')
 		})
-		
+		R.setViewPlugin('raptor_client',{
+			name:'testFun',
+			callback:function(){
+				alert(this.language.getCurrentLanguage())
+			}
+		})
 	}
 }
 module.exports=RaptorNode

@@ -14,7 +14,7 @@
                     <div class="col-md-4">
                         <label data-toggle="tooltip" data-placement="top" title="EL nombre de proyecto es usado para identificar la aplicación" class="control-label" for="proyect">Nombre del proyecto</label>
                         <div class="controls">
-                            <input class="form-control" name="proyect" type="text" id="proyect" placeholder="..." value="<%- options.proyectName %>">
+                            <input  class="form-control" name="proyect" type="text" id="proyect" placeholder="..." value="<%- options.proyectName %>" required>
                         </div>
                     </div>
                 </div>
@@ -22,6 +22,22 @@
                 <div class="row">
                       <h3>Base de datos</h3>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Determina el estado, si la aplicación utilizará el motor de base de datos" class="control-label" for="socketio">Utilizar base de datos</label>
+                        <div class="controls">
+                            <div class="switch has-switch" data-on-label="Sí" data-off-label="No" data-on="primary" data-off="danger">
+                                <% if(options.database && options.database.state=='on'){ %>
+                                    <input name="activebd" checked="checked" type="checkbox">
+                                <% }else{ %>
+                                    <input name="activebd" type="checkbox">
+                                 <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-4">
                         <label data-toggle="tooltip" data-placement="top" title="Dialecto a utilizar por sequelize para conexión con la base de datos" class="control-label" for="driver">Dialecto</label>
@@ -44,7 +60,7 @@
 
                 <div class="row">
                     <div class="col-md-4">
-                        <label data-toggle="tooltip" data-placement="top" title="Nombre de la base de datos con la se conectará" class="control-label" for="inputDB">Nombre DB</label>
+                        <label data-toggle="tooltip" data-placement="top" title="Nombre de la base de datos con la se conectará" class="control-label" for="inputDB">Nombre BD</label>
                         <div class="controls">
                             <input class="form-control" name="db" type="text" id="inputDB" placeholder="" value="<%- options.database.name%>">
                         </div>
@@ -126,7 +142,7 @@
                     <div class="col-md-4">
                         <label data-toggle="tooltip" data-placement="top" title="Puerto de conexión http que utilizará Raptor.js" class="control-label" for="raptorPort">Puerto http</label>
                         <div class="controls">
-                            <input name="portHttp" class="form-control" type="text" id="raptorPort" placeholder="" value="<%- options.port %>">
+                            <input name="portHttp" class="form-control" type="text" id="raptorPort" placeholder="" value="<%- options.port %>" required>
                         </div>
                     </div>
                 </div>
@@ -150,12 +166,12 @@
 
             $('#raptor-config-form').on('form.success',function(form,data){
                  $('#btn-config').removeAttr('disabled');
-                 console.log(arguments)
+                 
                  UIR.load.hide()
                  Raptor.msg.info(data.text,true)
             })
             $('#raptor-config-form').on('form.error',function(form,data){
-                console.log(arguments)
+                
                  $('#btn-config').removeAttr('disabled');
                  UIR.load.hide()
                  Raptor.msg.error(data.responseText,true)
@@ -166,8 +182,11 @@
             $('#driver').val("<%- options.database.options.dialect %>");
           
             $('#btn-config').click(function() {
-                $(this).attr({disabled: true});
-                UIR.load.show('Salvando configuracion .....')
+                if($('#raptor-config-form').formUIR('validar')){
+                     $(this).attr({disabled: true});
+                     UIR.load.show('Salvando configuracion .....')
+                }
+               
                 $('#raptor-config-form').formUIR('submit');
                
             })
