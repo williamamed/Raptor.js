@@ -1,5 +1,6 @@
 'use strict';
 var aop=require('js_aop')
+
 /*
 * Raptor.js - Node framework
 * 
@@ -7,7 +8,16 @@ var aop=require('js_aop')
 *
 */
 class RaptorNode {
-	
+	/*
+	* Raptor.js - Node framework
+	* 
+	* 
+	* @param Raptor R instancia de la aplicacion Raptor
+	*
+	*/
+	stack(R){
+
+	}
 	/*
 	* Raptor.js - Node framework
 	* 
@@ -27,6 +37,22 @@ class RaptorNode {
 			callback:function(){
 				alert(this.language.getCurrentLanguage())
 			}
+		})
+		
+		R.on('sendresponse',function(req){
+			req.viewPlugin.set('raptor_profiler','<span>Tiempo respuesta:'+process.hrtime(req.profiler.start)[1]/1e9+' sec</span>')
+		})
+
+		R.app.use(function(req,res,next){
+
+			req.profiler={
+				start: process.hrtime()
+			}
+			
+			res.on('finish',function(){
+				
+			})
+			next();
 		})
 	}
 }

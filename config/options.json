@@ -1,7 +1,7 @@
 {
   "mode": "development",
   "database": {
-    "state": "on",
+    "state": "off",
     "name": "goatjs",
     "user": "root",
     "password": "root",
@@ -19,8 +19,7 @@
   },
   "language": {
     "default": "es",
-    "usePrefered": false,
-    "i18nLocation": "/i18n/language.json"
+    "usePrefered": false
   },
   "proyectName": "ProyectoA"
 }

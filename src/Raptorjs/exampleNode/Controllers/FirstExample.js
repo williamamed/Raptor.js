@@ -19,17 +19,13 @@ class FirstExample extends Controller{
 		
 		
 //		req.language.config.default = "en";
-		//req.language.setCurrentLanguage("es");
+		req.language.setDefaultLanguage("es");
 		//req.language.setUsePreferedLanguage(false);
 		//req.language.setLanguageComponent('exampleNode');
 		//req.language.setLanguageFilePath('C:\\Repos\\Raptor.js\\src\\Raptorjs\\RaptorNode\\i18n\\language.json');
 		//req.language.changeConfig({default:"en",usePrefered:true,});
-		//req.language.getCurrentLanguage();
-
-		res.render('exampleNode:hola/deep',{
-			msg: 'TEXT'
-		});
-		//return req.language.getTranslation("prueba");
+		req.language.getCurrentLanguage();
+		return req.language.getTranslation("prueba");
 		 
 
 		//this.R.getModels('exampleNode').cars.findAll({
