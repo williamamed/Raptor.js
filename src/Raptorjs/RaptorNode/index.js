@@ -40,7 +40,9 @@ class RaptorNode {
 		})
 		
 		R.on('sendresponse',function(req){
-			req.viewPlugin.set('raptor_profiler','<span>Tiempo respuesta:'+process.hrtime(req.profiler.start)[1]/1e9+' sec</span>')
+			req.viewPlugin.set('raptor_profiler','<div title="Tiempo respuesta" style="display:inline-block"><img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/time.png" style="overflow:visible"><b>'+Math.floor((process.hrtime(req.profiler.start)[1]/1e9)*1000)/1000+'</b> seg</div> | ')
+			var ram=process.memoryUsage()
+			req.viewPlugin.set('raptor_profiler','<div title="Tiempo respuesta" style="display:inline-block"><img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/ram.png" style="overflow:visible">'+Math.floor(ram.heapUsed/(1024*1024))+'MB - '+Math.floor(ram.heapTotal/(1024*1024))+'MB</div>')
 		})
 
 		R.app.use(function(req,res,next){

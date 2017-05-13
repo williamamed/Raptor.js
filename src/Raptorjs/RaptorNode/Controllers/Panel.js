@@ -46,11 +46,7 @@ class PanelController extends Controller{
 		else
 			console.log('no aut')*/
 		
-		res.render('RaptorNode:Panel/index',function(err, str){
-		    if (err) return req.next(err);
-		    
-		    res.send(str)
-		  });
+		res.render('RaptorNode:Panel/index');
 
 	}
 
