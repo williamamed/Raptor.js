@@ -12,11 +12,13 @@ module.exports={
 		
 		var replacer = this.R.app.get('json replacer');
 		var spaces = this.R.app.get('json spaces');
-		var body = JSON.stringify(options, replacer, spaces);
+		var body = JSON.stringify(this.R.app.routes, replacer, spaces);
+		//console.log(this.R.app.routes)
 		/**
 		var fd=fs.openSync(this.R.basePath+'/config/options8.json','w')
 		fs.writeSync(fd,body);
 		fs.closeSync(fd);*/
-		res.send("hola controller second")
+		res.send('hola mundo')
+		//res.json(this.R.app.routes)
 	}
 }

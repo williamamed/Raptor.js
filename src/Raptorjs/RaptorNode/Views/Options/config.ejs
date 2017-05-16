@@ -25,9 +25,9 @@
 
                 <div class="row">
                     <div class="col-md-4">
-                        <label data-toggle="tooltip" data-placement="top" title="Determina el estado, si la aplicación utilizará el motor de base de datos" class="control-label" for="socketio">Utilizar base de datos</label>
+                        <label data-toggle="tooltip" data-placement="top" title="Determina el estado, si la aplicación utilizará el motor de base de datos" class="control-label" for="activebd">Utilizar base de datos</label>
                         <div class="controls">
-                            <div class="switch has-switch" data-on-label="Sí" data-off-label="No" data-on="primary" data-off="danger">
+                            <div class="switch has-switch switch-db" data-on-label="Sí" data-off-label="No" data-on="primary" data-off="danger">
                                 <% if(options.database && options.database.state=='on'){ %>
                                     <input name="activebd" checked="checked" type="checkbox">
                                 <% }else{ %>
@@ -126,7 +126,7 @@
                     <div class="col-md-4">
                         <label data-toggle="tooltip" data-placement="top" title="Determina si socket.io estará activo" class="control-label" for="socketio">Socket.io</label>
                         <div class="controls">
-                            <div class="switch has-switch" data-on-label="Sí" data-off-label="No" data-on="primary" data-off="danger">
+                            <div class="switch has-switch switch-io" data-on-label="Sí" data-off-label="No" data-on="primary" data-off="danger">
                                 <% if(options.socketio && options.socketio.active){ %>
                                     <input name="socketio" checked="checked" type="checkbox">
                                 <% }else{ %>
@@ -156,13 +156,15 @@
                 
             </div>    
        </div>
-
+     
        <script type="text/javascript">
         $(document.body).ready(function() {
             $('#raptor-config-form').FormUIR({
                 url:'/raptor/config/process'
             })
+           
             $('.switch').switchUIR();
+            
 
             $('#raptor-config-form').on('form.success',function(form,data){
                  $('#btn-config').removeAttr('disabled');

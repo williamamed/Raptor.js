@@ -1,0 +1,34 @@
+<div title="Tiempo respuesta" style="display:inline-block">
+	<img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/time.png" style="overflow:visible">
+	<b><%- time %></b> seg</div> | 
+
+<div title="Uso memoria" style="display:inline-block"><img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/ram.png" style="overflow:visible"><%- memory %></div> |
+
+<div title="Rutas" class="raptorjs-node-debug-trigger" style="display:inline-block;">
+	<div class="raptorjs-node-debug-popup" data-title="Rutas">
+		<div style="overflow-y: scroll;max-height: 350px">
+		<% if(routesDef){ %>
+			<% for(var i in routesDef) { %>
+				<%- i %>: <%- routesDef[i].path %><br>
+			<% } %>	
+		<% }else{ %>
+			<span>Sin datos de ruta</span>
+		<% } %>	
+		</div>
+	</div>
+	<img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/route.png" style="overflow:visible;margin-right:4px"><b>(<%- routes%>)</b>
+</div> |
+
+<div title="Sesion" class="raptorjs-node-debug-trigger" style="display:inline-block;overflow:visible">
+	<div class="raptorjs-node-debug-popup" data-title="Datos de la sesion">
+		<% if(session){ %>
+			<% for(var i in session) { %>
+				<%- i %>: <%- session[i] %><br>
+			<% } %>	
+		<% }else{ %>
+			<span>Sin datos de sesion</span>
+		<% } %>	
+		
+	</div>
+	<img height="20" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/session.png" style="overflow:visible;margin-right:4px"><b>Sesion</b>
+</div>

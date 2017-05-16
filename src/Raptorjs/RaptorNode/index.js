@@ -15,7 +15,7 @@ class RaptorNode {
 	* @param Raptor R instancia de la aplicacion Raptor
 	*
 	*/
-	stack(R){
+	middleware(R){
 
 	}
 	/*
@@ -40,9 +40,28 @@ class RaptorNode {
 		})
 		
 		R.on('sendresponse',function(req){
-			req.viewPlugin.set('raptor_profiler','<div title="Tiempo respuesta" style="display:inline-block"><img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/time.png" style="overflow:visible"><b>'+Math.floor((process.hrtime(req.profiler.start)[1]/1e9)*1000)/1000+'</b> seg</div> | ')
-			var ram=process.memoryUsage()
-			req.viewPlugin.set('raptor_profiler','<div title="Tiempo respuesta" style="display:inline-block"><img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/ram.png" style="overflow:visible">'+Math.floor(ram.heapUsed/(1024*1024))+'MB - '+Math.floor(ram.heapTotal/(1024*1024))+'MB</div>')
+			var ram=process.memoryUsage();
+			var routesLength=0;
+			var routesDef=[];
+
+			for (var i in R.app.routes) {
+				routesLength+=R.app.routes[i].length;
+				for (var j in R.app.routes[i]) {
+					routesDef.push(R.app.routes[i][j])
+				}
+				
+			};
+			req.res.render('RaptorNode:minify-panel/profiler-min',{
+				time: Math.floor((process.hrtime(req.profiler.start)[1]/1e9)*1000)/1000,
+				memory: Math.floor(ram.heapUsed/(1024*1024))+'MB - '+Math.floor(ram.heapTotal/(1024*1024))+'MB',
+				routes: routesLength,
+				routesDef: routesDef,
+				session: req.user
+			},function(err,str){
+
+				req.viewPlugin.set('raptor_profiler',str)
+			})
+			
 		})
 
 		R.app.use(function(req,res,next){
@@ -51,11 +70,39 @@ class RaptorNode {
 				start: process.hrtime()
 			}
 			
-			res.on('finish',function(){
-				
-			})
 			next();
 		})
+		R.on('serverrunning',function(){
+			if(R.io)
+				R.io.on('connection', function(socket) {  
+				    console.log('Un cliente se ha conectado');
+				    socket.emit('messages',{text:'hola'});
+				});	
+		})
+		
 	}
 }
-module.exports=RaptorNode
+module.exports=RaptorNode;
+
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy
+
+// Serialize Sessions
+passport.serializeUser(function(user, done){
+	done(null, user);
+});
+
+//Deserialize Sessions
+passport.deserializeUser(function(user, done){
+	done(null, user);
+});
+
+// For Authentication Purposes
+passport.use(new LocalStrategy(
+	function(username, password, done){
+		done(null,{
+			name: username,
+			password: password
+		})
+	}
+));

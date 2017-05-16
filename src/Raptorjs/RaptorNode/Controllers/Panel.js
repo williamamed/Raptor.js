@@ -41,11 +41,17 @@ class PanelController extends Controller{
 	*
 	*/
 	raptorAction(req,res,next){
-		/**if(req.isAuthenticated())
+		
+		req.login({
+			name:'memo'
+		},function(){
+
+		})
+		if(req.isAuthenticated())
 			console.log('aut')
 		else
-			console.log('no aut')*/
-		
+			console.log('no aut')
+		console.log(req.user)
 		res.render('RaptorNode:Panel/index');
 
 	}

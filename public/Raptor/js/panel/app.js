@@ -34,16 +34,17 @@ UIR.Controller('RUX.Home', {
         UIR.getController('RUX.Home').getWindowCover().hide();
         UIR.getController('RUX.Home').getWindow().hide();
         this.onRunning=true;
+        Pace.restart();
         if(frame){
             UIR.getController('RUX.Home').getWindowCover().show();
             UIR.getController('RUX.Home').getWindowFrame().attr('src',route);
             
-            Pace.restart();
             UIR.getController('RUX.Home').getWindowFrame().load(function() {
                
                Pace.bar.finish(); 
                Pace.stop();
-               me.onRunning=false; 
+               me.onRunning=false;
+              
             })
         }else{
             UIR.getController('RUX.Home').getWindow().empty();
@@ -64,15 +65,16 @@ UIR.Controller('RUX.Home', {
         $(window).scrollTop(0);
     },
     onLoad: function(el, e) {
-        
+       
         if ($(e.currentTarget).hasClass('bootstrap-ui')) {
 
-            this.openFunction(false,'../' + $(e.currentTarget).attr('route').substring(1));
+            this.openFunction(false,'' + $(e.currentTarget).attr('route'));
             
         } else {
-             this.getWindowCover().attr('title',$(e.currentTarget).text())
+            this.getWindowCover().attr('title',$(e.currentTarget).text())
+            this.getWindowCover().attr('data-original-title',$(e.currentTarget).text())
             $('[data-toggle="tooltip"]').tooltip();
-            this.openFunction(true,'../' + $(e.currentTarget).attr('route').substring(1));
+            this.openFunction(true,'' + $(e.currentTarget).attr('route'));
            
         }
         
@@ -94,14 +96,26 @@ UIR.Controller('RUX.Home', {
         this.getWindowCover().height($(window).height()-130);
         
         
-        this.getHomeBtn().click();
+       
         $(window).on('resize',function(){
             me.getWindowCover().height($(window).height()-130);
         });
         
         UIR.namespace('RUX');
         RUX.openUI=$.proxy(this.openFunction,this);
-     
+       
+        Pace.on('done', function(){
+             me.onRunning=false;
+        })
+        if (location.hash.length>1) {
+            if ($('a[href="'+location.hash+'"]').size()>0) {
+                $('a[href="'+location.hash+'"]').click()
+            }else{
+                 this.getHomeBtn().click();
+            }
+        }else{
+            this.getHomeBtn().click();
+        }
     }
 })
 .Run(function() {
@@ -136,6 +150,7 @@ UIR.Controller('RUX.Home', {
             click: this.onHome
         }
     });
+
     this.main();
 })
 
