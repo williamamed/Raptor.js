@@ -2,18 +2,18 @@
   "mode": "development",
   "database": {
     "state": "off",
-    "name": "goatjs",
-    "user": "root",
-    "password": "root",
     "options": {
-      "host": "127.0.0.1",
       "port": null,
-      "dialect": "mysql"
+      "dialect": "postgres",
+      "host": ""
     },
-    "api": true
+    "api": true,
+    "password": "",
+    "user": "",
+    "name": ""
   },
+  "secret": "d8j792bi32%9ieiehkbihbj9j5cc7*6i",
   "port": 4440,
-  "secret": "8e112h87kfcd82b0%b1@$633*ai$20%*",
   "socketio": {
     "active": false
   },
@@ -21,5 +21,5 @@
     "default": "es",
     "usePrefered": false
   },
-  "proyectName": "ProyectoA"
+  "proyectName": "MyP"
 }

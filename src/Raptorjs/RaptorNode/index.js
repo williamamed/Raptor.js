@@ -42,12 +42,15 @@ class RaptorNode {
 		R.on('sendresponse',function(req){
 			var ram=process.memoryUsage();
 			var routesLength=0;
-			var routesDef=[];
+			var routesDef={};
 
 			for (var i in R.app.routes) {
 				routesLength+=R.app.routes[i].length;
 				for (var j in R.app.routes[i]) {
-					routesDef.push(R.app.routes[i][j])
+					if(routesDef[R.app.routes[i][j].path])
+						routesDef[R.app.routes[i][j].path].push(R.app.routes[i][j].method)
+					else
+						routesDef[R.app.routes[i][j].path]=[R.app.routes[i][j].method]
 				}
 				
 			};

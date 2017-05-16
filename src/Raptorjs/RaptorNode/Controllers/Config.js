@@ -15,11 +15,9 @@ class ConfigController extends Controller{
 	configure(){
 
 		this.prefix='/raptor';
-
+		this.route('post','/config/process',this.preccesConfigureAction)
 		this.routes({
-			
-			'/config':this.renderConfigureAction,
-			'/config/process':this.preccesConfigureAction,
+			'/config':this.renderConfigureAction
 		})
 
 	}

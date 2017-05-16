@@ -11,7 +11,7 @@ Raptor.msg={
 				else
 					msg.css(position)
 				msg.attr('role','alert');
-				var btn=$('<button type="button" class="btn btn-success pull-right" data-dismiss="alert" style="border-radius:0px"><span aria-hidden="true">Cerrar</span><span class="sr-only">Close</span></button>');
+				var btn=$('<span class="raptor-msg-closebtn pull-right" data-dismiss="alert" aria-hidden="true">&times;</span>');
 				msg.append(btn)
 				msg.append(text)
 				msg.appendTo('body');
@@ -33,7 +33,7 @@ Raptor.msg={
 				else
 					msg.css(position)
 				msg.attr('role','alert');
-				var btn=$('<button type="button" class="btn btn-success pull-right" data-dismiss="alert" style="border-radius:0px"><span aria-hidden="true">Cerrar</span><span class="sr-only">Close</span></button>');
+				var btn=$('<span class="raptor-msg-closebtn pull-right" data-dismiss="alert" aria-hidden="true">&times;</span>');
 				msg.append(btn)
 				msg.append(text)
 				msg.appendTo('body');
