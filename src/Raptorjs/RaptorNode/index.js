@@ -41,25 +41,29 @@ class RaptorNode {
 		
 		R.on('sendresponse',function(req){
 			var ram=process.memoryUsage();
-			var routesLength=0;
+			
 			var routesDef={};
 
 			for (var i in R.app.routes) {
-				routesLength+=R.app.routes[i].length;
+				
 				for (var j in R.app.routes[i]) {
 					if(routesDef[R.app.routes[i][j].path])
 						routesDef[R.app.routes[i][j].path].push(R.app.routes[i][j].method)
 					else
 						routesDef[R.app.routes[i][j].path]=[R.app.routes[i][j].method]
+					
 				}
 				
 			};
+
 			req.res.render('RaptorNode:minify-panel/profiler-min',{
 				time: Math.floor((process.hrtime(req.profiler.start)[1]/1e9)*1000)/1000,
 				memory: Math.floor(ram.heapUsed/(1024*1024))+'MB - '+Math.floor(ram.heapTotal/(1024*1024))+'MB',
-				routes: routesLength,
+				routes: Object.keys(routesDef).length,
 				routesDef: routesDef,
-				session: req.user
+				session: req.user,
+				auth: req.isAuthenticated(),
+				lang: req.language.getCurrentLanguage()
 			},function(err,str){
 
 				req.viewPlugin.set('raptor_profiler',str)
@@ -86,26 +90,3 @@ class RaptorNode {
 	}
 }
 module.exports=RaptorNode;
-
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-
-// Serialize Sessions
-passport.serializeUser(function(user, done){
-	done(null, user);
-});
-
-//Deserialize Sessions
-passport.deserializeUser(function(user, done){
-	done(null, user);
-});
-
-// For Authentication Purposes
-passport.use(new LocalStrategy(
-	function(username, password, done){
-		done(null,{
-			name: username,
-			password: password
-		})
-	}
-));

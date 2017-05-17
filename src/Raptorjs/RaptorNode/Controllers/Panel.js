@@ -12,11 +12,11 @@ class PanelController extends Controller{
 	configure(){
 		
 		this.routes({
-			
 			'/raptor':this.raptorAction,
 			'/raptor/description':this.descriptionAction,
 			'/': this.rootAction
 		})
+		
 
 	}
 
@@ -43,7 +43,8 @@ class PanelController extends Controller{
 	raptorAction(req,res,next){
 		
 		req.login({
-			name:'memo'
+			name:'memo',
+			lastname: 'lolo'
 		},function(){
 
 		})
@@ -51,7 +52,8 @@ class PanelController extends Controller{
 			console.log('aut')
 		else
 			console.log('no aut')
-		console.log(req.user)
+		console.log(req.language.getCurrentLanguage())
+
 		res.render('RaptorNode:Panel/index');
 
 	}
@@ -65,6 +67,7 @@ class PanelController extends Controller{
 		
 		res.render('RaptorNode:Panel/description');
 	}
+
 
 }
 module.exports=PanelController;

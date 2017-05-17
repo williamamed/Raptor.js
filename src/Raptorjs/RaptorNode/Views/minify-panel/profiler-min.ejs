@@ -1,3 +1,4 @@
+
 <div title="Tiempo respuesta" style="display:inline-block">
 	<img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/time.png" style="overflow:visible">
 	<b><%- time %></b> seg</div> | 
@@ -93,7 +94,7 @@
 		<script>
 			(function(){
 				var inter=setInterval(function(){
-					if($){
+					if(window.$){
 						clearInterval(inter);
 						$(".raptor-search-routes-panel").on("keyup", function(ev){
 						    var texto = $(this).val();
@@ -118,16 +119,33 @@
 	<img height="25" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/route.png" style="overflow:visible;margin-right:4px"><b>(<%- routes%>)</b>
 </div> |
 
-<div title="Sesion" class="raptorjs-node-debug-trigger" style="display:inline-block;overflow:visible">
-	<div class="raptorjs-node-debug-popup" data-title="Datos de la sesion">
-		<% if(session){ %>
-			<% for(var i in session) { %>
-				<%- i %>: <%- session[i] %><br>
-			<% } %>	
-		<% }else{ %>
-			<span>Sin datos de sesion</span>
-		<% } %>	
+<div title="Sesión" class="raptorjs-node-debug-trigger" style="display:inline-block;overflow:visible">
+	<div class="raptorjs-node-debug-popup" data-title="Datos de la sesión">
+		<div>
+			<% if(!auth){ %>
+				<span><b>Auth:</b> No autenticado</span>
+			<% }else{ %>
+				<span><b>Auth:</b> Autenticado</span>
+			<% } %>		
+		</div>
+		<br>
+		<span><b>Datos</b></span><br>
+		<div>
+			<% if(session){ %>
+				<% for(var i in session) { %>
+					<span><b><%- i %>:</b> <%- session[i] %></span><br>
+				<% } %>	
+			<% }else{ %>
+				<span>Sin datos de sesion</span>
+			<% } %>		
+		</div>
+		
 		
 	</div>
-	<img height="20" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/session.png" style="overflow:visible;margin-right:4px"><b>Sesion</b>
+	<img height="20" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/session.png" style="overflow:visible;margin-right:4px"><b>Sesión</b>
+</div> |
+
+<div title="Lenguaje" style="display:inline-block;overflow:visible">
+	
+	<img height="20" src="/public/rmodules/Raptorjs/RaptorNode/img/minify-panel/lang.png" style="overflow:visible;margin-right:4px"><b> <%- lang %></b>
 </div>
