@@ -48,3 +48,18 @@ Raptor.msg={
 		}
 	
 }
+
+if(window.Ext){
+		Ext.Ajax.on('beforerequest', function (conn, options) {
+		    if (!(/^http:.*/.test(options.url) || /^https:.*/.test(options.url))) {
+		       if(Raptor)
+		           var token=Raptor.getCsrfToken();
+		        if(!options.params)
+		           options.params={_csrf:token};
+		       else
+		           options.params._csrf=token;                       
+		    }
+
+
+		 }, this);
+}

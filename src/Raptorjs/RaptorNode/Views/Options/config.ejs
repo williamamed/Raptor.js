@@ -147,7 +147,7 @@
                     </div>
                 </div>
                 <%- R.plugin('raptorpanel_options') %>
-                <%- R.csrfField() %>
+               
             </form> 
              <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
                 <div class="col-md-4">
@@ -189,7 +189,11 @@
                      UIR.load.show('Salvando configuracion .....')
                 }
                
-                $('#raptor-config-form').formUIR('submit');
+                $('#raptor-config-form').formUIR('submit',{
+                    data:{
+                        _csrf: Raptor.getCsrfToken()
+                    }
+                });
                
             })
             //if (window.parent)

@@ -217,7 +217,7 @@ Ext.define('Generate.view.Viewport', {
 });
 Ext.define('Generate.controller.Generic', {
     extend: 'Ext.app.Controller',
-    stores: ['Generic'],
+    stores: ['Generic','GenericTreeStore'],
     models: ['GenericModel'],
     refs: [{
             ref: 'generictree',
@@ -254,7 +254,11 @@ Ext.define('Generate.controller.Generic', {
             'viewport button[action=addAction]': {
                 click: this.onAddAction
             },
-            
+            'viewport button[action=deleteAction]':{
+                click:function(){
+                    this.getGenericTreeStoreStore().load()
+                }
+            },
             'generictree': {
                 beforeselect: this.onTreeSelect
             },
