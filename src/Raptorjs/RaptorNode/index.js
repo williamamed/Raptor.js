@@ -16,7 +16,10 @@ class RaptorNode {
 	*
 	*/
 	middleware(R){
-
+		return;
+		R.app.use('/raptor',function(req,res){
+			res.render('RaptorNode:Panel/auth')
+		})
 	}
 	/*
 	* Raptor.js - Node framework
