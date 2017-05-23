@@ -1,0 +1,23 @@
+'use strict';
+
+var Controller=require('raptorjs').Controller
+/*
+* Raptor.js - Node framework
+* Controlador ES6
+* 
+*
+*/
+class <%- classname %> extends Controller{
+
+	configure(){
+		this.route('get','/<%- classname %>/example',this.indexAction)
+
+	}
+
+	indexAction(req,res,next){
+		
+		res.send("hola mundo <%- classname %> controller");
+	}
+}
+
+module.exports=<%- classname %>;

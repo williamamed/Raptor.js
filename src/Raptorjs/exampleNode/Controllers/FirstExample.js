@@ -21,13 +21,10 @@ class FirstExample extends Controller{
 //		req.language.config.default = "en";
 
 		req.language.setCurrentLanguage("ru");
-		//req.language.setUsePreferedLanguage(false);
-		//req.language.setLanguageComponent('exampleNode');
-		//req.language.setLanguageFilePath('C:\\Repos\\Raptor.js\\src\\Raptorjs\\RaptorNode\\i18n\\language.json');
-		//req.language.changeConfig({default:"en",usePrefered:true,});
+
 		req.language.getCurrentLanguage();
 		req.language.persistCookie()
-
+		res.show('El lenguaje fue establecido con exito en un cookie',Controller.ERROR)
 		return req.language.getTranslation("prueba");
 		 
 

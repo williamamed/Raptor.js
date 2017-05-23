@@ -16,10 +16,11 @@ class RaptorNode {
 	*
 	*/
 	middleware(R){
-		return;
-		R.app.use('/raptor',function(req,res){
-			res.render('RaptorNode:Panel/auth')
-		})
+		
+		if(R.app.get('env')!='development')
+			R.app.use('/raptor',function(req,res){
+				res.render('RaptorNode:Panel/auth')
+			})
 	}
 	/*
 	* Raptor.js - Node framework
@@ -34,12 +35,6 @@ class RaptorNode {
 		var con=require('./Controllers/DefaultCommon')
 		aop.before(con,'/Raptor/controller2',function(req,res,next){
 			res.end('before')
-		})
-		R.setViewPlugin('raptor_client',{
-			name:'testFun',
-			callback:function(){
-				alert(this.language.getCurrentLanguage())
-			}
 		})
 		
 		R.on('sendresponse',function(req){
@@ -79,7 +74,23 @@ class RaptorNode {
 			req.profiler={
 				start: process.hrtime()
 			}
-			
+			res.show=function(text,code,params){
+				if(!code)
+					code=1;
+				if(typeof params != 'object' || !params )
+					params={};
+				
+				if(typeof code=='object'){
+					params=code;
+					code=1;
+				}
+				res.json({
+					msg:text,
+					code:code,
+					success: true,
+					params:params
+				})
+			}
 			next();
 		})
 		R.on('serverrunning',function(){
