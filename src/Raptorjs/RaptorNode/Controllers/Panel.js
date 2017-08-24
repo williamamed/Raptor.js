@@ -20,11 +20,6 @@ class PanelController extends Controller{
 
 	}
 
-	firstAction(req,res,next){
-		console.log('uno')
-		return 'ss'
-	}
-
 	/**
 	* 
 	*
@@ -42,12 +37,12 @@ class PanelController extends Controller{
 	*/
 	raptorAction(req,res,next){
 		
-		req.login({
-			name:'memo',
-			lastname: 'lolo'
-		},function(){
+		// req.login({
+		// 	name:'memo',
+		// 	lastname: 'lolo'
+		// },function(){
 
-		})
+		// })
 		if(req.isAuthenticated())
 			console.log('aut')
 		else
@@ -63,8 +58,14 @@ class PanelController extends Controller{
 	*
 	*/
 	descriptionAction(req,res,next){
+
+		res.render('RaptorNode:Panel/description',function(err,str){
+			res.json({
+				extjs:false,
+				content: str
+			})
+		});
 		
-		res.render('RaptorNode:Panel/description');
 	}
 
 

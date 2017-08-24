@@ -22,5 +22,10 @@
     "usePrefered": false,
     "cookieName": "RpsLang"
   },
-  "proyectName": "MyP"
+  "proyectName": "MyP",
+  "panel": {
+    "secure": true,
+    "username": "admin",
+    "password": "admin"
+  }
 }

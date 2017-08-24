@@ -10,39 +10,50 @@ var Controller=require('raptorjs').Controller
 class FirstExample extends Controller{
 
 	configure(){
-		this.route('all','/example/hola',this.indexAction)
+		this.route('all','/example/database/foreignkey',this.dataBaseRequestAction)
+		this.route('get','/example/language',this.exampleLanguageAction)
 
 	}
 
-	indexAction(req,res,next){
-		var self=this;
-		
-		
-//		req.language.config.default = "en";
-
+	exampleLanguageAction(req,res,next){
 		req.language.setCurrentLanguage("ru");
 
 		req.language.getCurrentLanguage();
 		req.language.persistCookie()
 		res.show('El lenguaje fue establecido con exito en un cookie',Controller.ERROR)
 		return req.language.getTranslation("prueba");
-		 
+	}
 
-		//this.R.getModels('exampleNode').cars.findAll({
-		//	    include: [{
-		//	        model: this.R.getModels('exampleNode').users
-		//	    }]
-		//	}).then(function(cars) {
-		//		
-		//		res.end(JSON.stringify(cars[0]))
-		//		
-		//		//res.render('exampleNode:hola/deep',{
-		//		//  	msg: cars[0].get('name')
-		//		//})
-		//	}).catch(function(err){
-		//		next(err);
-		//	})
-		////return "hola mundo controller";
+
+	dataBaseRequestAction(req,res,next){
+		var self=this;
+		
+
+	   /**
+		* Esta funcion puede ser establecida en el classMethods del modelo
+		*
+		*/
+		this.R.getModels('otroNode').cars.belongsTo(this.R.getModels('otroNode').users) 
+
+	   /**
+		* Para incluir el hidratado del modelo users dentro del cars debe especificarse en el include
+		*
+		*/
+		this.R.getModels('otroNode').cars.findAll({
+			    include: [{
+			        model: this.R.getModels('otroNode').users
+			    }]
+			}).then(function(cars) {
+				
+				res.end(JSON.stringify(cars[0]))
+				
+				//res.render('exampleNode:hola/deep',{
+				//  	msg: cars[0].get('name')
+				//})
+			}).catch(function(err){
+				next(err);
+			})
+		
 	}
 }
 

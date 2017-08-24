@@ -19,6 +19,10 @@ Ext.define('Generate.controller.Generic', {
             selector: 'viewport button[action=deleteAction]'
         },
         {
+            ref: 'buttonNewController',
+            selector: 'viewport button[action=newControllerAction]'
+        },
+        {
             ref: 'form',
             selector: 'genericwindow button[action=save]'
         }, {
@@ -43,6 +47,12 @@ Ext.define('Generate.controller.Generic', {
             },
             'viewport button[action=deleteAction]':{
                 click:this.onDeleteAction
+            },
+            'viewport button[action=newControllerAction]':{
+                click:this.onNewControllerAction
+            },
+            'controllerwindow button[action=save]': {
+                click: this.newControllerAction
             },
             'generictree': {
                 beforeselect: this.onTreeSelect
@@ -78,14 +88,17 @@ Ext.define('Generate.controller.Generic', {
         if (model.get('vendor') === false) {
             this.getButtonAdd().disable();
             this.getButtonDelete().enable();
+            this.getButtonNewController().enable();
         }
         if (model.get('vendor') === true) {
             this.getButtonAdd().enable();
             this.getButtonDelete().disable();
+            this.getButtonNewController().disable();
         }
         if (model.get('vendor') === '') {
             this.getButtonDelete().disable();
             this.getButtonAdd().enable();
+            this.getButtonNewController().disable();
         }
     },
     definition: function () {
@@ -120,6 +133,44 @@ Ext.define('Generate.controller.Generic', {
        Raptor.msg.show(2,'Está seguro que desea eliminar este componente', this.deleteAction, this);
     },
     
+    onNewControllerAction:function(){
+        var view = Ext.widget('controllerwindow');
+    },
+
+    newControllerAction:function(button){
+        var view = button.up('window');
+        var form = view.down('form');
+        var model=this.getGenerictree().getSelectionModel().getLastSelected();
+        form.submit({
+            url: 'generatenode/model',
+            waitMsg: 'espere por favor..',
+            params: { component: model.get('text')},
+            success: function (formBasic, action) {
+                form.up('window').close();
+                var self=this;
+                Raptor.msg.show(action.result.code, action.result.msg);
+                
+            },
+            failure: function (formBasic, action) {
+               
+                switch (action.failureType) {
+                    case Ext.form.action.Action.CLIENT_INVALID:
+                        Raptor.msg.show(3,'Error en los datos del formulario');
+                        break;
+                    case Ext.form.action.Action.CONNECT_FAILURE:
+                        Raptor.msg.show(3, 'Ajax communication failed');
+                        break;
+                }
+
+                if (action.result && action.result.code) {
+                    Raptor.msg.show(action.result.code, action.result.msg);
+                }
+
+            },
+            scope: this
+        });
+    },
+
     addAction:function(button){
         var view = button.up('window');
         var form = view.down('form');

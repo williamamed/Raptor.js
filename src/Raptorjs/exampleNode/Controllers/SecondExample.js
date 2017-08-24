@@ -5,10 +5,10 @@
 *
 */
 module.exports={
-	'/example/second': function(req, res){
+	'/example/database/findall': function(req, res){
 		
-		this.R.getModels('exampleNode').User.findAll().then(function(users) {
-		  res.end('Hola mundo second '+users[0].get('car'))
+		this.R.getModels('exampleNode').users.findAll().then(function(users) {
+		  res.end('Nombre del primer usuario devuelto: '+users[0].get('username'))
 		})
 		//return "hola controller second"
 	},

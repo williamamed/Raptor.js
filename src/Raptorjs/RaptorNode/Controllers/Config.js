@@ -30,6 +30,11 @@ class ConfigController extends Controller{
 	renderConfigureAction(req,res,next){
 		res.render('RaptorNode:Options/config',{
 			options: this.R.options
+		},function(err,str){
+			res.json({
+				extjs:false,
+				content: str
+			})
 		});
 	}
 

@@ -1,5 +1,4 @@
 "use strict";
-var querystring = require('querystring');
 var path = require('path');
 var fs = require('fs');
 var fse = require('fs-extra');
@@ -22,7 +21,8 @@ class GenerateController extends Controller{
 			'':this.indexAction,
 			'/list':this.listAction,
 			'/create':this.createNodeAction,
-            '/delete':this.deleteNodeAction
+            '/delete':this.deleteNodeAction,
+            '/model':this.genModelNodeAction
 		})
 
 	}
@@ -218,6 +218,23 @@ class GenerateController extends Controller{
         }else
             res.show('No se encontro el componente especificado.',Controller.ERROR);
 
+    }
+
+    genModelNodeAction(req,res,next){
+
+        var es6;
+        res.render('RaptorNode:GenerateNode/node-template/ControllerES6.js.ejs', {
+            classname: req.body.controllername
+        },function(err,str){
+            es6=str;
+        });
+        this.R.waitUntil(!es6);
+
+        var src = path.join(this.R.basePath,'src');
+        
+        fs.writeFileSync(path.join(src,this.R.bundles[req.body.component].vendor,req.body.component,'Controllers/'+req.body.controllername+'.js'), es6);
+
+        res.show('El controlador fue creado correctamente.')
     }
 }
 module.exports=GenerateController;

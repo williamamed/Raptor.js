@@ -17,10 +17,18 @@ class RaptorNode {
 	*/
 	middleware(R){
 		
-		if(R.app.get('env')!='development')
-			R.app.use('/raptor',function(req,res){
-				res.render('RaptorNode:Panel/auth')
+		
+		R.getSecurityManager()
+			.setLogin('/raptor','RaptorNode:Panel/auth')
+			.setAuthentication(function(username,password,done){
+				if(username==R.options.panel.username && password==R.options.panel.password)
+					done(null,{
+						user:username
+					})
+				else
+					done(null,false)
 			})
+		
 	}
 	/*
 	* Raptor.js - Node framework
@@ -93,6 +101,7 @@ class RaptorNode {
 			}
 			next();
 		})
+		
 		R.on('serverrunning',function(){
 			if(R.io)
 				R.io.on('connection', function(socket) {  

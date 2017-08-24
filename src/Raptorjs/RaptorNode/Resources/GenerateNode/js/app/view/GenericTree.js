@@ -28,6 +28,14 @@ Ext.define('Generate.view.GenericTree', {
                 //privilegeName: 'insert',
                 action: 'deleteAction'
                 //iconCls: 'icon-add'
+            },{
+                xtype: 'button',
+                text: "Nuevo Controlador",
+                disabled: true,
+                //hidden: true,
+                //privilegeName: 'insert',
+                action: 'newControllerAction'
+                //iconCls: 'icon-add'
             }]
         }];
         this.callParent();
