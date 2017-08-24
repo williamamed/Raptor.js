@@ -17,17 +17,17 @@ class RaptorNode {
 	*/
 	middleware(R){
 		
-		
-		R.getSecurityManager()
-			.setLogin('/raptor','RaptorNode:Panel/auth')
-			.setAuthentication(function(username,password,done){
-				if(username==R.options.panel.username && password==R.options.panel.password)
-					done(null,{
-						user:username
-					})
-				else
-					done(null,false)
-			})
+		if(R.options.panel.secure==true)
+			R.getSecurityManager()
+				.setLogin('/raptor','RaptorNode:Panel/auth')
+				.setAuthentication(function(username,password,done){
+					if(username==R.options.panel.username && password==R.options.panel.password)
+						done(null,{
+							user:username
+						})
+					else
+						done(null,false)
+				})
 		
 	}
 	/*
