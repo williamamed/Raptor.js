@@ -8,9 +8,9 @@
       "host": "127.0.0.1"
     },
     "api": true,
-    "password": "root",
+    "password": "",
     "user": "root",
-    "name": "goatjs"
+    "name": "test"
   },
   "secret": "d8j792bi32%9ieiehkbihbj9j5cc7*6i",
   "port": 4440,
@@ -24,7 +24,7 @@
   },
   "proyectName": "MyP",
   "panel": {
-    "secure": true,
+    "secure": false,
     "username": "admin",
     "password": "admin"
   }
