@@ -60,17 +60,23 @@ Ext.define('Generate.controller.Generic', {
     
     
     onGenerateAction: function() {
-       Raptor.msg.show(2,'Está seguro que desea eliminar este componente', this.generateAction, this);
+       Raptor.msg.show(2,'Está seguro que desea generar los modelos de las tablas marcadas en este componente', this.generateAction, this);
     },
     
     
     generateAction: function() {
         var model=this.getGenerictree().getSelectionModel().getLastSelected();
-        
+        var modelList=this.getGenericlist().getSelectionModel().getSelection();
+        var selected=[];
+
+        for (var i = 0; i < modelList.length; i++) {
+            selected.push(modelList[i].get('name'))
+        };
+
         var wait=Raptor.msg.show(4,'espere por favor..');
         Ext.Ajax.request({
-            url: 'generatenode/delete',
-            params:{ nodecomponent: model.get('text') },
+            url: 'model/generate',
+            params:{ nodecomponent: model.get('text'), tables: selected },
             callback: function() {
                 wait.close();
                 
@@ -78,13 +84,8 @@ Ext.define('Generate.controller.Generic', {
             success: function(response, opts) {
                 var obj = Ext.decode(response.responseText);
                 Raptor.msg.show(obj.code, obj.msg);
-                var parent=model.parentNode;
-                if(obj.code==Raptor.INFO)
-                    model.remove();
-                if(parent && !parent.hasChildNodes()){
-                    parent.remove()
-                }
-                this.getButtonDelete().disable();
+               
+                //this.getButtonDelete().disable();
             },
             failure: function(response, opts) {
                  Raptor.msg.show(3,'server-side failure with status code ' + response.status);

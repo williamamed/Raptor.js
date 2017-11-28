@@ -6,6 +6,16 @@ Panel.Ui.BootstrapArea=Backbone.View.extend({
 	initialize:function(){
 		this.listenTo(this.model,'change',this.render)
 
+		this.listenTo(this.model,'error',function(){
+			this.cleanRender()
+			this.$extjsArea.hide();
+			this.$bootstrapArea.show()
+			this.$bootstrapArea.html('<h1 style="font-size:50px;margin-top:50px;padding:30px;color: #372b53;margin-bottom: 200px"><span style="font-size:70px">): </span> 404 Not Found</h1>');
+			Pace.bar.finish(); 
+            Pace.stop();
+			
+		})
+
 		this.$bootstrapArea=this.$el.find('#rux-window');
 		this.$extjsArea=this.$el.find('#rux-window-cover');
 		

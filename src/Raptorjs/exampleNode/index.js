@@ -8,6 +8,10 @@
 */
 class exampleNode {
 
+	middleware(R){
+		
+	}
+
 	/*
 	* Raptor.js - Node framework
 	* 

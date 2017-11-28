@@ -8,13 +8,21 @@ Panel.Router=Backbone.Router.extend({
 		'generate-node':'generateNode',
 		'publish-resources':'publishResources',
 		'generate-model':'genModel',
-		'*path':'NotFound'
+		'*path':'rutas'
 	},
 
 	description:function(){
 		Pace.restart();
 		Panel.model.fetch({
 			url:'/raptor/description'
+		})
+		
+	},
+
+	rutas:function(p){
+		Pace.restart();
+		Panel.model.fetch({
+			url:p
 		})
 		
 	},

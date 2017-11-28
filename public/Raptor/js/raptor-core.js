@@ -181,6 +181,12 @@ if(window.Ext){
 
 		 }, this);
 
+    Ext.Ajax.on('requestexception', function(conn, response, options){
+        if(response.status==401){
+          window.location=window.location.href;
+        }
+    });
+
 	})
 
 	Raptor.msg.extjs.info=function(msg,duration,background,type){

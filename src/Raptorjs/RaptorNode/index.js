@@ -19,14 +19,32 @@ class RaptorNode {
 		
 		if(R.options.panel.secure==true)
 			R.getSecurityManager()
-				.setLogin('/raptor','RaptorNode:Panel/auth')
-				.setAuthentication(function(username,password,done){
-					if(username==R.options.panel.username && password==R.options.panel.password)
-						done(null,{
-							user:username
-						})
-					else
-						done(null,false)
+				.setLogin('/raptor([\/\w*]*)?','RaptorNode:Panel/auth')
+				.setCondition(function(req,res,next){
+					
+					if(!req.session.raptor_panel){
+						return true;
+					}else
+						return false;
+				})
+				.setAuthentication(function(req,username,password,done){
+					if(username==R.options.panel.username && password==R.options.panel.password){
+						req.session.raptor_panel={
+							username: username
+						}
+						//done(null,{
+						//	raptor_panel_username:username,
+						//	raptor_panel:true,
+						//})
+					}else{
+						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
+					}
+					req.session.save(function(){
+						req.res.redirect(req.url)
+					})	
+				})
+				.setAuthorization(function(a,b,c){
+					c()
 				})
 		
 	}
@@ -99,6 +117,8 @@ class RaptorNode {
 					params:params
 				})
 			}
+
+
 			next();
 		})
 		

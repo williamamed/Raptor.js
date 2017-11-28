@@ -21,7 +21,7 @@
                 fieldLabel: 'Nombre del controlador',
                 itemId: 'controllername',
                 allowBlank: false,
-                maxLength: 15,
+                maxLength: 45,
                 regex: /^[a-zA-Z0-9]+$/,
                 enableKeyEvents: true,
                 width: '100%',

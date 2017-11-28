@@ -1,0 +1,2 @@
+::ffff:127.0.0.1 - - [22/Sep/2017:01:02:22 +0000] "GET /troodon/privilege HTTP/1.1" - - "http://localhost:4440/troodon/privilege" "Mozilla/5.0 (Windows NT 6.1; rv:29.0) Gecko/20100101 Firefox/29.0"
+::ffff:127.0.0.1 - - [22/Sep/2017:01:02:35 +0000] "GET /troodon/privilege HTTP/1.1" - - "http://localhost:4440/troodon/privilege" "Mozilla/5.0 (Windows NT 6.1; rv:29.0) Gecko/20100101 Firefox/29.0"

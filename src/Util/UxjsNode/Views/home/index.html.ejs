@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <% if (R.plugin('rux_icon')){ %>
+            <link rel="icon" href="<%- R.plugin('rux_icon') %>">
+        <% }else{ %>
+            <link rel="icon" href="/public/rmodules/Util/UxjsNode/img/logo.png">
+        <% } %>   
+        
+        <% if (R.plugin('rux_name')){ %>
+            <title><%- R.plugin('rux_name') %></title>
+        <% }else{ %>
+            <title><%- appname %></title>
+        <% } %> 
+
+        
+        <link href="/public/rmodules/Util/UxjsNode/lib/scrollbar/perfect-scrollbar.css" rel="stylesheet">
+        <!-- Bootstrap core CSS -->
+        <link href="/public/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        
+        <link rel="stylesheet" href="/public/rmodules/Util/UxjsNode/lib/pace/themes/orange/pace-theme-minimal.css" />
+
+
+        <script src="/public/rmodules/Util/UxjsNode/lib/pace/pace.js"></script>
+
+        <link href="/public/rmodules/Util/UxjsNode/css/dashboard.css" rel="stylesheet">
+        <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+        <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+        <script src="/public/bootstrap/js/ie-emulation-modes-warning.js"></script>
+
+        <link href="/public/Raptor/css/uir/uir-all.css" rel="stylesheet">
+
+        <link href="/public/rmodules/Util/UxjsNode/lib/upload/fileinput.min.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style type="text/css">
+
+                .navbar-inverse .navbar-nav > .active > a{
+                    background-color: transparent;
+                    color: #FFFFFF;
+                }
+                .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover {
+                    color: #EA9105;
+                    background-color: transparent;
+                }
+                .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
+                    color: white;
+                    background-color: #2c8fe0;
+                }
+                .text-notify{
+                    color:#777777 !important;
+                }
+                .pace .pace-activity {
+                    right: 50%
+                }
+                #rux-indicator .col-md-10{
+                    animation: opa 1000ms linear infinite;
+                }
+                @keyframes opa {
+                    0% { opacity: 0.5; opacity: 0.5; }
+                100% { opacity: 1; opacity: 1; }
+                }
+                .rux-open-ind{
+                    border-left: 4px solid rgba(0, 0, 0, 0);
+                    border-right: 4px solid rgba(0, 0, 0, 0);
+                    border-top: 4px dashed;
+                    display: inline-block;
+                    height: 0;
+                    margin-left: 2px;
+                    vertical-align: middle;
+                    width: 0;
+                }
+                .collapsed .rux-open-ind{
+                    border-bottom: 4px solid rgba(0, 0, 0, 0);
+                    border-left: 4px dashed;
+                    border-top: 4px solid rgba(0, 0, 0, 0);
+                    display: inline-block;
+                    height: 0;
+                    margin-left: 2px;
+                    vertical-align: middle;
+                    width: 0;
+                }
+            </style>
+            <%- R.plugin('rux_header') %>
+        </head>
+
+        <body>
+
+            <nav class="navbar navbar-inverse navbar-fixed-top rux-header">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                          
+                        <a class="navbar-brand" href="#" style="padding-top: 5px">
+                            <i style="margin-right: 5px;">
+                                <% if (R.plugin('rux_icon')){ %>
+                                    <img src="<%- R.plugin('rux_icon') %>" width="40">
+                                <% }else{ %>
+                                    <img src="/public/rmodules/Util/UxjsNode/img/logo.png" width="40">
+                                <% } %>   
+                            </i>
+                            <% if (R.plugin('rux_name')){ %>
+                                    <%- R.plugin('rux_name') %>
+                            <% }else{ %>
+                                    <%- appname %>
+                            <% } %>
+                        </a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+
+
+                            <li><a href="#!/uxjs/description" class="function-home"><span class="glyphicon glyphicon-home" style="margin-right: 5px"></span>Inicio</a></li>
+                            <li><a href="#!/uxjs/profile" class="function-profile"><span class="glyphicon glyphicon-user" style="margin-right: 5px"></span>Perfil</a></li>
+                            <%- R.plugin('rux_navbar')%>
+                                <li><a href="uxjs/logout" class="function-logout"><span class="glyphicon glyphicon-log-out" style="margin-right: 5px"></span>Salir</a></li>
+                            </ul>
+                            <div class="navbar-form navbar-right">
+
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="container-fluid" uir-app="RUX">
+                    <div class="row">
+                        <div class="col-sm-3 col-md-2 sidebar rux-sidebar" style="overflow: hidden;height: -moz-calc(100% - 60px);height: -webkit-calc(100% - 60px);height: calc(100% - 60px);padding-bottom: 0;padding-top: 0;padding: 0pc">
+
+                            
+                            
+                            <%- R.plugin('rux_sidebar') %>
+                        </div>
+
+                        <div id="rux-container" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                            <div  id="rux-window" style="width: 100%;height: 100%;display: none;background-size: 100%;background-position: 0 50%;" ></div>
+                            <div  id="rux-window-cover" style="width: 100%;display: none">
+                                <iframe  id="rux-window-frame" style="width: 100%;height: 100%;border: none;" src=""></iframe>
+                            </div>
+                            <%- R.plugin('rux_content') %>
+                        </div>
+                    </div>
+                </div>
+
+                                        <!-- Bootstrap core JavaScript
+                                        ================================================== -->
+                                        <!-- Placed at the end of the document so the pages load faster 
+                                        <script src="{{ asset('bootstrap/js/jquery.js') }}"></script>
+                                        <script src="{{ asset('bootstrap/js/bootstrap.min3.js') }}"></script>
+                                        <script src="{{ asset('Util/RUX/lib/upload/fileinput.min.js') }}"></script>
+                                        <script src="{{ asset('Util/RUX/lib/upload/theme.js') }}"></script>
+                                        <script src="{{ asset('Util/RUX/lib/upload/es.js') }}"></script>
+                                        <script src="{{ asset('Raptor/UIR/js/uir-all.js') }}"></script>
+
+                                         
+                                        <script src="{{ asset("bootstrap/js/ie10-viewport-bug-workaround.js") }}"></script>
+                                        <script src="{{ asset('Raptor/UIR/js/perfect-scrollbar.js') }}"></script>
+                                        <script src="{{ asset('Raptor/js/raptor-core.js') }}"></script>
+                                        <script src="{{ asset('Raptor/Component/system/backbone/underscore.js') }}"></script>
+                                        <script src="{{ asset('Raptor/Component/system/backbone/backbone.js') }}"></script>
+                                        <script src="{{ asset('Util/RUX/js/app/view/area.js') }}"></script>
+                                        <script src="{{ asset('Util/RUX/js/app/router.js') }}"></script>
+                                        <script src="{{ asset('Util/RUX/js/app/app.js') }}"></script>
+                                        -->
+
+                                        <%- R.assetJS({
+                                            compress:false,
+                                            input:[
+                                                '/public/bootstrap/js/jquery.js',
+                                                '/public/bootstrap/js/bootstrap.min.js',
+                                                '/public/rmodules/Util/UxjsNode/lib/upload/fileinput.min.js',
+                                                '/public/rmodules/Util/UxjsNode/lib/upload/theme.js',
+                                                '/public/rmodules/Util/UxjsNode/lib/upload/es.js',
+                                                '/public/Raptor/js/uir/uir-all.js',
+                                                '/public/bootstrap/js/ie10-viewport-bug-workaround.js',
+                                                '/public/rmodules/Util/UxjsNode/lib/scrollbar/perfect-scrollbar.js',
+                                                '/public/Raptor/js/raptor-core.js',
+                                                '/public/backbone/underscore.js',
+                                                '/public/backbone/backbone.js',
+                                                '/public/rmodules/Util/UxjsNode/js/app/view/area.js',
+                                                '/public/rmodules/Util/UxjsNode/js/app/router.js',
+                                                '/public/rmodules/Util/UxjsNode/js/app/app.js'
+                                            ],
+                                            output:'/public/rmodules/Util/UxjsNode/js/rux.js'
+                                        }) %>
+
+                                        <!--
+                                        <script src="/public/rmodules/Util/UxjsNode/js/rux.js"></script>
+                                        -->
+                                        <script type="text/javascript">
+                                            UIR.STRUCTUREID =<%- idStructure %>
+                                                    $('.sidebar').perfectScrollbar({
+                                                suppressScrollX: true
+                                            });
+
+                                            </script>
+                                            <%- R.plugin('rux_script') %>  
+                                        </body>
+                                    </html>

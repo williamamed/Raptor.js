@@ -10,7 +10,7 @@
     "api": true,
     "password": "",
     "user": "root",
-    "name": "test"
+    "name": "raptor_node"
   },
   "secret": "d8j792bi32%9ieiehkbihbj9j5cc7*6i",
   "port": 4440,
@@ -24,8 +24,8 @@
   },
   "proyectName": "MyP",
   "panel": {
-    "secure": false,
-    "username": "admin",
-    "password": "admin"
+    "secure": true,
+    "password": "admin",
+    "username": "admin"
   }
 }
