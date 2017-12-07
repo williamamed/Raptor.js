@@ -47,9 +47,6 @@ class FirstExample extends Controller{
 				
 				res.end(JSON.stringify(cars[0]))
 				
-				//res.render('exampleNode:hola/deep',{
-				//  	msg: cars[0].get('name')
-				//})
 			}).catch(function(err){
 				next(err);
 			})

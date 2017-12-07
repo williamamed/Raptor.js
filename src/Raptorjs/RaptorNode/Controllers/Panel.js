@@ -42,12 +42,6 @@ class PanelController extends Controller{
 	*/
 	raptorAction(req,res,next){
 		
-		// req.login({
-		// 	name:'memo',
-		// 	lastname: 'lolo'
-		// },function(){
-
-		// })
 		var user='Usuario público';
 
 		if(req.session.raptor_panel){
@@ -68,7 +62,9 @@ class PanelController extends Controller{
 	*/
 	descriptionAction(req,res,next){
 		
-		res.render('RaptorNode:Panel/description',function(err,str){
+		res.render('RaptorNode:Panel/description',{
+			version:"v1.0.1 beta"
+		},function(err,str){
 			res.json({
 				extjs:false,
 				content: str

@@ -1,117 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title>Raptor deamon</title>
-        
-        
-        <!-- Bootstrap core CSS -->
-        <link href="/public/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+     
+      <div class="starter-template" style="margin-top: 50px">
+        <h1>Tareas programadas</h1>
+        <p class="text-muted">Este componente te permite ejecutar tareas de acuerdo a un criterio.</p>
+       
+      </div>
+      <hr>
+      <div class="container-fluid">
 
-        <!-- Custom styles for this template -->
-        
-        <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-        <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-        <script src="/public/bootstrap/js/ie-emulation-modes-warning.js"></script>
-
-        <link href="/public/Raptor/css/uir/uir-all.css" rel="stylesheet">
-
-
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <style type="text/css">
-
-                .navbar-inverse .navbar-nav > .active > a{
-                    background-color: transparent;
-                    color: #FFFFFF;
-                }
-                .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover {
-                    color: #EA9105;
-                    background-color: transparent;
-                }
-                .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover {
-                    color: white;
-                    background-color: #2c8fe0;
-                }
-                
-            </style>
-        </head>
-
-        <body>
-
-            <nav class="navbar navbar-inverse navbar-fixed-top rux-header">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                          
-                        <a class="navbar-brand" href="#" style="padding-top: 10px">
-                           Raptor Deamon
-                            
-                        </a>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav navbar-right">
-
-                            <div class="navbar-form navbar-right">
-
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-
-                <div class="container-fluid" uir-app="RUX">
-                    <div class="row">
-                        
-
-                        <div id="rux-container" class="col-sm-12 col-md-12 main">
-                            Hola
+            <pre>
+*    *    *    *    *    *
+┬    ┬    ┬    ┬    ┬    ┬
+│    │    │    │    │    |
+│    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
+│    │    │    │    └───── month (1 - 12)
+│    │    │    └────────── day of month (1 - 31)
+│    │    └─────────────── hour (0 - 23)
+│    └──────────────────── minute (0 - 59)
+└───────────────────────── second (0 - 59, OPTIONAL)
+            </pre>
+            <form action="/raptor/deamon/configure" class="form-horizontal" method="POST" >
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="EL nombre de la tarea, es una forma de identificarla entre las demas" class="control-label" for="proyect">Nombre</label>
+                        <div class="controls">
+                            <input  class="form-control" name="nombre" type="text" id="proyect" placeholder="Nombre de la tarea" value="" required>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="El formato cron que determinará cuando se ejecutará el comando" class="control-label" for="proyect">Ejecutar cuando</label>
+                        <div class="controls">
+                            <input  class="form-control" name="schedule" type="text" id="proyect" placeholder="* * * * * *" value="" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <label data-toggle="tooltip" data-placement="top" title="El comando a ejecutar cuando se cumpla la condición" class="control-label" for="command">Comando</label>
+                        <div class="controls">
+                            <textarea  class="form-control" name="command" placeholder="" value="" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <%- R.csrfField() %>
+                <div class="row" style="margin-top: 40px;margin-bottom: 40px;">
+                    <div class="col-md-4">
+                        <button type="submit"  id="btn-config" class="btn btn-success"><i class="icon-raptor-configure icon-white" style="margin-right: 5px"></i>Configurar</button>
+                    </div>
+                    
+                </div> 
+            </form> 
+              
 
-                                        <!-- Bootstrap core JavaScript
-                                        ================================================== -->
-                                        
-                                        <script src="{{ asset('bootstrap/js/jquery.js') }}"></script>
-                                        <script src="{{ asset('bootstrap/js/bootstrap.min3.js') }}"></script>
-                                        <!-- Placed at the end of the document so the pages load faster 
-                                        <script src="{{ asset('Util/RUX/lib/upload/fileinput.min.js') }}"></script>
-                                        <script src="{{ asset('Util/RUX/lib/upload/theme.js') }}"></script>
-                                        <script src="{{ asset('Util/RUX/lib/upload/es.js') }}"></script>
-                                        <script src="{{ asset('Raptor/UIR/js/uir-all.js') }}"></script>
+            <hr>
+            <div class="row">
+                <div class="col-md-10">
+                    <table class="table table-hover">
+                        <% for (var i=0;i < config.length;i++){ %>
+                            <tr>
+                                <td><%- config[i].nombre %></td><td><%- config[i].schedule %></td><td><a href="/raptor/deamon/delete?eid=<%- config[i].nombre %>" class="btn btn-danger pull-right">Eliminar</a></td>
+                            </tr>
+                        <%}%>
+                    </table>  
+                </div>
+            </div>
 
-                                         
-                                        <script src="{{ asset("bootstrap/js/ie10-viewport-bug-workaround.js") }}"></script>
-                                        <script src="{{ asset('Raptor/UIR/js/perfect-scrollbar.js') }}"></script>
-                                        <script src="{{ asset('Raptor/js/raptor-core.js') }}"></script>
-                                        <script src="{{ asset('Raptor/Component/system/backbone/underscore.js') }}"></script>
-                                        <script src="{{ asset('Raptor/Component/system/backbone/backbone.js') }}"></script>
-                                        <script src="{{ asset('Util/RUX/js/app/view/area.js') }}"></script>
-                                        <script src="{{ asset('Util/RUX/js/app/router.js') }}"></script>
-                                        <script src="{{ asset('Util/RUX/js/app/app.js') }}"></script>
-                                        -->
+       </div>
+     
+       <script type="text/javascript">
+        $(document.body).ready(function() {
+            $('#raptor-config-form').FormUIR({
+                url:'/raptor/config/process'
+            })
+           
+            $('.switch').switchUIR();
+            
 
-                                        
+            $('#raptor-config-form').on('form.success',function(form,data){
+                 $('#btn-config').removeAttr('disabled');
+                 
+                 UIR.load.hide()
+                 Raptor.msg.info(data.text,true)
+            })
+            $('#raptor-config-form').on('form.error',function(form,data){
+                
+                 $('#btn-config').removeAttr('disabled');
+                 UIR.load.hide()
+                 Raptor.msg.error(data.responseText,true)
+            })
 
-                                        <!--
-                                        <script src="/public/rmodules/Util/UxjsNode/js/rux.js"></script>
-                                        -->
-                                        <script type="text/javascript">
-                                           
-                                            </script>
-                                           
-                                        </body>
-                                    </html>
+            $('#Generator').click(generateSecret);
+          
+            $('#btn-config').click(function() {
+                if($('#raptor-config-form').formUIR('validar')){
+                     $(this).attr({disabled: true});
+                     UIR.load.show('Salvando configuracion .....')
+                }
+               
+                $('#raptor-config-form').formUIR('submit',{
+                    data:{
+                        _csrf: Raptor.getCsrfToken()
+                    }
+                });
+               
+            })
+            //if (window.parent)
+           //     window.parent.Interactive.show('raptor.configuration.conf');
+            $('[data-toggle="tooltip"]').tooltip();
+            
+        });
+        function generateSecret() {
+
+            for (var c = ''; c.length < 32; )
+                c += 'abcdefgh1234567890@#$%*ijklmnopqrstuvwxyz'.charAt(Math.random() * 26)
+
+            $('#inputSecret').val(c);
+        }
+        </script>    

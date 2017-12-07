@@ -107,7 +107,7 @@ class TroodonNode {
 	*/
 	configure(R){
 		var parseUrl = require('express/node_modules/parseurl');
-
+		console.log('El modulo de seguridad TroodonNode se encuentra en desarrollo.')
 		R.app.use(function(req,res,next){
 			req.logger={
 				EMERGENCY:1,

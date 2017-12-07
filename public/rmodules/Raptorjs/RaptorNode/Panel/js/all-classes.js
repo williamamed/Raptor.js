@@ -64,6 +64,9 @@ Panel.Router=Backbone.Router.extend({
 		'generate-node':'generateNode',
 		'publish-resources':'publishResources',
 		'generate-model':'genModel',
+		'!/*path':'bootstrapOpen',
+        '!f/*path':'extjsOpen',
+        '!ex/*path':'externalOpen',
 		'*path':'rutas'
 	},
 
@@ -116,7 +119,23 @@ Panel.Router=Backbone.Router.extend({
 			content:''
 		})
 	},
-
+	bootstrapOpen:function(path){
+        Pace.restart();
+        Panel.model.fetch({
+			url: '/'+path
+        })
+    },
+    extjsOpen:function(path){
+        Pace.restart();
+        Panel.model.set({
+		extjs: true,
+		route: '/'+path,
+		content:''
+	})
+    },
+    externalOpen:function(path){
+        window.open('/'+path)
+    },
 	NotFound:function(){
 		Pace.restart();
 		Panel.model.set({

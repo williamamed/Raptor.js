@@ -109,7 +109,7 @@ class BioNode {
 				})
 				
 			})
-		console.log('bio sync')
+		
 	}
 
    /**
@@ -122,7 +122,7 @@ class BioNode {
 	*
 	*/
 	configure(R){
-		
+		console.log('El modulo de identificacion biometrica BioNode se encuentra en desarrollo')
 	}
 }
 module.exports=BioNode
