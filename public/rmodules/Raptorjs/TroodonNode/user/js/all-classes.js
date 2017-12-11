@@ -674,7 +674,7 @@ Ext.define('GestUser.controller.Users', {
     onRender: function () {
         this.getUserlist().getStore().on('beforeload', this.onBeforeLoadList, this)
         this.getUserlist().getStore().on('load', this.onLoadList, this)
-        //Raptor.controlActions();
+        Raptor.controlActions();
 
     },
     onLoadList: function () {

@@ -1,7 +1,7 @@
 {
   "mode": "development",
   "database": {
-    "state": "off",
+    "state": "on",
     "options": {
       "port": null,
       "dialect": "mysql",

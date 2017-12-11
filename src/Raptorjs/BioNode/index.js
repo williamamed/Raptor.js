@@ -54,7 +54,7 @@ class BioNode {
 					})
 
 				R.aop.before(R.getSecurityManager('Troodon'),'_authentication',function(success,args){
-					console.log('auth')
+					
 					var req=args[0];
 					var username=args[1];
 					var password=args[2];
@@ -109,7 +109,7 @@ class BioNode {
 				})
 				
 			})
-		
+		console.log('El modulo BioNode está en modo beta.')
 	}
 
    /**
@@ -122,7 +122,7 @@ class BioNode {
 	*
 	*/
 	configure(R){
-		console.log('El modulo de identificacion biometrica BioNode se encuentra en desarrollo')
+		R.migration('BioNode')
 	}
 }
 module.exports=BioNode

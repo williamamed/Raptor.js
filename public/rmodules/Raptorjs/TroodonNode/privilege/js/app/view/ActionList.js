@@ -54,7 +54,7 @@ Ext.define('GestPrivilege.view.ActionList', {
         }];
         
         this.callParent();
-        //Raptor.controlActions();
+        Raptor.controlActions();
     }
 });
 

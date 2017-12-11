@@ -176,7 +176,7 @@ Ext.define('GestPrivilege.view.ActionList', {
         }];
         
         this.callParent();
-        //Raptor.controlActions();
+        Raptor.controlActions();
     }
 });
 
@@ -464,7 +464,7 @@ Ext.define('GestPrivilege.controller.Actions', {
       
     },
      onRender:function(){
-        //Rpt.controlActions();
+        //Raptor.controlActions();
     },
     onListSelect: function() {
         if(this.getButtonEdit())
@@ -684,7 +684,7 @@ Ext.define('GestPrivilege.controller.Privileges', {
        
     },
      onRender:function(){
-        //Raptor.controlActions();
+        Raptor.controlActions();
         
     },
    onActionsShow:function(){

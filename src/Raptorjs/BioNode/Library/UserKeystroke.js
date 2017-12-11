@@ -166,19 +166,19 @@ class UserKeystroke {
         */        
         
         if(this.rawSampleSize ==  sample.length){
-            console.log('valid')
+            //console.log('valid')
 //            echo 'ula'.$this->rawSampleSize.' - '.count($sample);
             var origVector = this.getDigraph(sample).concat(this.getTrigraph(sample))
             var vector =  this.som.getBMU(origVector);
             var distance =  this.som.distance(origVector, vector);
             this.lastscore = distance;
-             console.log(distance ,this.umbral,'distance')
+            // console.log(distance ,this.umbral,'distance')
             if(distance < this.umbral)
                 return true;
             else
                 return false;
         }  else {
-            console.log(this.rawSampleSize , sample.length,'invalid')
+            //console.log(this.rawSampleSize , sample.length,'invalid')
 //            echo 'lalala'.$this->rawSampleSize.' - '.count($sample);
             return false;
         }

@@ -54,7 +54,7 @@ Ext.define('GestEstructure.controller.Estructures', {
        
     },
      onRender:function(){
-        //Raptor.controlActions();
+        Raptor.controlActions();
         
     },
    
@@ -179,7 +179,7 @@ Ext.define('GestEstructure.controller.Estructures', {
             success: function(formBasic, action) {
                 form.up('window').close();
                 this.onTreeDeSelect();
-                Raptor.msg.show(action.result.cod, action.result.msg);
+                Raptor.msg.show(action.result.code, action.result.msg);
                 this.getEstructureStore().load({
                     node:model.parentNode,
                     callback:function(){

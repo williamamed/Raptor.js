@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false
 		},
 		data: {
-			type: DataTypes.TEXT,
+			type: DataTypes.TEXT('LONG'),
 			allowNull: false
 		}
 	}, {

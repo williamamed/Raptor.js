@@ -191,5 +191,81 @@
 	"category_name":{
 		"es":"Categoría",
 		"en":"Category"
+	},
+	"inser_dir_priv":{
+		"es":"El contenedor fue creado correctamente.",
+		"en":"The container was correctly created."
+	},
+	"inser_index_priv":{
+		"es":"La funcionalidad fue creada correctamente.",
+		"en":"The funcionality was correctly created."
+	},
+	"inser_action_priv":{
+		"es":"La acción fue creada correctamente.",
+		"en":"The action was correctly created."
+	},
+	"edit_priv":{
+		"es":"El elemento fue modificado correctamente.",
+		"en":"The element was correctly edited."
+	},
+	"edit_action_priv":{
+		"es":"La acción fue modificada correctamente.",
+		"en":"The action was correctly edited."
+	},
+	"delete_priv":{
+		"es":"El elemento fue eliminado correctamente.",
+		"en":"The element was correctly deleted."
+	},
+	"delete_action_priv":{
+		"es":"La acción fue eliminada correctamente.",
+		"en":"The action was correctly deleted."
+	},
+	"globdeletemsg":{
+		"es":"El elemento fue eliminado correctamente.",
+		"en":"The element was correctly deleted."
+	},
+	"addindex":{
+		"es":"Adicionar índice",
+		"en":"Add index"
+	},
+	"addcontainer":{
+		"es":"Adicionar contenedor",
+		"en":"Add container"
+	},
+	"actions":{
+		"es":"Acciones",
+		"en":"Actions"
+	},
+	"actionname":{
+		"es":"Nombre de la acción",
+		"en":"Action name"
+	},
+	"route_path":{
+		"es":"Ruta",
+		"en":"Path"
+	},
+	"addaction":{
+		"es":"Adicionar acción",
+		"en":"Add action"
+	},
+	"editaction":{
+		"es":"Modificar acción",
+		"en":"Edit action"
+	},
+	"export":{
+		"es":"Exportar",
+		"en":"Export"
+	},
+	"chart":{
+		"es":"Gráfica",
+		"en":"Chart"
+	},
+	"details":{
+		"es":"Detalles",
+		"en":"Details"
+	},
+	"aud_header":{
+		"es":"Auditoría",
+		"en":"Auditories"
 	}
 }

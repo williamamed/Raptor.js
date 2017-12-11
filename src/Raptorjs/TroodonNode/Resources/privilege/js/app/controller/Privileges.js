@@ -67,7 +67,7 @@ Ext.define('GestPrivilege.controller.Privileges', {
        
     },
      onRender:function(){
-        //Raptor.controlActions();
+        Raptor.controlActions();
         
     },
    onActionsShow:function(){

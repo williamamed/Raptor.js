@@ -16,7 +16,7 @@ class KDynamics extends Controller{
 
 	testSampleUser(req,res,next,success,sample){
 		//TODO Verificar la contrasenna
-		console.log('testSample')
+		
 		this.R.getModels('BioNode').biouser
 		.findOne({
 			where:{

@@ -17,6 +17,7 @@ Ext.define('GestRol.view.RolList', {
                 text: Raptor.getTag('add'),
                 privilegeName:'insert',
                 action:'addrol',
+                disabled:true,
                 iconCls:'icon-add'
             },{
                 xtype: 'button',

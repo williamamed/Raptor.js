@@ -7,6 +7,10 @@ Ext.define('GestRol.controller.Roles', {
             selector: 'rollist'
         },
         {
+            ref: 'buttonAdd',
+            selector: 'viewport button[action=addrol]'
+        },
+        {
             ref: 'buttonEdit',
             selector: 'viewport button[action=updaterol]'
         },
@@ -69,7 +73,7 @@ Ext.define('GestRol.controller.Roles', {
     },
          
     onRender: function() {
-       // Raptor.controlActions();
+        Raptor.controlActions();
     },
     onAdd: function() {
         var view = Ext.widget('rolwindow', {action: 'add'});
@@ -190,7 +194,8 @@ Ext.define('GestRol.controller.Roles', {
         
         if(model.get('id')!=='root'){
            
-        
+        if (this.getButtonAdd())
+            this.getButtonAdd().enable();
         if (this.getButtonEdit())
             this.getButtonEdit().enable();
         if (this.getButtonDelete())
@@ -200,7 +205,8 @@ Ext.define('GestRol.controller.Roles', {
         }
     },
     onListDeSelect: function() {
-        
+        if (this.getButtonAdd())
+            this.getButtonAdd().disable();
         if (this.getButtonEdit())
             this.getButtonEdit().disable();
         if (this.getButtonDelete())

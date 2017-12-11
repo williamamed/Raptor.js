@@ -126,7 +126,7 @@ class PrivilegeController extends Controller{
 			'class_name': req.body.className
 		})
 		.then(function(proy){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('inser_dir_priv'))
 		})
 		.catch(function(error){
 			res.show(req.lang('operation_error'),3)
@@ -186,7 +186,7 @@ class PrivilegeController extends Controller{
 
 		})
 		.then(function(){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('inser_index_priv'))
 		})
 		.catch(function(error){
 			console.log(error)
@@ -215,7 +215,7 @@ class PrivilegeController extends Controller{
 					})
 		})
 		.then(function(proy){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('inser_action_priv'))
 		})
 		.catch(function(error){
 			res.show(req.lang('operation_error'),3)
@@ -252,7 +252,7 @@ class PrivilegeController extends Controller{
 					})
 		})
 		.then(function(proy){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('edit_action_priv'))
 		})
 		.catch(function(error){
 			console.log(error)
@@ -276,7 +276,7 @@ class PrivilegeController extends Controller{
 			return proy.destroy()
 		})
 		.then(function(proy){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('delete_action_priv'))
 		})
 		.catch(function(error){
 			console.log(error)
@@ -322,7 +322,7 @@ class PrivilegeController extends Controller{
 			};
 		})
 		.then(function(){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('edit_priv'))
 		})
 		.catch(function(error){
 			console.log(error)
@@ -364,7 +364,7 @@ class PrivilegeController extends Controller{
 			
 		})
 		.then(function(){
-			res.show(req.lang('insert_msg_rol'))
+			res.show(req.lang('delete_priv'))
 		})
 		.catch(function(error){
 			console.log(error)

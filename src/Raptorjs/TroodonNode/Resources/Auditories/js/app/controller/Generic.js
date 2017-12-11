@@ -60,6 +60,7 @@ Ext.define('Auditories.controller.Generic', {
         //Raptor.controlActions();
         //console.debug();
         this.getGenericStore().load();
+        Raptor.secureTroodon()
         
     },
     onGrafic:function(){

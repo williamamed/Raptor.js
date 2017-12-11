@@ -48,7 +48,7 @@ Ext.define('GestPrivilege.controller.Actions', {
       
     },
      onRender:function(){
-        //Rpt.controlActions();
+        //Raptor.controlActions();
     },
     onListSelect: function() {
         if(this.getButtonEdit())

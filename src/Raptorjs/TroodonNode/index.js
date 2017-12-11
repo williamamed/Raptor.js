@@ -20,8 +20,10 @@ class TroodonNode {
 	*/
 	middleware(R){
 		
+		
+
 		R.getSecurityManager('Troodon')
-			.setLogin('/troodon([\/\w*]*)?','RaptorNode:Panel/auth')
+			.setLogin('/troodon([\/\w*]*)?','TroodonNode:auth')
 			.setAuthentication(function(req,username,password,done){
 
 				R.getModels('TroodonNode').security_user.findOne({
@@ -54,6 +56,7 @@ class TroodonNode {
 					paths.push(matchingRoutes[i].path)
 				};
 				var roles=req.user.idRol
+				var result=null;
 				this.R.getModels('TroodonNode').security_privilege
 				.findAll({
 					include: [
@@ -74,11 +77,47 @@ class TroodonNode {
 				})
 				.then(function(proy){
 					if(proy.length>0){
-						next()
+						return this.findAll({
+									attributes:['route'],
+									include: [
+									     { 
+									     	attributes:[],
+									     	model: this.R.getModels('TroodonNode').security_rol, 
+									     	where: { 
+									     		id: {
+									     			$in: roles
+									     		}
+									     	}
+									     }
+									  ],
+									 where:{
+									 	type:{
+							     			$in:[0,1]
+							     		}
+									 }
+								})
 					}else{
 						req.logger.alert('Access Denied Route: '+req.url+' \nMethod: '+req.method+' \nParams: '+JSON.stringify(req.body))
 						res.end('access denied')
 					}
+				})
+				.then(function(actions){
+					req.viewPlugin.set('raptor_client',{
+						name:"secureTroodon",
+						callback: require(__dirname+'/Lib/ClientFunction').control
+					})
+					req.viewPlugin.set('raptor_client',{
+						name:"controlActions",
+						callback: require(__dirname+'/Lib/ClientFunction').control
+					})
+					req.viewPlugin.set('raptor_client',{
+						name:"dataTroodon",
+						callback:{
+							actions: actions,
+							root: req.url
+						}
+					})
+					next()
 				})
 				.catch(function(e){
 					console.log(e)
@@ -107,7 +146,7 @@ class TroodonNode {
 	*/
 	configure(R){
 		var parseUrl = require('express/node_modules/parseurl');
-		console.log('El modulo de seguridad TroodonNode se encuentra en desarrollo.')
+
 		R.app.use(function(req,res,next){
 			req.logger={
 				EMERGENCY:1,
@@ -195,6 +234,10 @@ class TroodonNode {
 		  }
 		  return result;
 		};
+
+
+		R.migration('TroodonNode')
+
 	}
 }
 module.exports=TroodonNode
