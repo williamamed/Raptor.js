@@ -3,6 +3,8 @@ var Controller=require('raptorjs').Controller
 var UX=require('raptorjs').getNode('exampleNode');
 var lodash=require('lodash');
 var fs=require('fs');
+
+
 /*
 * Raptor.js - Node framework
 * Controlador ES6
@@ -61,9 +63,9 @@ class PanelController extends Controller{
 	*
 	*/
 	descriptionAction(req,res,next){
-		
+		var pack = require(this.R.basePath+"/package.json");
 		res.render('RaptorNode:Panel/description',{
-			version:"v1.0.1 beta"
+			version:"v"+pack.version
 		},function(err,str){
 			res.json({
 				extjs:false,

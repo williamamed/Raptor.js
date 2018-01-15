@@ -1,8 +1,10 @@
 {
   "name": "Raptor.js",
-  "description": "vulnerable node application",
-  "version": "0.0.1",
-  "private": true,
+  "description": "Node Full Stack Web Framework",
+  "version": "0.0.2",
+  "scripts":{
+	"start":"node raptor --attack dev"
+  },
   "dependencies": {
     "bcrypt-nodejs": "latest",
     "ejs": "1.x",

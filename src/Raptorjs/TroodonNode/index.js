@@ -235,8 +235,10 @@ class TroodonNode {
 		  return result;
 		};
 
-
-		R.migration('TroodonNode')
+        R.on('database:running',function(){
+            R.migration('TroodonNode')
+        })
+		
 
 	}
 }

@@ -109,7 +109,7 @@ class BioNode {
 				})
 				
 			})
-		console.log('El modulo BioNode está en modo beta.')
+		//console.log('El modulo BioNode está en modo beta.')
 	}
 
    /**
@@ -122,7 +122,10 @@ class BioNode {
 	*
 	*/
 	configure(R){
-		R.migration('BioNode')
+	    R.on('database:running',function(){
+	        R.migration('BioNode')
+	    })
+		
 	}
 }
 module.exports=BioNode
