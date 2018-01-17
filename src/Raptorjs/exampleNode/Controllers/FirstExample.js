@@ -1,30 +1,48 @@
 'use strict';
 
 var Controller=require('raptorjs').Controller
-/*
-* Raptor.js - Node framework
-* Controlador ES6
-* 
-*
-*/
+/**
+ * Esta definicion se aplica como prefijo de ruta
+ * para todas las definiciones en el controlador
+ * 
+ * @Route("/example") 
+ * 
+ * 
+ */
 class FirstExample extends Controller{
 
 	configure(){
-		this.route('all','/example/database/foreignkey',this.dataBaseRequestAction)
-		this.route('get','/example/language',this.exampleLanguageAction)
-
+		
 	}
-
+    
+    /**
+     *  El prefijo de esta ruta es el declarado en la cabecera
+     *  de esta clase.
+     *  
+     *  @Route("/holaruta",method="all")
+     * 
+     */
+    holaRuta(req,res,next){
+        res.send('hola ruta')
+    }
+    
+    /**
+     * @Route("/language",method="get")
+     *
+     */
 	exampleLanguageAction(req,res,next){
 		req.language.setCurrentLanguage("ru");
-
+        
 		req.language.getCurrentLanguage();
 		req.language.persistCookie()
 		res.show('El lenguaje fue establecido con exito en un cookie',Controller.ERROR)
 		return req.language.getTranslation("prueba");
 	}
 
-
+    /**
+     * @Route("/database/foreignkey")
+     *
+     */
 	dataBaseRequestAction(req,res,next){
 		var self=this;
 		

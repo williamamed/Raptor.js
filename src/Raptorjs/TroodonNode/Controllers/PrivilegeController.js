@@ -1,9 +1,10 @@
 'use strict';
 
 var Controller=require('raptorjs').Controller
-/*
+/**
 * Raptor.js - Node framework
 * Controlador ES6
+* 
 * 
 *
 */
@@ -23,7 +24,11 @@ class PrivilegeController extends Controller{
 		this.route('post','/edit',this.editAction)
 		this.route('post','/delete',this.deleteAction)
 	}
-
+    
+    /**
+     * 
+     *
+     */
 	indexAction(req,res,next){
 		res.render("TroodonNode:privilege/index.ejs");
 	}

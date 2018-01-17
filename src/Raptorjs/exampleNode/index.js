@@ -1,6 +1,6 @@
 
 'use strict';
-/*
+/**
 * Raptor.js - Node framework
 * 
 * 

@@ -1,7 +1,7 @@
 {
   "name": "Raptor.js",
   "description": "Node Full Stack Web Framework",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts":{
 	"start":"node raptor --attack dev"
   },
