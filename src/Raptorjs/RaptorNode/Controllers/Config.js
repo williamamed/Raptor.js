@@ -83,7 +83,7 @@ class ConfigController extends Controller{
 
 		var replacer = this.R.app.get('json replacer');
 		var spaces = this.R.app.get('json spaces');
-		var body = JSON.stringify(options, replacer, spaces);
+		var body = JSON.stringify(options, null, 2);
 
 		var fd=fs.openSync(this.R.basePath+'/config/options.json','w')
 		fs.writeSync(fd,body);

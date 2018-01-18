@@ -1,1 +1,31 @@
-{"mode":"development","database":{"state":"off","options":{"port":null,"dialect":"mysql","host":"127.0.0.1"},"api":true,"password":"","user":"root","name":"test_node"},"secret":"d8j792bi32%9ieiehkbihbj9j5cc7*6i","port":4440,"socketio":{"active":false},"language":{"default":"es","usePrefered":false,"cookieName":"RpsLang"},"proyectName":"RaptorJS","panel":{"secure":false,"password":"admin","username":"admin"}}
+{
+  "mode": "development",
+  "database": {
+    "state": "off",
+    "options": {
+      "port": null,
+      "dialect": "mysql",
+      "host": "127.0.0.1"
+    },
+    "api": true,
+    "password": "",
+    "user": "root",
+    "name": "test_node"
+  },
+  "secret": "d8j792bi32%9ieiehkbihbj9j5cc7*6i",
+  "port": 4440,
+  "socketio": {
+    "active": false
+  },
+  "language": {
+    "default": "es",
+    "usePrefered": false,
+    "cookieName": "RpsLang"
+  },
+  "proyectName": "RaptorJS",
+  "panel": {
+    "secure": false,
+    "password": "admin",
+    "username": "admin"
+  }
+}
