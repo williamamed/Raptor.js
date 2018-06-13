@@ -117,7 +117,8 @@ class TroodonNode {
 							root: req.url
 						}
 					})
-					next()
+					if(typeof actions !== "undefined")
+    					next()
 				})
 				.catch(function(e){
 					console.log(e)
