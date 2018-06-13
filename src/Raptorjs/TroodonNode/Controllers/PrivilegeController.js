@@ -211,7 +211,7 @@ class PrivilegeController extends Controller{
 		
 		this.R.getModels('TroodonNode').security_privilege
 		.findById(req.body.belongs)
-		.then(proy=>{
+		.then(function(proy){
 			return this.create({
 						'name': req.body.name,
 						'route': proy.route+'/'+req.body.name,
