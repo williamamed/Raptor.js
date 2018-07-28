@@ -50,7 +50,11 @@ class ModelController extends Controller{
 				    dialect: this.R.database.sequelize.options.dialect,
 				    directory: dir, // prevents the program from writing to disk
 				    tables:tables,
-				    schema: schema
+				    schema: schema,
+				    additional: {
+					timestamps: req.body.timestamps==='true'?true:false,
+					underscored: req.body.underscored==='true'?true:false
+				    }
 				    //...
 				})
 
