@@ -30,11 +30,6 @@ class ConfigController extends Controller{
 	renderConfigureAction(req,res,next){
 		res.render('RaptorNode:Options/config',{
 			options: this.R.options
-		},function(err,str){
-			res.json({
-				extjs:false,
-				content: str
-			})
 		});
 	}
 
@@ -69,13 +64,13 @@ class ConfigController extends Controller{
 		req.mapOption('host','database.options.host',options);
 		req.mapOption('db','database.name',options);
 		req.mapOption('socketio','socketio.active',options,function(value){
-			if(value && value==="true")
+			if(value && value==true)
 				return true;
 			else
 				return false;
 		});
 		req.mapOption('activebd','database.state',options,function(value){
-			if(value && value==="true")
+			if(value && value==true)
 				return 'on';
 			else
 				return 'off';
@@ -88,9 +83,7 @@ class ConfigController extends Controller{
 		var fd=fs.openSync(this.R.basePath+'/config/options.json','w')
 		fs.writeSync(fd,body);
 		fs.closeSync(fd);
-		res.json({
-			text:'La configuración para Raptor.js fue establecida con éxito !!, Por favor revise la consola y verifique el funcionamiento de su nueva configuración.'
-		})
+		res.show('La configuración para Raptor.js fue establecida con éxito !!, Por favor revise la consola y verifique el funcionamiento de su nueva configuración.')
 	}
 
 	

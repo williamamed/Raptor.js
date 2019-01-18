@@ -57,6 +57,24 @@ Ext.define('Generate.view.GenericList', {
         this.columns=[{
         	header: 'Tabla', width: 200, flex: 1, dataIndex: 'name'
         }]
+        this.dockedItems = [{
+                dock: 'top',
+                xtype: 'toolbar',
+                items: [{
+                        xtype:'fieldcontainer',
+                        defaultType: 'checkboxfield',
+                        items:[{
+                                    boxLabel  : 'Timestamps',
+                                    inputValue: '1',
+                                    id        : 'checkbox1'
+                                }, {
+                                    boxLabel  : 'Underscored',
+                                    inputValue: '2',
+                                    checked   : true,
+                                    id        : 'checkbox2'
+                                }]
+                    }]
+            }];
         this.selModel=Ext.create('Ext.selection.CheckboxModel', {mode: 'MULTI'});
         this.callParent();
     }
@@ -263,7 +281,12 @@ Ext.define('Generate.controller.Generic', {
         var wait=Raptor.msg.show(4,'espere por favor..');
         Ext.Ajax.request({
             url: 'model/generate',
-            params:{ nodecomponent: model.get('text'), tables: selected },
+            params:{ 
+                nodecomponent: model.get('text'), 
+                tables: selected,
+                timestamps:Ext.getCmp('checkbox1').getValue(),
+                underscored: Ext.getCmp('checkbox2').getValue()
+            },
             callback: function() {
                 wait.close();
                 

@@ -80,45 +80,45 @@ class PanelController extends Controller{
 
 	credentialsAction(req,res){
 		
-		res.render('RaptorNode:Panel/credentials',{
-			message: req.flash('info_credentials')
-		},function(err,str){
-			res.json({
-				extjs:false,
-				content: str
-			})
+		res.render('RaptorNode:ng/profile',{
+			username: this.R.options.panel.username
 		});
-		if(this.R.makeUpdate){
-			var replacer = this.R.app.get('json replacer');
-			var spaces = this.R.app.get('json spaces');
-			var body = JSON.stringify(this.R.options, replacer, spaces);
-
-			var fd=fs.openSync(this.R.basePath+'/config/options.json','w')
-			fs.writeSync(fd,body);
-			fs.closeSync(fd);
-		}
+		
 	}
 
 
 	saveCredentialsAction(req,res){
-		req.flash('info_credentials',"El panel de control ahora está protegido por contraseña")
-		var options=lodash.extend(this.R.options);
+		
+		if(req.body.current_password==this.R.options.panel.password){
+		    var options=lodash.extend(this.R.options);
 
 		
-		req.mapOption('password','panel.password',options);
-		req.mapOption('username','panel.username',options);
-		req.mapOption('username','panel.secure',options,function(value){
-			if(value)
-				return true
-			else
-				return false;
-		});
-
-		this.R.options=options;
+    		req.mapOption('password','panel.password',options);
+    		req.mapOption('username','panel.username',options);
+    		req.mapOption('username','panel.secure',options,function(value){
+    			if(value)
+    				return true
+    			else
+    				return false;
+    		});
+    		res.show("Las credenciales fueron actualizadas, estamos reiniciando el server.")
+            var replacer = this.R.app.get('json replacer');
+    		var spaces = this.R.app.get('json spaces');
+    		var body = JSON.stringify(this.R.options, replacer, spaces);
+    
+    		var fd=fs.openSync(this.R.basePath+'/config/options.json','w')
+    		fs.writeSync(fd,body);
+    		fs.closeSync(fd);
+		}else{
+		    res.show("La contraseña actual no es correcta",3)
+		}
+		
+		
+		/**this.R.options=options;
 		this.R.makeUpdate=true;
 		req.session.save(function(){
 			res.redirect('/raptor#/raptor/credentials')
-		})
+		})*/
 		
 	}
 

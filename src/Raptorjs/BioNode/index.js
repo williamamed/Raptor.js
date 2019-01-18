@@ -8,7 +8,7 @@ var KDYN=require('./Controllers/KDynamics')
 *
 */
 class BioNode {
-
+    
    /**
 	* Raptor.js - Node framework
 	* 
@@ -20,6 +20,8 @@ class BioNode {
 	*
 	*/
 	middleware(R){
+	    if(!R.options.bioNode || (R.options.bioNode && R.options.bioNode.state==false))
+	        return;
 		if(R.bundles['TroodonNode'])
 			R.bundles['TroodonNode'].hooks.middleware('after').promise.then(function(){
 				if(typeof R.getSecurityManager('Troodon')._criteria =='function' )
@@ -123,7 +125,8 @@ class BioNode {
 	*/
 	configure(R){
 	    R.on('database:running',function(){
-	        R.migration('BioNode')
+	        if(R.options.bioNode && R.options.bioNode.state==true)
+	            R.migration('BioNode')
 	    })
 		
 	}

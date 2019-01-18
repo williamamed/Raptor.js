@@ -449,10 +449,15 @@ if(window.jQuery){
 		if(floating){
 			var msg=$('<div>');
 			msg.addClass('alert alert-warning alert-dismissible raptor-msg-float '+classStyle+' fadeInDown');
-			if(!position)
-				msg.css({top:'0px'})
-			else
+		    msg.css({
+				    top:'10px',
+                    position: 'fixed',
+                    right: '5px',
+                    zIndex: '100000'
+				})
+			if(position){
 				msg.css(position)
+			}
 			msg.attr('role','alert');
 			var btn=$('<span class="raptor-msg-closebtn pull-right" data-dismiss="alert" aria-hidden="true">&times;</span>');
 			msg.append(btn)

@@ -1,18 +1,18 @@
 {
   "mode": "development",
   "database": {
-    "state": "off",
+    "state": "on",
     "options": {
-      "port": null,
-      "dialect": "mysql",
+      "port": 5432,
+      "dialect": "postgres",
       "host": "127.0.0.1"
     },
     "api": true,
-    "password": "",
-    "user": "root",
-    "name": "test_node"
+    "password": "postgres",
+    "user": "postgres",
+    "name": "raptorjs"
   },
-  "secret": "d8j792bi32%9ieiehkbihbj9j5cc7*6i",
+  "secret": "3dfa5h2g$ae946e2gdi5cb%g*1#$5e25",
   "port": 4440,
   "socketio": {
     "active": false
@@ -22,10 +22,10 @@
     "usePrefered": false,
     "cookieName": "RpsLang"
   },
-  "proyectName": "RaptorJS",
+  "proyectName": "RaptorJS3",
   "panel": {
-    "secure": false,
-    "password": "admin",
+    "secure": true,
+    "password": "admin123",
     "username": "admin"
   }
 }

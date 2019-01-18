@@ -100,6 +100,7 @@ class TroodonNode {
 						req.logger.alert('Access Denied Route: '+req.url+' \nMethod: '+req.method+' \nParams: '+JSON.stringify(req.body))
 						res.end('access denied')
 					}
+					return null;
 				})
 				.then(function(actions){
 					req.viewPlugin.set('raptor_client',{
@@ -119,6 +120,7 @@ class TroodonNode {
 					})
 					if(typeof actions !== "undefined")
     					next()
+    			    return null;
 				})
 				.catch(function(e){
 					console.log(e)
@@ -128,9 +130,9 @@ class TroodonNode {
 			})
 			.setAuditories(function(req,res,next){
 				
-				req.logger.info('Route: '+req.url+' \nMethod: '+req.method+' \nParams: '+JSON.stringify(req.body))
-				next()
-		})
+    				req.logger.info('Route: '+req.url+' \nMethod: '+req.method+' \nParams: '+JSON.stringify(req.body))
+    				next()
+    		})
 
 		
 

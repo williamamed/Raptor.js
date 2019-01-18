@@ -16,36 +16,16 @@ class RaptorNode {
 	*
 	*/
 	middleware(R){
+		R.app.all("/raptor/home",function(req,res,next){
+		    $get('R').copyResources('RaptorNode',true)
+		    
+		    res.render('RaptorNode:ng/menu.ejs',{},function(err,str){
+		        req.viewPlugin.set('raptorpanel_sidebar',str)
+		        next()
+		    })
+		    
+		})
 		
-		if(R.options.panel.secure==true)
-			R.getSecurityManager()
-				.setLogin('/raptor([\/\w*]*)?','RaptorNode:Panel/auth')
-				.setCondition(function(req,res,next){
-					
-					if(!req.session.raptor_panel){
-						return true;
-					}else
-						return false;
-				})
-				.setAuthentication(function(req,username,password,done){
-					if(username==R.options.panel.username && password==R.options.panel.password){
-						req.session.raptor_panel={
-							username: username
-						}
-						//done(null,{
-						//	raptor_panel_username:username,
-						//	raptor_panel:true,
-						//})
-					}else{
-						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
-					}
-					req.session.save(function(){
-						req.res.redirect(req.url)
-					})	
-				})
-				.setAuthorization(function(a,b,c){
-					c()
-				})
 		
 	}
 	/*
@@ -58,6 +38,65 @@ class RaptorNode {
 	*
 	*/
 	configure(R){
+	    
+	    R.on('ngPortal:ready',function(){
+	       
+	        var ngPortal=$get('ngPortal')
+		    $get('ngPortalRegistry').set(
+    		    new ngPortal('raptor')
+        		    .config(function(){
+        		        //Obtimizar esto para que no se repita
+        		        
+        		        this
+        		            .viewPlugin('start',this.template('RaptorNode:ng/description.ejs',{version:'v'+require($get('R').basePath+"/package.json").version}))
+        		            .viewPlugin('name','Raptor.js')
+        		            .viewPlugin('icon','/public/Raptor/img/raptor-logo.png')
+        		            .viewPlugin('header',this.template('RaptorNode:ng/header.ejs'))
+        		            .viewPlugin('sidebar',this.template('RaptorNode:ng/sidebar.ejs'))
+        		            .viewPlugin('navbar',this.template('RaptorNode:ng/navbar.ejs'))
+        		            .disableProfile()
+        		            .disableSecurityMenu()
+        		        
+        		    })
+        		    .auth('RaptorNode:Panel/auth',function(autenticator){
+        		        
+        		        autenticator
+        		        .setCondition(function(req,res,next){
+        					
+        					if(!req.session.raptor_panel){
+        						return true;
+        					}else
+        						return false;
+        				})
+        				.setAuthentication(function(req,username,password,done){
+        				    
+        					if(username==R.options.panel.username && password==R.options.panel.password){
+        						req.session.raptor_panel={
+        							username: username
+        						}
+        						
+        					}else{
+        						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
+        					}
+        					req.session.save(function(){
+        						req.res.redirect(req.url)
+        					})	
+        				})
+        				.setAuthorization(function(a,b,c){
+        					c()
+        				})
+        				.logout(function(req,res,next){
+        				    delete req.session.raptor_panel;
+                    		req.session.save(function(){
+                    			res.redirect('/raptor/home')
+                    		})
+        				})
+        		    })
+		    )
+		    
+	    })
+	    
+	    
 		var con=require('./Controllers/DefaultCommon')
 		aop.before(con,'/Raptor/controller2',function(req,res,next){
 			res.end('before')
@@ -130,6 +169,7 @@ class RaptorNode {
 				});	
 		})
 		
+        
 	}
 }
 module.exports=RaptorNode;

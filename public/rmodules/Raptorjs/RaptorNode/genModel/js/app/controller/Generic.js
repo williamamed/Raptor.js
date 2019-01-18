@@ -76,7 +76,12 @@ Ext.define('Generate.controller.Generic', {
         var wait=Raptor.msg.show(4,'espere por favor..');
         Ext.Ajax.request({
             url: 'model/generate',
-            params:{ nodecomponent: model.get('text'), tables: selected },
+            params:{ 
+                nodecomponent: model.get('text'), 
+                tables: selected,
+                timestamps:Ext.getCmp('checkbox1').getValue(),
+                underscored: Ext.getCmp('checkbox2').getValue()
+            },
             callback: function() {
                 wait.close();
                 

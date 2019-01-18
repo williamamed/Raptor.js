@@ -325,6 +325,7 @@ class PrivilegeController extends Controller{
 					route: proy[i].route.replace(before,privNow.route)
 				}).then(function(){})
 			};
+			return null;
 		})
 		.then(function(){
 			res.show(req.lang('edit_priv'))
