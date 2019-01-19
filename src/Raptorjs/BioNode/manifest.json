@@ -1,0 +1,10 @@
+{
+  "state": false,
+  "name": "BioNode",
+  "author":"William Amed - watamayo@gmail.com",
+  "version": "1.0.1",
+  "description":"Modulo de control biometrico de autenticacion por patron de tecleo",
+  "require":{
+        "TroodonNode":">=@1.0.1"
+  }
+}

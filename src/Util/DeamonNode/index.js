@@ -1,5 +1,5 @@
 'use strict';
-
+const fs=require('fs')
 /*
 * Raptor.js - Node framework
 * Generado por Raptor.js
@@ -19,11 +19,11 @@ class DeamonNode {
 	*
 	*/
 	middleware(R){
-		R.app.get('/raptor',function(req,res,next){
+		R.app.get('/raptor/home',function(req,res,next){
 			
 			req.res.render('DeamonNode:menu.html.ejs',{},function(err,str){
 
-				req.viewPlugin.set('raptorpanel_bar_tools',str)
+				req.viewPlugin.set('raptorpanel_sidebar',str)
 			})
 			next()
 		})
@@ -40,6 +40,8 @@ class DeamonNode {
 	*/
 	configure(R){
 		var schedule = require('node-schedule');
+		if(!fs.existsSync(R.basePath+'/cache/schedule.json'))
+		    fs.writeFileSync(R.basePath+'/cache/schedule.json','[]')
 		R.bundles['DeamonNode'].config=require(R.basePath+'/cache/schedule.json');
 
 		R.bundles['DeamonNode'].jobs={

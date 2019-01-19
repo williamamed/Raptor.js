@@ -10,7 +10,7 @@ var path=require('path')
 * Raptor.js - Node framework
 * Controlador ES6
 * 
-*
+* 
 */
 class PanelController extends Controller{
 
@@ -20,7 +20,6 @@ class PanelController extends Controller{
 			'/raptor':this.raptorAction,
 			'/raptor/description':this.descriptionAction,
 			'/': this.rootAction,
-			'/raptor/logout': this.logoutAction,
 			'/raptor/credentials': this.credentialsAction,
 			'/raptor/savecredentials': this.saveCredentialsAction
 		})
@@ -35,26 +34,27 @@ class PanelController extends Controller{
 	*
 	*/
 	rootAction(req,res,next){
-		res.redirect('/raptor')
+	    if(this.R.options.mode!='development')
+	        next()
+	    else
+		    res.redirect('/raptor/home')
 	}
-
+    
+    /**
+	* 
+	* @Route("/miaaaaaaaa")
+	*/
+	root2Action(req,res,next){
+		res.redirect('/raptor/home')
+	}
+    
 	/**
 	* 
 	* 
 	*
 	*/
 	raptorAction(req,res,next){
-		
-		var user='Usuario público';
-
-		if(req.session.raptor_panel){
-			user=req.session.raptor_panel.username
-		}
-
-		res.render('RaptorNode:Panel/index',{
-			user: user,
-			auth: (req.session.raptor_panel)?true:false
-		});
+		res.redirect('/raptor/home')
 
 	}
 
@@ -96,10 +96,7 @@ class PanelController extends Controller{
     		req.mapOption('password','panel.password',options);
     		req.mapOption('username','panel.username',options);
     		req.mapOption('username','panel.secure',options,function(value){
-    			if(value)
-    				return true
-    			else
-    				return false;
+    			return true
     		});
     		res.show("Las credenciales fueron actualizadas, estamos reiniciando el server.")
             var replacer = this.R.app.get('json replacer');

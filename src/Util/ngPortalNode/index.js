@@ -51,12 +51,10 @@ class ngPortalNode {
 	    R.on('ngPortal:ready',function(){
 	       
 	        var ngPortal=$get('ngPortal')
-		    $get('ngPortalRegistry').set(new ngPortal('test')
+		    $get('ngPortalRegistry').set(new ngPortal('ngPortal')
 		    .config(function(){
-		        //this.viewPlugin('start','hola2')
-		        this.viewPlugin('name','Prueba')
-		    })
-		    .auth())
+		        
+		    }))
 		    
 	    })
 	    

@@ -42,57 +42,56 @@ class RaptorNode {
 	    R.on('ngPortal:ready',function(){
 	       
 	        var ngPortal=$get('ngPortal')
-		    $get('ngPortalRegistry').set(
-    		    new ngPortal('raptor')
-        		    .config(function(){
-        		        //Obtimizar esto para que no se repita
-        		        
-        		        this
-        		            .viewPlugin('start',this.template('RaptorNode:ng/description.ejs',{version:'v'+require($get('R').basePath+"/package.json").version}))
-        		            .viewPlugin('name','Raptor.js')
-        		            .viewPlugin('icon','/public/Raptor/img/raptor-logo.png')
-        		            .viewPlugin('header',this.template('RaptorNode:ng/header.ejs'))
-        		            .viewPlugin('sidebar',this.template('RaptorNode:ng/sidebar.ejs'))
-        		            .viewPlugin('navbar',this.template('RaptorNode:ng/navbar.ejs'))
-        		            .disableProfile()
-        		            .disableSecurityMenu()
-        		        
-        		    })
-        		    .auth('RaptorNode:Panel/auth',function(autenticator){
-        		        
-        		        autenticator
-        		        .setCondition(function(req,res,next){
-        					
-        					if(!req.session.raptor_panel){
-        						return true;
-        					}else
-        						return false;
-        				})
-        				.setAuthentication(function(req,username,password,done){
-        				    
-        					if(username==R.options.panel.username && password==R.options.panel.password){
-        						req.session.raptor_panel={
-        							username: username
-        						}
-        						
-        					}else{
-        						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
-        					}
-        					req.session.save(function(){
-        						req.res.redirect(req.url)
-        					})	
-        				})
-        				.setAuthorization(function(a,b,c){
-        					c()
-        				})
-        				.logout(function(req,res,next){
-        				    delete req.session.raptor_panel;
-                    		req.session.save(function(){
-                    			res.redirect('/raptor/home')
-                    		})
-        				})
-        		    })
-		    )
+	        
+	        var ngPortalRaptor=new ngPortal('raptor')
+            ngPortalRaptor.config(function(){
+		        //Obtimizar esto para que no se repita
+		        
+		        this
+		            .viewPlugin('start',this.template('RaptorNode:ng/description.ejs',{version:'v'+require($get('R').basePath+"/package.json").version}))
+		            .viewPlugin('name','Raptor.js')
+		            .viewPlugin('icon','/public/Raptor/img/raptor-logo.png')
+		            .viewPlugin('header',this.template('RaptorNode:ng/header.ejs'))
+		            .viewPlugin('sidebar',this.template('RaptorNode:ng/sidebar.ejs'))
+		            .viewPlugin('navbar',this.template('RaptorNode:ng/navbar.ejs'))
+		            .disableProfile()
+		            .disableSecurityMenu()
+		        
+		    })
+		    if(R.options.panel && R.options.panel.secure)
+    		    ngPortalRaptor.auth('RaptorNode:Panel/auth',function(autenticator){
+    		        
+    		        autenticator
+    		        .setCondition(function(req,res,next){
+    					
+    					if(!req.session.raptor_panel){
+    						return true;
+    					}else
+    						return false;
+    				})
+    				.setAuthentication(function(req,username,password,done){
+    				    
+    					if(username==R.options.panel.username && password==R.options.panel.password){
+    						req.session.raptor_panel={
+    							username: username
+    						}
+    						
+    					}else{
+    						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
+    					}
+    					req.session.save(function(){
+    						req.res.redirect(req.url)
+    					})	
+    				})
+    				.logout(function(req,res,next){
+    				    delete req.session.raptor_panel;
+                		req.session.save(function(){
+                			res.redirect('/raptor/home')
+                		})
+    				})
+    		    })
+	        
+		    $get('ngPortalRegistry').set(ngPortalRaptor)
 		    
 	    })
 	    

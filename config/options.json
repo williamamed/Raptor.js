@@ -1,15 +1,15 @@
 {
   "mode": "development",
   "database": {
-    "state": "on",
+    "state": "off",
     "options": {
-      "port": 5432,
-      "dialect": "postgres",
+      "port": null,
+      "dialect": "mysql",
       "host": "127.0.0.1"
     },
     "api": true,
-    "password": "postgres",
-    "user": "postgres",
+    "password": "root",
+    "user": "root",
     "name": "raptorjs"
   },
   "secret": "3dfa5h2g$ae946e2gdi5cb%g*1#$5e25",
@@ -22,10 +22,10 @@
     "usePrefered": false,
     "cookieName": "RpsLang"
   },
-  "proyectName": "RaptorJS3",
+  "proyectName": "RaptorJS",
   "panel": {
-    "secure": true,
-    "password": "admin123",
+    "secure": false,
+    "password": "admin",
     "username": "admin"
   }
 }

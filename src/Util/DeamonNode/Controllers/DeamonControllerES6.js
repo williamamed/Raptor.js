@@ -19,11 +19,6 @@ class Deamon extends Controller{
 	indexAction(req,res,next){
 		res.render("DeamonNode:index.html.ejs",{
 			config: this.R.bundles['DeamonNode'].config
-		},function(err,str){
-			res.json({
-				extjs:false,
-				content: str
-			})
 		});
 		
 	}
@@ -41,7 +36,7 @@ class Deamon extends Controller{
 		fs.closeSync(fd);
 		this.R.bundles['DeamonNode'].config=opt;
 		this.R.bundles['DeamonNode'].jobs.start()
-		res.redirect('raptor#!/raptor/deamon')
+		res.redirect('raptor/home#!/e/raptor/deamon')
 	}
 
 	deleteAction(req,res,next){
@@ -57,7 +52,7 @@ class Deamon extends Controller{
 		fs.closeSync(fd);
 		this.R.bundles['DeamonNode'].config=opt;
 		this.R.bundles['DeamonNode'].jobs.start()
-		res.redirect('raptor#!/raptor/deamon')
+		res.redirect('raptor/home#!/e/raptor/deamon')
 	}
 }
 

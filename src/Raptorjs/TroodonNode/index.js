@@ -1,5 +1,5 @@
 'use strict';
-var aop=require('js_aop')
+
 /*
 * Raptor.js - Node framework
 * Generado por Raptor.js
@@ -7,7 +7,7 @@ var aop=require('js_aop')
 *
 */
 class TroodonNode {
-
+    
    /**
 	* Raptor.js - Node framework
 	* 

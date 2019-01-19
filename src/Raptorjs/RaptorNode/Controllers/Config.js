@@ -28,7 +28,7 @@ class ConfigController extends Controller{
 	*
 	*/
 	renderConfigureAction(req,res,next){
-		res.render('RaptorNode:Options/config',{
+		res.render('RaptorNode:ng/config',{
 			options: this.R.options
 		});
 	}

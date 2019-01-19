@@ -164,9 +164,15 @@ class GenerateController extends Controller{
 
         var src = path.join(this.R.basePath,'src');
         fs.writeFileSync(path.join(src,vendor,nodeName,'index.js'), index);
-        fs.writeFileSync(path.join(src,vendor,nodeName,'Controllers/DefaultControllerES6.js'), es6);
-        fs.writeFileSync(path.join(src,vendor,nodeName,'Controllers/DefaultControllerCJ.js'), commonJS);
-
+        fs.writeFileSync(path.join(src,vendor,nodeName,'Controllers/DefaultController.js'), es6);
+        //fs.writeFileSync(path.join(src,vendor,nodeName,'Controllers/DefaultControllerCJ.js'), commonJS);
+        var data={
+              state: true,
+              name: nodeName,
+              version: '1.0.0'
+        }
+        fs.writeFileSync(path.join(src,vendor,nodeName,'manifest.json'),JSON.stringify(data,null, 2))
+        
         messages.push("<b style='color:green'>File src/" + vendor + '/' + nodeName + '/index.js' + ' created</b>');
         messages.push("<b style='color:green'>File src/" + vendor + '/' + nodeName + '/Controllers/DefaultControllerES6.js' + ' created</b>');
         messages.push("<b style='color:green'>File src/" + vendor + '/' + nodeName + '/Controllers/DefaultControllerCJ.js' + ' created</b>');

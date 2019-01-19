@@ -1,19 +1,21 @@
 'use strict';
 
 var Controller=require('raptorjs').Controller
-/*
-* Raptor.js - Node framework
-* Controlador ES6
-* 
-*
-*/
+/**
+ * Raptor.js - Node framework
+ * Controlador ES6
+ * 
+ * @Route("")
+ */
 class <%- classname %> extends Controller{
 
 	configure(){
-		this.route('get','/<%- classname %>/example',this.indexAction)
-
+		
 	}
-
+    
+    /**
+     * @Route("/<%- classname %>/example")
+     */
 	indexAction(req,res,next){
 		
 		res.send("hola mundo <%- classname %> controller");

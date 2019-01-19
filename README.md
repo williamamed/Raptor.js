@@ -6,7 +6,7 @@ Raptor.js es un framework web full stack basado en Node.js, utiliza como core el
 El proyecto propone una arquitectura basada en componentes, donde las responsabilidades de la lógica de nuestra aplicación se encuentra encapsulada dentro de componentes.
 
 La solución incluye un marco de abstracción de seguridad integrado en un módulo (TroodonNode) que garantiza la implementación de los procesos de identificación-autenticación, autorización y auditoría. Implementa un extensión de los modelos de control de acceso RBAC y CAEM.
-Además cuenta con un módulo de reconocimiento biométrico por dinámica de tecleo (BioNode), que se inserta dentro del poceso de identificación-autenticación del módulo de seguridad.
+Además cuenta con un módulo de reconocimiento biométrico por dinámica de tecleo (BioNode), que se inserta dentro del proceso de identificación-autenticación del módulo de seguridad.
 
 # Puesta en funcionamiento
 Descargue las fuentes, descomprima utilizando 7zip.
