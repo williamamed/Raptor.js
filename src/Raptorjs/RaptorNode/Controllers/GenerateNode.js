@@ -98,9 +98,10 @@ class GenerateController extends Controller{
         }else {
             res.show("El módulo especificado ya existe.",Controller.ERROR);
         }
+        
         res.show('El módulo fue generado correctamente.',{
             routine: messages.map(function(value){
-                '<b style="color:green">'+value+'<b>'
+                return '<b style="color:green">'+value+'<b>'
             }),
             name: nodeName,
             nameVendor: vendor
