@@ -89,11 +89,11 @@ class GenerateController extends Controller{
         var messages = [];
         if (!this.R.bundles[nodeName]) {
             
-            if (!self.createNodeDirectory(vendor, nodeName, messages)) {
+            if (!GenerateController.createNodeDirectory(vendor, nodeName, messages)) {
                 res.show("Lo sentimos no se pudo crear el directorio",Controller.ERROR)
             	return ;
             }
-            self.createFiles(nodeName, vendor, messages);
+            GenerateController.createFiles(nodeName, vendor, messages);
             
         }else {
             res.show("El módulo especificado ya existe.",Controller.ERROR);
