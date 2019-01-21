@@ -1,7 +1,8 @@
 .md-sidenav-left .md-theme-indigo, .md-sidenav-left .nav-theme {
     background-color: #372b53 !important;
+    
     min-height: initial !important;
 }
 .nav-doc-bar{
         background: #372b53 !important;
-      }
+}

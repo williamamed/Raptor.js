@@ -17,7 +17,8 @@ class RaptorNode {
 	*/
 	middleware(R){
 		R.app.all("/raptor/home",function(req,res,next){
-		    $get('R').copyResources('RaptorNode',true)
+		    if(R.options.mode=="development")
+		        $get('R').copyResources('RaptorNode',true)
 		    
 		    res.render('RaptorNode:ng/menu.ejs',{},function(err,str){
 		        req.viewPlugin.set('raptorpanel_sidebar',str)
@@ -39,13 +40,13 @@ class RaptorNode {
 	*/
 	configure(R){
 	    
-	    R.on('ngPortal:ready',function(){
+	    R.on('ioc:ngPortal.ready',function(){
 	       
 	        var ngPortal=$get('ngPortal')
 	        
 	        var ngPortalRaptor=new ngPortal('raptor')
             ngPortalRaptor.config(function(){
-		        //Obtimizar esto para que no se repita
+		        
 		        
 		        this
 		            .viewPlugin('start',this.template('RaptorNode:ng/description.ejs',{version:'v'+require($get('R').basePath+"/package.json").version}))
@@ -96,10 +97,6 @@ class RaptorNode {
 	    })
 	    
 	    
-		var con=require('./Controllers/DefaultCommon')
-		aop.before(con,'/Raptor/controller2',function(req,res,next){
-			res.end('before')
-		})
 		
 		R.on('sendresponse',function(req){
 			var ram=process.memoryUsage();

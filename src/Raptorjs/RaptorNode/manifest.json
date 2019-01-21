@@ -2,7 +2,7 @@
   "state": true,
   "name": "RaptorNode",
   "version": "1.0.1",
-  "author":"William Amed - watamayo@gmail.com",
+  "author":"William Amed - watamayo90@gmail.com",
   "require":{
       "ngPortalNode":">=@1.0.0"
   }

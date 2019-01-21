@@ -10,7 +10,7 @@
     "api": true,
     "password": "root",
     "user": "root",
-    "name": "raptorjs"
+    "name": "raptor"
   },
   "secret": "3dfa5h2g$ae946e2gdi5cb%g*1#$5e25",
   "port": 4440,

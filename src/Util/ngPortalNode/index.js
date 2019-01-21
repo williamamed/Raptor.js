@@ -48,6 +48,10 @@ class ngPortalNode {
 	*
 	*/
 	configure(R){
+	    R.on('routes:RaptorNode.ConfigController',function(){
+	        console.log('si')
+	    })
+	    
 	    R.on('ngPortal:ready',function(){
 	       
 	        var ngPortal=$get('ngPortal')
