@@ -52,8 +52,15 @@ class ngPortal{
         this.req=req
         this.next=next
         this.res=res
-        this.definition.apply(this)
-        next()
+        var result=this.definition.call(this,next)
+        
+        if(result && result.then){
+            result.then(function(){
+                next()
+            })
+        }else
+            next()
+            
            
     }
     
