@@ -3,6 +3,7 @@ var app = angular.module('ngPortalApp', ['ngRoute', 'ngMaterial']);
 app.config(function($routeProvider, $locationProvider, $httpProvider,$controllerProvider) {
     app.controller = function (name, controller) {
         $controllerProvider.register(name, controller);
+		return app;
     };
 
     $httpProvider.interceptors.push(function($q, $location) {
