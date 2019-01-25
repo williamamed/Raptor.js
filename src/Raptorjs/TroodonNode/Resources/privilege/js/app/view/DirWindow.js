@@ -31,7 +31,7 @@
                             maxLength: 40,
                             width: '100%',
                             labelAlign: 'top',
-                            name: 'className'
+                            name: 'class_name'
                         }]
         };
             

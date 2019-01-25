@@ -1,5 +1,5 @@
 {
-  "state": false,
+  "state": true,
   "name": "TroodonNode",
   "author":"William Amed - watamayo90@gmail.com",
   "description":"Modulo de seguridad que garantiza la implementación de los procesos de identificación-autenticación, autorización y auditoría. Basado en una extensión de los modelos de control de acceso RBAC y CAEM",

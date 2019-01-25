@@ -1,6 +1,6 @@
 Ext.define('GestPrivilege.model.PrivilegeModel', {
     extend: 'Ext.data.Model',
-    fields: ['id', 'name',{name:'text',mapping:'name'},'belongs','className','type','route'],
+    fields: ['id', 'name',{name:'text',mapping:'name'},'belongs','class_name','type','route'],
     
     proxy: {
         type: 'ajax',

@@ -128,7 +128,7 @@ class PrivilegeController extends Controller{
 			'name': req.body.name,
 			'belongs': req.body.belongs=='root'?0:req.body.belongs,
 			'type': 2,
-			'class_name': req.body.className
+			'class_name': req.body.class_name
 		})
 		.then(function(proy){
 			res.show(req.lang('inser_dir_priv'))
@@ -306,7 +306,7 @@ class PrivilegeController extends Controller{
 			return proy.update({
 						'name':req.body.name,
 						'route': req.body.route,
-						'class_name': req.body.className
+						'class_name': req.body.class_name
 					})
 		})
 		.then(function(proy){

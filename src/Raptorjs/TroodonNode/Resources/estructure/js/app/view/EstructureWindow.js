@@ -41,7 +41,7 @@
                             xtype: 'textarea',
                             fieldLabel: Raptor.getTag('description'),
                             allowBlank: true,
-                            maxLength: 40,
+                            maxLength: 500,
                             width: '100%',
                             labelAlign: 'top',
                             name: 'description'
