@@ -70,7 +70,7 @@
                 <ul class="navbar-nav mr-right">
 
                     
-                    <li class="nav-item"><a class="nav-link" href="#!/e/<%- routename %>/home/description" class="function-home"><span class="glyphicon glyphicon-home" style="margin-right: 5px"></span><% if (R.plugin('ngPortal_textinicio')){ %><%- plugin('ngPortal_starttext') %><% }else{ %>Inicio <% } %></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#!/e/<%- routename %>/home/description" class="function-home"><span class="glyphicon glyphicon-home" style="margin-right: 5px"></span><% if (R.plugin('ngPortal_starttext')){ %><%- R.plugin('ngPortal_starttext') %><% }else{ %>Inicio <% } %></a></li>
                     <% if (security && profile){ %>
                     <li class="nav-item"><a class="nav-link" href="#!/e/<%- routename %>/profile" class="function-profile"><span class="glyphicon glyphicon-user" style="margin-right: 5px"></span>Perfil</a></li>
                     <% } %>
