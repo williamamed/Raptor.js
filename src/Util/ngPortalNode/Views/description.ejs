@@ -1,0 +1,401 @@
+    <%if (R.plugin('ngPortal_start')) {%>
+        <%- R.plugin('ngPortal_start') %>
+    <% }else{ %>
+    <link href="/public/bootstrap/js/google-code-prettify/prettify.css" rel="stylesheet">
+    <script src="/public/bootstrap/js/google-code-prettify/prettify.js"></script>
+   
+    <div class="inner" style="" >
+        
+            <div class="col-md-12">
+                <h2 class="text-center"><img src="/public/rmodules/Util/ngPortalNode/img/logo.png" height="200" ></h2>
+                <h2 class="text-center">Bienvenidos a ngPortal</h2>
+                
+                <p class="text-center">ngPortal es suministrado por Raptor.js y sirve como plantilla predefinida para crear un portal en Angularjs donde podemos añadir las funcionalidades de nuestra aplicación.</p>
+                <p class="text-center">Reemplace esta guía de inicio por la pantalla inicial que usted desee </p>
+                <br>
+                
+                <br>
+                <br>
+                <h4 id="viewplugin" class="text-left">ViewPlugins definidos</h4>
+                <hr>
+                <p>Los ViewPlugins es una de las funciones propuestas en el framework Raptor PHP 2 y que ahora son implementados para Raptor.js, permite la inyección de contenido en los hotpots declarados en el sistema para determinados patrones de ruta. </p>
+                
+                <p>El entorno tiene 3 puntos principales de inyección de contenido, donde podrán definirse bloques personalizados con el contenido que deseamos logrando personalizar nuestro entorno para el objetivo deseado. </p>
+                <h2 class="text-left"><img src="/public/rmodules/Util/ngPortalNode/img/hotpot.gif" ></h2>
+                <b>Punto 1</b>
+                <p>Inserta contenido dentro del menu de opciones.</p>
+                <p>Nombre hotpot: <code>sidebar</code></p>
+                
+                <b>Punto 2</b>
+                <p>Inserta contenido dentro del panel superior, la inserción es realizada en el menu agrupado a la derecha.</p>
+                <p>Nombre hotpot: <code>navbar</code></p>
+                <b>Punto 3</b>
+                <p>Inserta contenido dentro del cuerpo, la inserción es realizada fuera del area de la funcionalidad por lo que será visible en todas las funcionalidades cargadas en el area.</p>
+                <p>Nombre hotpot: <code>content</code></p>
+                
+                <b>Punto 4 (cabecera)</b>
+                <p>Inserta contenido dentro del head de la página, ideal para insertar estilos y javascript personalizados que queremos ejecutar antes de la carga de la página.</p>
+                <p>Nombre hotpot: <code>header</code></p>
+                
+                <b>Punto 5 (script)</b>
+                <p>Inserta contenido dentro de la sección de declaración javascript al final de la página, ideal para insertar otras bibliotecas javacript que deseemos o simplemente un script adicional.</p>
+                <p>Nombre hotpot: <code>script</code></p>
+                
+                <b>Punto 6 (Pantalla de inicio)</b>
+                <p>Inserta contenido dentro del area de la página de inicio, este hotpot reemplaza la guía inicial por la página de inicio de su opción.</p>
+                <p>Nombre hotpot: <code>start</code></p>
+                
+                <b>Punto 7 (Icono de página)</b>
+                <p>Reemplaza el icono por defecto del entorno, ustded deberá especificar solamente la url del icono.</p>
+                <p>Nombre hotpot: <code>icon</code></p>
+                
+                <b>Punto 8 (Nombre de página)</b>
+                <p>Reemplaza el nombre por defecto del entorno que aparece al lado del icono.</p>
+                <p>Nombre hotpot: <code>name</code></p>
+                
+                <b>Punto 9 (Zona de script perfil de usuario)</b>
+                <p>Inserta contenido dentro de la sección de declaración javascript en la página del perfil de usuario.</p>
+                <p>Nombre hotpot: <code>profile_script</code></p>
+                
+                <b>Punto 10 (Zona header del perfil de usuario)</b>
+                <p>Inserta contenido dentro del head de la página, ideal para insertar estilos y javascript personalizados que queremos ejecutar antes de la carga de la página.</p>
+                <p>@Deprecated <code>En desuso, no tiene efecto en esta versión</code></p>
+                <p>Nombre hotpot: <code>profile_header</code></p>
+                
+                <b>Punto 12</b>
+                <p>Establece la ruta base de los iconos del menu.</p>
+                <p>Nombre hotpot: <code>sidebar_iconbase</code></p>
+                
+                <b>Punto 13</b>
+                <p>Establece el texto del botón inicio que aparece en el panel de navegación.</p>
+                <p>Nombre hotpot: <code>starttext</code></p>
+                
+                <p>Ejemplo de clase para configurar el portal:</p>
+                <pre class="prettyprint linenums">
+'use strict';
+
+/*
+* Raptor.js - Node framework
+*
+*/
+class MiComponenteNode {
+	/*
+	* Raptor.js - Node framework
+	* 
+	* 
+	* @param Raptor R instancia de la aplicacion Raptor
+	*
+	*/
+	middleware(R){
+		
+	}
+	
+	/*
+	* Raptor.js - Node framework
+	* 
+	* Entrada de configuracion del componente
+	* se ejecuta cuando se registran los componentes
+	* 
+	* @param Raptor R instancia de la aplicacion Raptor
+	*
+	*/
+	configure(R){
+	    //Cuando el ngPortal este listo configurar nuestro portal
+	    R.on('ngPortal:ready',function(){
+	       
+	        var ngPortal=$injector('ngPortal')
+	        // Llamar al registro de portales a traves del inyector de dependencias
+	        // y setear una nueva instancia de portal
+		    $injector('ngPortalRegistry').set(
+		        // Creamos un nuevo portal con prefijo de ruta micomponente
+                        new ngPortal('micomponente')
+                            .config(function(){
+                                // Configuramos los puntos calientes para personalizar nuestro portal
+                                this
+                                    .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+                                    .viewPlugin('name','Raptor.js')
+                                    .viewPlugin('icon','/public/logo.png')
+                                    .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+                                    .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
+                                    // Desabilita la gestion del perfil de usuario
+                                    .disableProfile()
+                                    // Desabilita la carga de privilegios desde el modulo TroodonNode
+                                    .disableSecurityMenu()
+                                
+                            })
+                            // Indica al portal que debera ser protegido por el modulo de seguridad
+                            .auth('MiComponenteNode:auth.ejs')
+		    );
+		    
+	    })
+	}
+}
+module.exports=MiComponenteNode;
+                 </pre>
+
+                
+                <br>
+                <h4 id="funcionanlidades" class="text-left">Desarrollando funcionalidades</h4>
+                <hr>
+                <p>Las funcionalidades que usted desarrolla aparecerán en el area de contenido, pueden ser visualizadas de 2 formas, <b>embebidas</b> o <b>enmarcadas</b>.</p>
+                <b>Funcionalidades embebidas</b>
+                <p>Este modo de renderizado significa que el contenido será inyectado dentro del área de contenido y estará en el mismo ámbito de variable que el portal.
+                Las rutas de este tipo tendrán prefijo !/e/ en el sistema de rutas de angular.
+                </p>
+                
+                <b>Funcionalidades enmarcadas</b>
+                <p>Este modo de renderizado significa que el contenido será enmarcado en un iframe dentro del área de contenido, es utilizado sobre todo en tecnologías como Extjs y funciones que por alguna razón tienen poca combatibilidad con el ambiente.
+                Las rutas de este tipo tendrán prefijo !/f/ en el sistema de rutas de angular.
+                </p>
+                <p>
+                    <i>Si usted desea cargar una funcionalidad con ruta <b>/miruta/ejemplo</b> en el portal, solo deberá construir la ruta con el prefijo establecido 
+                    para cada uno de los modos, para modo embebido <b>!/e/miruta/ejemplo</b> y para modo enmarcado <b>!/f/miruta/ejemplo</b>.
+                    <br><b>Ejemplo:</b>&lt;a href="!/e/miruta/ejemplo" &gt;Cargar mi funcionalidad&lt;/a&gt;
+                    </i>
+                </p>
+                <b>Seteando el modo en un portal protegido por seguridad</b>
+                <p>Por defecto las funcionalidades serán renderizadas en modo enmarcado excepto que se especifique explicitamente lo contrario. Para especificar el modo embebido, la funcionalidad registrada en el módulo de seguridad deberá contener la clase <b>ngPortal-embedded</b>.
+                    Cuando el portal se encuentra protegido, en el panel lateral aparecerán todas las funcionalidades que el usuario tiene permiso.
+                </p>
+                <p>Para protejer el portal a través de seguridad se debe llamar la función <b>auth</b> en el
+                    configurador del portal y también es posible redefinir la gestión de seguridad reimplementando
+                    los procesos de autenticación, autorización y aditoría así como los métodos de logout y verificación de autenticación.
+                </p>
+                <pre class="prettyprint linenums">
+R.on('ngPortal:ready',function(){
+   
+    var ngPortal=$injector('ngPortal')
+    // Llamar al registro de portales a traves del inyector de dependencias
+    // y setear una nueva instancia de portal
+    $injector('ngPortalRegistry').set(
+        // Creamos un nuevo portal con prefijo de ruta micomponente
+	    new ngPortal('micomponente')
+	        .config(function(){
+		        // Configuramos los puntos calientes para personalizar nuestro portal
+		        this.viewPlugin('name','Raptor.js')   
+		        
+		    })
+		    // Redefiniendo el manejador de seguridad
+		    .auth('MiComponenteNode:auth.ejs',function(autenticator){
+		        autenticator
+		            .setCondition(function(req,res,next){
+    					
+    					if(!req.session.mi_panel){
+    						return true;
+    					}else
+    						return false;
+    				})
+    				.setAuthentication(function(req,username,password,done){
+    				    
+    					if(username==R.options.panel.username && password==R.options.panel.password){
+    						req.session.mi_panel={
+    							username: username
+    						}
+    						
+    					}else{
+    						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
+    					}
+    					req.session.save(function(){
+    						req.res.redirect(req.url)
+    					})	
+    				})
+    				.setAuthorization(function(req,res,next){
+    					next()
+    				})
+    				.logout(function(req,res,next){
+    				    delete req.session.mi_panel;
+    				    req.session.save(function(){
+                			res.redirect('/micomponente/home')
+                		})
+    			    })
+		    })
+    )
+    
+})
+                </pre>
+               
+                <br>
+                <h4 id="menusidebar" class="text-left">Menú lateral de funcionalidades con portal protegido</h4>
+                <hr>
+                <p>El menú lateral contiene todas las funcionalidades registradas en el módulo de seguridad a las cuales el usuario autenticado tiene permisos.</p>
+                <p>La lista lateral esta diseñada solo para 2 niveles, por lo que si existen permisos diseñados por encima del nivel 2, entonces serán mezclados como permisos del nivel 2 excluyendo los contenedores.</p>
+                <b>Iconos del menú</b>
+                <p>Los iconos de los item del menú serán establecidos a través de la clase del privilegio en módulo de seguridad, en la forma <code>menu-user</code> donde <code>menu-</code> será el prefijo que indica que se le seteará un ícono y <code>user</code> es el nombre del archivo png que se utilizará como ícono del menú, esta imagen deberá estar localizada en la ruta establecida en el hotpot <b>sidebar_iconbase</b>.</p>
+                
+                <br>
+                <h4 id="estilo" class="text-left">Personalizando el ambiente</h4>
+                <hr>
+                <p>El ambiente es personalizado a través de hojas de estilo, debemos de utilizar el hotpot destinado para inyectar contenido dentro de la cabecera del entorno y comenzar a redefinir el estilo del mismo. El estilo aplicado en el portal, tendrá efecto en todas las funcionalidades renderizadas en modo embebido si se desea, ya que en este modo las funcionalidades son inyectadas directamente en el area de contenido y pertenecen al scope del entorno.</p>
+                <p>Para esto solo es necesario un par de conocomientos sobre CSS y la redefinición de las principales clases de Bootstrap que utiliza el entorno.</p>
+             
+                <pre class="prettyprint linenums">
+//Creamos nuestro archivo ( custom-css.css ) con la personalización del entorno
+//este archivo lo definimos en Resources en el bundle que queramos
+
+//Redefinimos la barra de cabecera de la siguiente forma(algo simple)
+.ngPortal-nav{
+    background: #999999
+}
+
+//Personalizacion del sidebar
+.md-sidenav-left md-content{
+    background-color: #464c53;
+}
+.md-sidenav-left .nav-link{
+    color: white !important;
+}
+.md-sidenav-left a b{
+    color: #bec0c1 !important;
+}
+
+//Personalizacion del indicador de carga de funcionalidades
+//Color de la barra de carga
+.portal-loading md-progress-linear .md-container{
+    background-color: #bb818171 !important
+}
+.portal-loading md-progress-linear .md-bar{
+    background-color: #911818 !important
+}
+//Color del fondo del mensaje
+.portal-loading{
+    background: rgba(0,0,0,.9);
+}
+//Color del texto del mensaje
+.portal-loading .portal-loading-text{
+    color:white
+}
+                 </pre>
+                <pre class="prettyprint linenums">
+//Definimos el marcado del css a inyectar ( header.ejs )
+//Aqui podemos agregar todo lo que desees inyectar en la cabecera
+
+&lt;link href="/public/rmodules/example/MiComponenteNode/custom-css.css" rel="stylesheet"&gt;
+
+                 </pre>
+                <pre class="prettyprint linenums">
+//Y en nuestro configurador del portal mandamos a inyectar esta definicion en el entorno           
+R.on('ngPortal:ready',function(){
+   
+    var ngPortal=$injector('ngPortal')
+    // Llamar al registro de portales a traves del inyector de dependencias
+    // y setear una nueva instancia de portal
+    $injector('ngPortalRegistry').set(
+        // Creamos un nuevo portal con prefijo de ruta micomponente
+	    new ngPortal('micomponente')
+	        .config(function(){
+		        // Configuramos los puntos calientes para personalizar nuestro portal
+		        this.viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+		        
+		    })
+    )
+    
+})
+                </pre>
+                <br>
+                <b>Personalizar página de autenticación</b>
+                <p>Para establecer una pantalla de login para nuestro portal solo deberás especificar 
+                 en el primer parámetro de la función la plantilla de la ventana de autenticación, 
+                    el único requisito es que los nombres de los parametros enviados en el formulario de login debe ser <code>username</code> y <code>password</code>.</p>
+                <pre class="prettyprint linenums">
+        
+R.on('ngPortal:ready',function(){
+   
+    var ngPortal=$injector('ngPortal')
+    // Llamar al registro de portales a traves del inyector de dependencias
+    // y setear una nueva instancia de portal
+    $injector('ngPortalRegistry').set(
+        // Creamos un nuevo portal con prefijo de ruta micomponente
+	    new ngPortal('micomponente')
+	        .config(function(){
+		        // Configuramos los puntos calientes para personalizar nuestro portal
+		        this
+		            .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+		        
+		    })
+		    // Plantilla personalizada de login
+		    .auth('MiComponenteNode:auth.ejs')
+    )
+    
+})
+                </pre>
+                <br>
+                <br>
+                <h4 class="text-left">Ejemplo completo</h4>
+                
+                <p>Ejemplo con portal protegido por TroodonNode y login personalizado.</p>
+                                <pre class="prettyprint linenums">
+'use strict';
+
+/*
+* Raptor.js - Node framework
+*
+*/
+class MiComponenteNode {
+	/*
+	* Raptor.js - Node framework
+	* 
+	* 
+	* @param Raptor R instancia de la aplicacion Raptor
+	*
+	*/
+	middleware(R){
+		
+	}
+	
+	/*
+	* Raptor.js - Node framework
+	* 
+	* Entrada de configuracion del componente
+	* se ejecuta cuando se registran los componentes
+	* 
+	* @param Raptor R instancia de la aplicacion Raptor
+	*
+	*/
+	configure(R){
+	    //Cuando el ngPortal este listo configurar nuestro portal
+	    R.on('ngPortal:ready',function(){
+	       
+	        var ngPortal=$injector('ngPortal')
+	        // Llamar al registro de portales a traves del inyector de dependencias
+	        // y setear una nueva instancia de portal
+		    $injector('ngPortalRegistry').set(
+		        // Creamos un nuevo portal con prefijo de ruta micomponente
+    		    new ngPortal('micomponente')
+    		        .config(function(){
+        		        // Configuramos los puntos calientes para personalizar nuestro portal
+        		        this
+        		            .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+        		            .viewPlugin('name','Raptor.js')
+        		            .viewPlugin('icon','/public/logo.png')
+        		            .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+        		            .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
+        		        
+        		    })
+        		    // Indica al portal que debera ser protegido por el modulo de seguridad TroodonNode
+        		    .auth('MiComponenteNode:auth.ejs')
+		    )
+		    
+	    })
+	}
+}
+module.exports=MiComponenteNode;
+                 </pre>
+                <br>
+
+                
+            </div>
+         
+        </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+
+        });
+        window.prettyPrint && prettyPrint()
+       
+
+    </script>
+<% } %>
+
+
+

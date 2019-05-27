@@ -1,0 +1,101 @@
+<div class="starter-template" style="">
+    <h1>Tareas programadas</h1>
+    <p class="text-muted">Este componente te permite ejecutar tareas de acuerdo a un criterio.
+        <br>(no utilizar en ambientes de clusterización)</p>
+
+</div>
+<hr>
+<div class="container-fluid" ng-controller="DeamonController">
+
+    <pre>
+*    *    *    *    *    *
+┬    ┬    ┬    ┬    ┬    ┬
+│    │    │    │    │    |
+│    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
+│    │    │    │    └───── month (1 - 12)
+│    │    │    └────────── day of month (1 - 31)
+│    │    └─────────────── hour (0 - 23)
+│    └──────────────────── minute (0 - 59)
+└───────────────────────── second (0 - 59, OPTIONAL)
+            </pre>
+    <form name="deamonForm" ng-submit="submitForm(deamonForm.$valid)" class="form-horizontal" method="POST">
+        <div class="row">
+            <div class="col-md-4">
+                <label data-toggle="tooltip" data-placement="top" title="EL nombre de la tarea, es una forma de identificarla entre las demas"
+                    class="control-label">Nombre</label>
+                <div class="controls">
+                    <input ng-model="deamon.nombre" class="form-control" name="nombre" type="text" placeholder="Nombre de la tarea" value=""
+                        required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label data-toggle="tooltip" data-placement="top" title="El formato cron que determinará cuando se ejecutará el comando"
+                    class="control-label">Ejecutar cuando</label>
+                <div class="controls">
+                    <input ng-model="deamon.schedule" class="form-control" name="schedule" type="text" placeholder="* * * * * *" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <label data-toggle="tooltip" data-placement="top" title="El comando a ejecutar cuando se cumpla la condición" class="control-label">Comando</label>
+                <div class="controls">
+                    <textarea ng-model="deamon.command" class="form-control" name="command" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 40px;margin-bottom: 40px;">
+            <div class="col-md-4">
+                <button type="submit" ng-disabled="deamonForm.$invalid" id="btn-config" class="btn btn-success">
+                    <i class="icon-raptor-configure icon-white" style="margin-right: 5px"></i>Configurar</button>
+            </div>
+
+        </div>
+    </form>
+
+
+    <hr>
+    <div class="row">
+        <div class="col-md-10">
+            <table class="table table-hover">
+                <% for (var i=0;i < config.length;i++){ %>
+                    <tr>
+                        <td>
+                            <label>
+                                <%- config[i].nombre %>
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <%- config[i].schedule %>
+                            </label>
+                        </td>
+                        <td>
+                            <a href="/raptor/deamon/delete?eid=<%- config[i].nombre %>" class="btn btn-danger pull-right">Eliminar</a>
+                        </td>
+                    </tr>
+                    <%}%>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    app.controller("DeamonController", function ($scope, $http, $location, $routeParams, $templateCache, $mdToast) {
+        $scope.submitForm = function (isValid) {
+            if (isValid) {
+                $scope.deamon._csrf = Raptor.getCsrfToken()
+                $http.post('/raptor/deamon/configure', $scope.deamon)
+                    .then(function () {
+                        location.reload()
+                    })
+            }
+        }
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+
+</script>

@@ -1,0 +1,17 @@
+<link href="/public/rmodules/Raptorjs/RaptorNode/css/portal.css" rel="stylesheet">
+<script>
+    R = {
+        message: function (message) {
+            $mdToast=angular.element(document.body).injector().get('$mdToast')
+            return $mdToast.show(
+                    $mdToast.simple()
+                        .action('Cerrar')
+                        .highlightAction(true)
+                        .textContent(message)
+                        .position('top right')
+                        .hideDelay(9000))
+                    
+
+        }
+    }
+</script>

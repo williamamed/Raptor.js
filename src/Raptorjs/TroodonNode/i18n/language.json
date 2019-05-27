@@ -1,0 +1,315 @@
+{
+	"fullname":{
+		"es": "Nombre completo",
+		"en": "fullname"
+	},
+	"activestate":{
+		"es":"Activo",
+		"en":"Inactivo"
+	},
+	"inactivestate":{
+		"es":"Inactivo",
+		"en":"Inactive"
+	},
+	"msgdelete":{
+		"es":"¿Está a punto de eliminar el usuario seleccionado, está seguro que desea realizar esta acción?",
+		"en":"You are going to delete the selected user, are you shure?"
+	},
+	"estructures":{
+		"es":"Estructuras",
+		"en":"Structures"
+	},
+	"usermanager":{
+		"es":"Administrador de Usuarios",
+		"en":"User manager"
+	},
+	"add": {
+		"es":"Adicionar",
+		"en":"Add"
+	},
+    "edit": {
+		"es":"Editar",
+		"en":"Edit"
+	},
+    "delete": {
+		"es":"Eliminar",
+		"en":"Delete"
+	},
+    "rolasigment": {
+		"es":"Asignación de rol",
+		"en":"Rol asigment"
+	},
+    "search": {
+		"es":"Buscar Usuario",
+		"en":"Search user"
+	},
+	"username": {
+		"es":"Nombre de usuario",
+		"en":"Username"
+	},
+	"rolname": {
+		"es":"Rol",
+		"en":"Rol"
+	},
+	"passdontmatch":{
+		"es":"Las contraseñas no son iguales",
+		"en":"The password dont match"
+	},
+	"invalidform":{
+		"es":"El formulario contiene datos inválidos",
+		"en":"The form contain invalid data"
+	},
+	"state":{
+		"es":"Estado",
+		"en":"State"
+	},
+	"email":{
+		"es":"Correo",
+		"en":"Email"
+	},
+	"insertuser": {
+		"es":"Adicionar Usuario",
+		"en":"Insert user"
+	},
+    "newpass":{
+		"es":"Nueva contraseña",
+		"en":"New password"
+	},
+    "changepass":{
+		"es":"Cambiar contraseña",
+		"en":"Change password"
+	},
+    "repass":{
+		"es":"Repetir contraseña",
+		"en":"Repit password"
+	},
+    "usernick":{
+		"es":"Nick del usuario",
+		"en":"User nick"
+	},
+    "acept":{
+		"es":"Aceptar",
+		"en":"Acept"
+	},
+    "cancel":{
+		"es":"Cancelar",
+		"en":"Cancel"
+	},
+    "edituser":{
+		"es":"Editar Usuario",
+		"en":"Edit User"
+	},
+	"insertmsg":{
+		"es":"El usuario fue adicionado correctamente",
+		"en":"The user was correctly inserted"
+	},
+	"operation_error":{
+		"es":"Ocurrió un error realizando la operación.",
+		"en":"An error ocurred realizing the operation."
+	},
+	"editmsg":{
+		"es":"El usuario fue editado correctamente",
+		"en":"The user was correctly edited"
+	},
+	"deletemsg":{
+		"es":"El usuario fue eliminado correctamente",
+		"en":"The user was correctly deleted"
+	},
+	"statemsg":{
+		"es":"El estado del usuario fue editado correctamente",
+		"en":"The user state was correctly updated"
+	},
+    "rolmsg":{
+		"es":"El rol fue asignado correctamente",
+		"en":"The rol was correctly asigned"
+	},
+	"waitmsg":{
+		"es":"Realizando la operación, por favor espere ....",
+		"en":"Please wait ... "
+	},
+	"rolmanager":{
+		"es":"Administrar Roles",
+		"en":"Rol Manager"
+	},
+	"priv_asigment":{
+		"es":"Asignación Privilegios",
+		"en":"Privilege asigment"
+	},
+    "priv":{
+		"es":"Privilegios",
+		"en":"Privilege"
+	},
+    "msg_delete_rol":{
+		"es":"¿Está a punto de eliminar el rol seleccionado, está seguro que desea realizar esta acción?",
+		"en":"You are going to delete the selected rol, are you shure?"
+	},
+    "edit_rol":{
+		"es":"Editar Rol",
+		"en":"Edit Rol"
+	},
+    "insert_rol":{
+		"es":"Adicionar Rol",
+		"en":"Insert Rol"
+	},
+    "insert_msg_rol":{
+		"es":"El rol fue adicionado correctamente",
+		"en":"The rol was correctly added"
+	},
+    "edit_msg_rol":{
+		"es":"El rol fue editado correctamente",
+		"en":"The rol was correctly edited"
+	},
+    "delete_msg_rol":{
+		"es":"El rol fue eliminado correctamente",
+		"en":"The rol was correctly deleted"
+	},
+    "priv_msg_rol":{
+		"es":"Los privilegios fueron asignados correctamente",
+		"en":"The privileges was correctly asigned"
+	},
+    
+    "msg_delete_gen":{
+		"es":"¿Está a punto de eliminar el elemento seleccionado, está seguro que desea realizar esta acción?",
+		"en":"You are going to delete the selected item, are you shure?"
+	},
+	"description":{
+		"es":"Descripción",
+		"en":"Description"
+	},
+    "add_msg_estructure":{
+		"es":"La estructura fue adicionada correctamente",
+		"en":"The structure was correctly added"
+	},
+    "edit_msg_estructure":{
+		"es":"La estructura fue editada correctamente",
+		"en":"The structure was correctly edited"
+	},
+    "delete_msg_estructure":{
+		"es":"La estructura fue eliminada correctamente",
+		"en":"The structure was correctly deleted"
+	},
+    "delete_msg_error_estructure":{
+		"es":"La estructura no puede ser eliminada, es necesario eliminar sus hijos primero",
+		"en":"The structure cannot be delete, you may delete the children structure"
+	},
+	"estructurename":{
+		"es":"Nombre de estructura",
+		"en":"Structure Name"
+	},
+	"category_name":{
+		"es":"Categoría",
+		"en":"Category"
+	},
+	"inser_dir_priv":{
+		"es":"El contenedor fue creado correctamente.",
+		"en":"The container was correctly created."
+	},
+	"inser_index_priv":{
+		"es":"La funcionalidad fue creada correctamente.",
+		"en":"The funcionality was correctly created."
+	},
+	"inser_action_priv":{
+		"es":"La acción fue creada correctamente.",
+		"en":"The action was correctly created."
+	},
+	"edit_priv":{
+		"es":"El elemento fue modificado correctamente.",
+		"en":"The element was correctly edited."
+	},
+	"edit_action_priv":{
+		"es":"La acción fue modificada correctamente.",
+		"en":"The action was correctly edited."
+	},
+	"delete_priv":{
+		"es":"El elemento fue eliminado correctamente.",
+		"en":"The element was correctly deleted."
+	},
+	"delete_action_priv":{
+		"es":"La acción fue eliminada correctamente.",
+		"en":"The action was correctly deleted."
+	},
+	"globdeletemsg":{
+		"es":"El elemento fue eliminado correctamente.",
+		"en":"The element was correctly deleted."
+	},
+	"addindex":{
+		"es":"Adicionar índice",
+		"en":"Add index"
+	},
+	"addcontainer":{
+		"es":"Adicionar contenedor",
+		"en":"Add container"
+	},
+	"actions":{
+		"es":"Acciones",
+		"en":"Actions"
+	},
+	"actionname":{
+		"es":"Nombre de la acción",
+		"en":"Action name"
+	},
+	"containername":{
+		"es":"Nombre del contenedor",
+		"en":"Container name"
+	},
+	"iconclass":{
+		"es":"Clase CSS del ícono",
+		"en":"Icon CSS class"
+	},
+	"indexname":{
+		"es":"Nombre de índice (funcionalidad)",
+		"en":"Index name"
+	},
+	"indexroute":{
+		"es":"Nombre de la ruta",
+		"en":"Route name"
+	},
+	"route_path":{
+		"es":"Ruta",
+		"en":"Path"
+	},
+	"addaction":{
+		"es":"Adicionar acción",
+		"en":"Add action"
+	},
+	"editaction":{
+		"es":"Modificar acción",
+		"en":"Edit action"
+	},
+	"export":{
+		"es":"Exportar",
+		"en":"Export"
+	},
+	"chart":{
+		"es":"Gráfica",
+		"en":"Chart"
+	},
+	"details":{
+		"es":"Detalles",
+		"en":"Details"
+	},
+	"aud_header":{
+		"es":"Auditoría",
+		"en":"Auditories"
+	},
+	"route":{
+		"es":"Ruta",
+		"en":"Route"
+	},
+	"range_from":{
+		"es":"Desde",
+		"en":"From"
+	},
+	"range_to":{
+		"es":"Hasta",
+		"en":"To"
+	},
+	"trace_percent":{
+		"es":"Porciento",
+		"en":"Percent"
+	},
+	"msgdeletemulti":{
+		"es":"¿Está seguro que desea eliminar la selección?",
+		"en":"Do you want delete the selected items?"
+	}
+}

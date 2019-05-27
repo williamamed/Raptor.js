@@ -1,0 +1,99 @@
+.file-tree ol.tree li div {
+    white-space: nowrap;
+  }
+
+  .jstree-default .jstree-wholerow-clicked {
+    background: #546E7A !important;
+  }
+
+  .jstree-default .jstree-wholerow-hovered {
+    background: none;
+  }
+
+  #fixed-tree {
+    padding-top: 10px;
+    overflow: auto;
+    height: 100%;
+  }
+
+  .component-selector {
+
+    height: 500px;
+
+  }
+
+  .component-selector .component-body {
+    height: 100% !important;
+    background: #343a40 !important
+  }
+
+  .component-selector .component-body .col-4 {
+    overflow: hidden;
+    height: 100%;
+    padding-right: 0px;
+  }
+
+  .component-selector .console-area {
+    border-left: 3px #262b30 solid;
+    padding: 10px;
+    min-height: 100%;
+
+  }
+
+  .component-selector .md-button.md-default-theme.md-primary,
+  .component-selector .md-button.md-primary {
+    background-color: #343a40;
+    margin: 2px;
+    color: rgb(73, 184, 78);
+
+  }
+
+  .component-selector .md-button.md-primary:hover {
+    background-color: #4d5358;
+  }
+
+  .component-selector .md-button.md-primary[disabled] {
+
+    color: gray
+  }
+
+  md-dialog .md-button.md-default-theme.md-primary,
+  .dialog-cmp .md-button {
+    background-color: #343a40;
+    color: rgb(73, 184, 78);
+
+  }
+
+  md-dialog p {
+    color: white
+  }
+  .md-dialog-content{
+    /**padding-top: 0px !important;*/
+  }
+
+  md-dialog .md-button:hover {
+    background-color: #4d5358;
+  }
+
+  md-dialog .md-button[disabled] {
+
+    color: gray
+  }
+
+  md-dialog {
+    background: #262b30 !important;
+
+  }
+
+
+  md-dialog form label {
+    color: white;
+  }
+
+  md-dialog form b {
+    color: white;
+  }
+
+  md-dialog form .row {
+    margin-top: 10px
+  }

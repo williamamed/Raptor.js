@@ -1,0 +1,123 @@
+<link href="/public/bootstrap/tree/themes/default/style.min.css" rel="stylesheet">
+<link href="/public/rmodules/Raptorjs/RaptorNode/css/function-style.css" rel="stylesheet">
+<style>
+
+</style>
+<div class="text-center" style="margin-top: 10px">
+  <h1>Crear componente</h1>
+  <p class="text-muted">los componentes serán siempre localizados dentro de un agrupador en forma de directorio también conocido como vendor</p>
+
+</div>
+<hr>
+<div ng-controller="CreateController" ng-cloak>
+  <div class="container-fluid component-selector">
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-12" style="padding-left:0px">
+        <md-button ng-disabled="disableAdd" class="md-primary" ng-click="create($event)">adicionar</md-button>
+        <md-button ng-disabled="disableDelete" class="md-primary" ng-click="delete($event)">eliminar</md-button>
+        <md-button ng-disabled="disableCtrl" class="md-primary" ng-click="createController($event)">Nuevo controlador</md-button>
+
+
+      </div>
+    </div>
+    <div class="row component-body">
+      <div class="col-4">
+        <div class="fixed-tree" style="padding-bottom: 10px;"></div>
+      </div>
+      <div class="col-8 console-area">
+        <p>Raptor.js ...</p>
+        <p ng-bind-html="consolemsg"></p>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="create-dialog">
+      <md-dialog layout-padding style="width: 500px">
+
+        <form name="cmpForm" ng-submit="submitCmpForm(cmpForm.$valid)" class="form-horizontal dialog-cmp" method="POST">
+          <md-toolbar style="background: transparent">
+            <div class="md-toolbar-tools">
+              <h4>Crear componente</h4>
+            </div>
+          </md-toolbar>
+          <md-dialog-content>
+            <div class="md-dialog-content">
+              <div class="row">
+                <div class="col-md-12">
+                  <label class="control-label" for="proyect">Nombre del agrupador</label>
+                  <div class="controls">
+                    <input ng-model="cmp.vendor" class="form-control" name="vendor" type="text" placeholder="agrupador..." required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label class="control-label" for="proyect">Nombre del componente</label>
+                  <div class="controls">
+                    <input ng-model="cmp.component" class="form-control" name="component" type="text" placeholder="componente..." required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="cmp-def" style="color:white">{{cmp.vendor}}/
+                    <span class="text-info">{{cmp.component}}</span>
+                    <span class="text-muted">Node</span>
+                  </p>
+
+                </div>
+              </div>
+            </div>
+          </md-dialog-content>
+          <md-dialog-actions layout="row">
+            <md-button ng-click="cancel()">cancelar</md-button>
+            <md-button ng-click="success()" ng-disabled="cmpForm.$invalid">Aceptar</md-button>
+          </md-dialog-actions>
+        </form>
+
+      </md-dialog>
+    </div>
+  </div>
+
+  <div style="visibility: hidden">
+    <div class="md-dialog-container" id="controller-dialog">
+      <md-dialog layout-padding style="width: 500px">
+
+        <form name="controllerForm" ng-submit="submitControllerForm(controllerForm.$valid)" class="form-horizontal dialog-cmp" method="POST">
+          <md-toolbar style="background: transparent">
+            <div class="md-toolbar-tools">
+              <h4>Crear controlador</h4>
+            </div>
+          </md-toolbar>
+          <md-dialog-content>
+            <div class="md-dialog-content">
+
+              <div class="row">
+                <div class="col-md-12">
+                  <label class="control-label" for="proyect">Nombre del controlador</label>
+                  <div class="controls">
+                    <input ng-model="controller.name" class="form-control" name="controller" type="text" placeholder="controlador..." required>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </md-dialog-content>
+          <md-dialog-actions layout="row">
+            <md-button ng-click="cancel()">cancelar</md-button>
+            <md-button ng-click="successController()" ng-disabled="controllerForm.$invalid">Aceptar</md-button>
+          </md-dialog-actions>
+        </form>
+
+      </md-dialog>
+    </div>
+  </div>
+
+</div>
+<script src="/public/bootstrap/tree/jstree.js"></script>
+<script src="/public/rmodules/Raptorjs/RaptorNode/ng/component.controller.js"></script>
+<script type="text/javascript">
+
+</script>

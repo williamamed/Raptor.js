@@ -1,0 +1,29 @@
+{
+  "mode": "development",
+  "database": {
+    "state": "off",
+    "options": {
+      "port": 5432,
+      "dialect": "mysql",
+      "host": "127.0.0.1"
+    },
+    "api": true,
+    "password": "mypass",
+    "user": "myuser",
+    "name": "raptorjs"
+  },
+  "port": 4440,
+  "socketio": {
+    "active": false
+  },
+  "language": {
+    "default": "es",
+    "usePrefered": false,
+    "cookieName": "RpsLang"
+  },
+  "panel": {
+    "secure": false
+  },
+  "secret": "3dfa5h2g$ae946e2gdi5cb%g*1#$5e25",
+  "proyectName": "RaptorJS"
+}

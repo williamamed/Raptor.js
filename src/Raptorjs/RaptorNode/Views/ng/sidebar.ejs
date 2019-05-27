@@ -1,0 +1,15 @@
+<ul class="nav nav-sidebar flex-column">
+        <li class="nav-item"><a class="nav-link ngPortal-embedded" route="/raptor/config">Configuración</a></li>
+        <li class="nav-item" ><a class="nav-link"><b style="color: #333333">Componentes</b></a>
+            <ul class="nav nav-sidebar flex-column" style="padding-left:10px">
+                <li class="nav-item"><a class="nav-link ngPortal-embedded" route="/raptor/component/create.v2"><i style="margin-right: 5px"></i>Generar Componente</a></li>
+                <li class="nav-item"><a class="nav-link ngPortal-embedded" route="/raptor/component/model.v2"><i style="margin-right: 5px"></i>Generar Modelo</a></li>
+                <li class="divider"></li>
+                <li class="nav-item"><a class="nav-link ngPortal-embedded" route="/raptor/component/resources.v2"><i style="margin-right: 5px"></i>Publicar Recursos Web</a></li>
+                
+                <%- R.plugin('raptorpanel_sidebar_components') %>
+            </ul>
+        </li>
+        
+        <%- R.plugin('raptorpanel_sidebar_main') %>
+</ul>

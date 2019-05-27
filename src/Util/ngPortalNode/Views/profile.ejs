@@ -1,0 +1,129 @@
+	
+<style type="text/css">
+    .inner{
+        margin: 10px ;
+        background: rgba(255,255,255,0.8);
+
+    }
+    input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+        height: 35px;
+
+    }   
+</style>
+
+
+<div class="inner rux-profile" style="" ng-controller="profileController" >
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home" href="" role="tab" aria-controls="home" aria-selected="true">Datos personales</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" href="" role="tab" aria-controls="profile" aria-selected="false">Seguridad</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <br>
+            <h4>Perfil de usuario</h4>
+            <hr>
+            <div class="col-md-12" >
+
+                <form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm.$valid)" novalidate method="POST" >
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label data-toggle="tooltip" data-placement="top" title="Nombre de usuario" class="control-label" >Nombre de usuario</label>
+                            <div class="controls">
+                                <input class="form-control" name="username"  type="text" placeholder="Nombre..." value="<%- username %>" readonly required>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" >
+                                <label data-toggle="tooltip" data-placement="top" title="Nombre completo" class="control-label" >Nombre completo</label>
+                                <input class="form-control" ng-minlength="3" ng-class="{ 'is-invalid' : userForm.fullname.$invalid && !userForm.fullname.$pristine }" ng-model='user.fullname' name="fullname" type="text"  placeholder="Nombre..." ng-init="user.fullname='<%- nombre %>'" required>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" >
+                                <label data-toggle="tooltip" data-placement="top" title="Correo electrónico" class="control-label" >Correo</label>
+                                <input type="email" class="form-control" ng-minlength="3" ng-class="{ 'is-invalid' : userForm.email.$invalid && !userForm.email.$pristine }" ng-model='user.email' name="email" type="text"  placeholder="Email..." ng-init="user.email='<%- email %>'" >
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
+                        <div class="col-md-4">
+                            <button type="submit" id="btn-config" ng-disabled="userForm.$invalid" class="btn btn-success">Salvar</button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <br>
+            <h4>Cambio de contraseña</h4>
+            <hr>
+            <div class="col-md-12">
+                <form name="passForm" class="form-horizontal" ng-submit="submitPassForm(passForm.$valid)" novalidate method="POST" >
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" >
+                                <label data-toggle="tooltip" data-placement="top" title="" class="control-label" >Contraseña actual</label>
+                                <input class="form-control" ng-model='userpass.current_password' name="current_password" type="password"  placeholder="" required>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" >
+                                <label data-toggle="tooltip" data-placement="top" title="" class="control-label" >Nueva contraseña</label>
+                                <input class="form-control" ng-minlength="7" ng-class="{ 'is-invalid' : passForm.password.$invalid && !passForm.password.$pristine }" ng-model='userpass.password' name="password" type="password"  placeholder="" required>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" >
+                                <label data-toggle="tooltip" data-placement="top" title="" class="control-label" >Repetir contraseña</label>
+                                <input class="form-control" ng-minlength="7" ng-class="{ 'is-invalid' : passForm.repassword.$invalid && !passForm.repassword.$pristine }" ng-model='userpass.repassword' name="repassword" type="password"  placeholder="" required>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
+                        <div class="col-md-4">
+                            <button type="submit" id="btn-config" ng-disabled="passForm.$invalid" class="btn btn-success">Cambiar contraseña</button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- Script App -->
+
+
+
+<%- R.plugin('ngPortal_profile_script') %>
+
+
+
+
