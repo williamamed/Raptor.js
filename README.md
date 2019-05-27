@@ -15,7 +15,7 @@ dentro del proceso de identificación-autenticación del módulo de seguridad.
 ## Documentación oficial
 
 Documentación y api de [Raptor.js](http://raptorweb.cubava.cu/documentacion-raptor-js/).
-Bolg oficial del [Proyecto Raptor](http://raptorweb.cubava.cu).
+Blog oficial del [Proyecto Raptor](http://raptorweb.cubava.cu).
 
 ## Arquitectura de Raptor.js
 
