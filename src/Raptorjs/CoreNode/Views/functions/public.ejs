@@ -1,0 +1,10 @@
+function(bundle){
+    var cmp=bundle.split('/')
+    var bundles=<%-bundles%>;
+    if(bundles[cmp[0]]){
+        
+        return bundles[cmp.shift()]+"/"+cmp.join("/")
+    }else{
+        return bundle
+    }
+}

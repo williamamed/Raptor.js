@@ -7,10 +7,10 @@ const injector=function () {
         return;
     }
     if (arguments.length == 1) {
-        if (R.container[arguments[0]])
+        if (R.container.hasOwnProperty(arguments[0]))
             return R.container[arguments[0]];
     }
-    return R.container;
+    return false;
 }
 
 injector.import = function () {
@@ -76,7 +76,7 @@ injector.process = function (target, scope, original) {
 }
 
 injector.invoke = injector.process;
-
+injector.later=injector.invokeLater;
 
 
 module.exports=injector

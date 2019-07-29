@@ -1,5 +1,6 @@
 
 module.exports = function(sequelize, DataTypes) {
+  
   return sequelize.define('cars', {
     id: {
       type: DataTypes.INTEGER(11),
@@ -28,7 +29,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: true,
       references: {
-        model: $injector("example_users"),
+        model: 'users',
         key: 'id'
       }
     }

@@ -191,6 +191,16 @@ module.exports = {
 	 */
 	readOptions: function () {
 		options = require(path.join(this.basePath, 'config/options.json'));
+		if (process.env.RAPTOR_MODE && process.env.RAPTOR_MODE == 'development')
+			options.mode = 'development'
+		if (!options.mode) {
+			options.mode = 'production'
+		}
+		if (this.mode) {
+			options.mode = this.mode
+		}
+		if (options.mode != 'development' && options.mode != 'production')
+			options.mode = 'production'
 		this.options = options;
 	},
 
@@ -269,7 +279,8 @@ module.exports = {
 			var events = require('events');
 			this.__proto__ = events.EventEmitter.prototype;
 			events.EventEmitter.call(this);
-			this.eventsDefined = true
+			this.eventsDefined = true;
+			this.setMaxListeners(80)
 		}
 		/**
 		 * Container de dependencias
@@ -297,6 +308,8 @@ module.exports = {
 		 * Definir el injector de dependencias como global
 		 */
 		global.$injector = require('./Injector.js')
+		//shortcut
+		global.$i = global.$injector
 		/**
 		 * Definir dentro del objeto R una referencia hacia el $injector
 		 */
@@ -313,6 +326,8 @@ module.exports = {
 		//passportConfig = require(path.join(this.basePath,'config/passport'));
 		//Leer la configuracion general, options.json
 		this.readOptions();
+		if (this.options.maxEventListeners)
+			this.setMaxListeners(this.options.maxEventListeners)
 
 		if (this.options.mode == "development") {
 			//Solo en modo de desarrollo
@@ -342,13 +357,13 @@ module.exports = {
 			var viewFn = new ViewFunctions(R);
 			viewFn.__setRequest(this.req);
 
-			b = lodash.extend((b) ? b : {}, { R: viewFn });
+			b = lodash.extend((b) ? b : {}, { R: viewFn, public: viewFn.public });
 
 			//me.viewFunctions.__setRequest(this.req);
 			var div = a.split(':');
 			if (div.length == 2 && me.bundles[div[0]]) {
 
-				var view = path.join(me.basePath, 'src', me.bundles[div[0]].path, 'Views', div[1]);
+				var view = path.join(me.bundles[div[0]].absolutePath, 'Views', div[1]);
 
 				this.__render(view, b, c);
 
@@ -360,13 +375,19 @@ module.exports = {
 
 
 		express.request.flash = function (name, message) {
-			if (!this.session.flash)
-				this.session.flash = {};
+			if (!this.session)
+				this.session = {};
+
 			if (!message) {
+				if (!this.session.flash)
+					return '';
 				var msg = this.session.flash[name];
 				delete this.session.flash[name];
+
 				return msg;
 			} else {
+				if (!this.session.flash)
+					this.session.flash = {};
 				this.session.flash[name] = message;
 			}
 
@@ -375,6 +396,7 @@ module.exports = {
 		this.app = express();
 		$injector('router', this.app)
 		$injector('express', this.app)
+		$injector("Options", this.options)
 
 		$injector('Template404', 'CoreNode:404.ejs')
 		$injector('TemplateBasic', 'CoreNode:basic.ejs')
@@ -387,9 +409,14 @@ module.exports = {
 						R.on(key, obj[key])
 					}
 				}
+			},
+			on: function () {
+				R.on.apply(R, arguments)
 			}
 		})
 		$injector('DefaultSession', true)
+		$injector("SessionFilter", [])
+
 	},
 	/**
 	 * Configurando express
@@ -414,13 +441,14 @@ module.exports = {
 		this.app.use('/public', express.static(basepath + '/public'));
 
 		this.app.use(this.requestViewPlugin())
-
+		this.autoPublishComponent = true;
 		this.readConfig();
+
 
 		this.app.set('views', basepath + '/public')
 		this.app.set('view engine', 'ejs')
-		this.app.engines['.html'] = function (path,opt,cb) {
-			return cb(null,fs.readFileSync(path))
+		this.app.engines['.html'] = function (path, opt, cb) {
+			return cb(null, fs.readFileSync(path))
 		}
 		this.app.set('port', process.env.PORT || this.options.port || 3003)
 
@@ -438,20 +466,55 @@ module.exports = {
 		this.emit("session:config", session)
 		if ($injector('DefaultSession')) {
 			var FileStore = require('session-file-store')(session);
+			//Adicionado un filtro para las sesiones, ejemplo no crear archivo de sesion para las api
+			this.app.use(function (req, res, next) {
 
-			this.app.use(session({
-				secret: this.options.secret,
-				store: new FileStore({
-					path: this.basePath + "/cache/session/",  //directory where session files will be stored
-					useAsync: true,
-					reapInterval: 5000,
-					maxAge: 10000
-				}),
-				resave: true,
-				saveUninitialized: true,
-				cookie: { httpOnly: true }//, secure: true }
+				var filter = $injector("SessionFilter") ? $injector("SessionFilter") : []
+				var find = false;
 
-			}))
+				for (let index = 0; index < filter.length; index++) {
+					const element = filter[index];
+
+					if (new RegExp(element).test(req.url)) {
+						find = true;
+						next()
+
+						break;
+					}
+				}
+
+				if (find == false) {
+					if (!$injector("SessionHandler")) {
+
+						session({
+							secret: R.options.secret,
+							store: new FileStore({
+								path: R.basePath + "/cache/session/",  //directory where session files will be stored
+								useAsync: true,
+								reapInterval: 5000,
+								maxAge: 10000,
+								logFn: function (msg) {
+									if (R.options.defaultSession && R.options.defaultSession.storeLog)
+										console.log(msg)
+								}
+							}),
+							resave: false,
+							saveUninitialized: false,
+							cookie: { httpOnly: true }//, secure: true }
+
+						}).apply(this, arguments)
+
+					} else {
+						if (typeof $injector("SessionHandler") == 'function') {
+
+							$injector("SessionHandler").apply(this, arguments)
+
+						} else
+							next()
+					}
+				}
+
+			})
 		}
 
 		this.app.use(passport.initialize())
@@ -596,6 +659,8 @@ module.exports = {
 			}
 
 		});
+
+
 	},
 
 	/**
@@ -616,12 +681,14 @@ module.exports = {
 				.authenticate()
 				.then(function (err) {
 					console.log('Connection with database has been established successfully.');
+					me.database.state = true
 					me.emit('database:running')
 					me.startServer();
 				})
 				.catch(function (err) {
 					console.log('Unable to connect to the database:', err);
 					me.emit('database:failed')
+					me.database.state = false
 					me.startServer();
 				});
 		} else {
@@ -654,7 +721,7 @@ module.exports = {
 		var associationBuffer = [];
 
 		for (var bundle in this.bundles) {
-			var modelPath = path.join(this.basePath, 'src', this.bundles[bundle].path, 'Models');
+			var modelPath = path.join(this.bundles[bundle].absolutePath, 'Models');
 			if (fs.existsSync(modelPath))
 				fs
 					.readdirSync(modelPath)
@@ -739,7 +806,8 @@ module.exports = {
 			sequelize: sequelize,
 			Sequelize: Sequelize
 		}, this.database)
-
+		$injector('Database', this.database);
+		
 		return true;
 	},
 
@@ -747,7 +815,7 @@ module.exports = {
 	 * Prepara un modelo adicionado en tiempo de ejecucion
 	 */
 	prepareComponentModel: function (bundle) {
-		var modelPath = path.join(this.basePath, 'src', this.bundles[bundle].path, 'Models');
+		var modelPath = path.join(this.bundles[bundle].absolutePath, 'Models');
 		var me = this;
 		var associationBuffer = [];
 		var modelsName = []
@@ -881,6 +949,28 @@ module.exports = {
 		}
 
 	},
+
+	externalDirectories: [],
+
+	getExternalComponents: function (directories) {
+		return this.externalDirectories;
+	},
+
+	setExternalComponents: function (directories) {
+		if (typeof directories == "string")
+			this.externalDirectories = [directories]
+		else
+			this.externalDirectories = directories
+	},
+
+	addExternalComponents: function (directories) {
+
+		if (typeof directories == "string")
+			this.externalDirectories = this.externalDirectories.concat([directories])
+		else
+			this.externalDirectories = this.externalDirectories.concat(directories)
+	},
+
 	/*
 	* Raptor.js - Node framework
 	* 
@@ -911,6 +1001,32 @@ module.exports = {
 
 			})
 
+		if (this.externalDirectories) {
+			this.externalDirectories.forEach(function (value) {
+				try {
+					fs
+						.readdirSync(value)
+						.forEach(function (file) {
+							if (fs.statSync(path.join(value, file)).isDirectory()) {
+								fs
+									.readdirSync(path.join(value, file))
+									.filter(function (fileNode) {
+										var sub = fileNode.substring(fileNode.length - 4);
+
+										return (fileNode.indexOf('.') !== 0) && (fileNode !== 'index.js') && (sub == 'Node')
+									})
+									.forEach(function (comp) {
+
+										me.registerComponent(comp, file, false, value)
+
+									})
+							}
+						})
+				} catch (error) {
+					console.error("Error leyendo componentes externos, ", error.message)
+				}
+			})
+		}
 
 		for (var bundle in me.bundles) {
 			me.validateComponent(bundle)
@@ -928,8 +1044,8 @@ module.exports = {
 	 * @param {boolean} validate si sera validado por el gestor de componentes, dependecias hacia
 	 * otros componentes
 	 */
-	registerComponent: function (comp, vendor, validate) {
-		var rutaSrc = path.join(this.basePath, 'src');
+	registerComponent: function (comp, vendor, validate, external) {
+		var rutaSrc = external ? path.join(external) : path.join(this.basePath, 'src');
 		var me = this;
 		if (!fs.existsSync(path.join(rutaSrc, vendor, comp, 'manifest.json'))) {
 			var data = {
@@ -950,8 +1066,10 @@ module.exports = {
 						path: path.join(vendor, comp),
 						vendor: vendor,
 						manifest: require(path.join(rutaSrc, vendor, comp, 'manifest.json')),
+						absolutePath: path.join(rutaSrc, vendor, comp),
 						main: index,
 						instance: false,
+						external: external ? external : false,
 						controllers: [],
 						models: {},
 						init: false,
@@ -984,6 +1102,7 @@ module.exports = {
 							}
 						}
 					}
+
 					if (validate == true)
 						this.validateComponent(comp)
 
@@ -1049,6 +1168,11 @@ module.exports = {
 
 			})
 			me.bundles[bundle].init = true;
+			if (me.autoPublishComponent) {
+				if (!fs.existsSync(path.join(this.basePath, 'public', 'rmodules', me.bundles[bundle].vendor, bundle))) {
+					me.copyResources(bundle, true)
+				}
+			}
 		}
 	},
 
@@ -1141,12 +1265,13 @@ module.exports = {
 		controllers: function (R, bundle) {
 
 			var rutaSrc = R.basePath + '/src';
-			var pathController = path.join(rutaSrc, bundle.path, 'Controllers');
+			var pathController = path.join(bundle.absolutePath, 'Controllers');
 
 
 			var mainInstance = bundle.instance;
 			var prefix = (mainInstance.prefix) ? mainInstance.prefix : '';
-			var routes = R.getAnnotationRouteConfig(path.join(rutaSrc, bundle.path, 'index.js'))
+			//var routes = R.getAnnotationRouteConfig(path.join(rutaSrc, bundle.path, 'index.js'))
+			var routes = false
 			if (typeof routes == 'string')
 				prefix = routes
 			R.emit('before:prepare.controller', bundle)
@@ -1205,14 +1330,13 @@ module.exports = {
 
 							R.emit('init:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
 							R.emit('init:controller', claseES6, path.join(pathController, file), bundle)
+							bundle.controllers.push(claseES6);
 							if (claseES6.configure) {
-
-								bundle.controllers.push(claseES6);
 								$injector.process(claseES6.configure, claseES6)
 								R.emit('config:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
 								R.emit('config:controller', claseES6, path.join(pathController, file), bundle)
-								var route = R.getAnnotationRouteConfig(path.join(pathController, file), claseES6)
-
+								//var route = R.getAnnotationRouteConfig(path.join(pathController, file), claseES6)
+								var route = false;
 								if (typeof route == "object") {
 									claseES6.routes(route)
 									R.emit('routes:' + bundle.name + '.' + controller.name, claseES6, path.join(pathController, file), bundle)
@@ -1247,7 +1371,7 @@ module.exports = {
 		 * @param {object} bundle Componente leido
 		 */
 		i18n: function (R, bundle) {
-			var i18nLocation = path.join(R.basePath, 'src', bundle.path, 'i18n', 'language.json');
+			var i18nLocation = path.join(bundle.absolutePath, 'i18n', 'language.json');
 			if (fs.existsSync(i18nLocation)) {
 				var def = require(i18nLocation);
 				__i18nDefinition[bundle.name] = def;
@@ -1261,7 +1385,7 @@ module.exports = {
 		 * @param {object} bundle Componente leido
 		 */
 		compressor: function (R, bundle) {
-			var compressor = path.join(R.basePath, 'src', bundle.path, 'Compressor', 'Compress.js');
+			var compressor = path.join(bundle.absolutePath, 'Compressor', 'Compress.js');
 
 			if (fs.existsSync(compressor)) {
 
@@ -1327,7 +1451,7 @@ module.exports = {
 		}
 
 		if (true) {
-			var pathResources = path.join(this.basePath, 'src', bundle.path, 'Resources');
+			var pathResources = path.join(bundle.absolutePath, 'Resources');
 			var R = this;
 			if (typeof callback == 'boolean') {
 				preCompile = callback;
@@ -1421,11 +1545,11 @@ module.exports = {
 	requireNode: function (name) {
 		var module = name.split('/')
 
-		if (this.bundles[module[0]] && fs.existsSync(path.join(this.basePath, 'src', this.bundles[module[0]].path))) {
+		if (this.bundles[module[0]] && fs.existsSync(path.join(this.bundles[module[0]].absolutePath))) {
 			if (module.length > 1)
-				return require(path.join(this.basePath, 'src', this.bundles[module.shift()].path, module.join('/')));
+				return require(path.join(this.bundles[module.shift()].absolutePath, module.join('/')));
 			else
-				return require(path.join(this.basePath, 'src', this.bundles[module[0]].path));
+				return require(path.join(this.bundles[module[0]].absolutePath));
 		} else
 			return null;
 	},
@@ -1441,11 +1565,11 @@ module.exports = {
 	resolveLocal: function (name) {
 		var module = name.split('/')
 
-		if (this.bundles[module[0]] && fs.existsSync(path.join(this.basePath, 'src', this.bundles[module[0]].path))) {
+		if (this.bundles[module[0]] && fs.existsSync(path.join(this.bundles[module[0]].absolutePath))) {
 			if (module.length > 1)
-				return (path.join(this.basePath, 'src', this.bundles[module.shift()].path, module.join('/')));
+				return (path.join(this.bundles[module.shift()].absolutePath, module.join('/')));
 			else
-				return (path.join(this.basePath, 'src', this.bundles[module[0]].path));
+				return (path.join(this.bundles[module[0]].absolutePath));
 			//return path.join(this.basePath, 'src', this.bundles[name].path);
 		} else
 			return null;
@@ -1460,8 +1584,8 @@ module.exports = {
 	 */
 	requireLocal: function (name) {
 
-		if (this.bundles[name] && fs.existsSync(path.join(this.basePath, 'src', this.bundles[name].path))) {
-			return require(path.join(this.basePath, 'src', this.bundles[name].path));
+		if (this.bundles[name] && fs.existsSync(path.join(this.bundles[name].absolutePath))) {
+			return require(path.join(this.bundles[name].absolutePath));
 		} else
 			return null;
 	},
@@ -1643,11 +1767,14 @@ module.exports = {
 
 	/**
 	 * Ejecuta las directivas de migracion de un componente
+	 * @deprecated
 	 * @param {string} name nombre del componente
 	 * @param {string} action nombre de la accion a realizar, las acciones permitidas son create y export
 	 * por defecto se toma create
 	 */
 	migration: function (name, action) {
+		deprecate("function R.migration")
+		return;
 		var me = this;
 		//return new Promise(function (resolve, reject) {
 
@@ -1659,7 +1786,7 @@ module.exports = {
 			return new Promise(function (resolve, reject) { resolve() });
 		}
 
-		if (me.bundles[name] && fs.existsSync(path.join(me.basePath, 'src', me.bundles[name].path)) && fs.existsSync(path.join(me.basePath, 'src', me.bundles[name].path) + "/Migration/skeleton.js")) {
+		if (me.bundles[name] && fs.existsSync(path.join(me.bundles[name].absolutePath)) && fs.existsSync(path.join(me.bundles[name].absolutePath) + "/Migration/skeleton.js")) {
 
 			var done = function (msg) {
 				if (msg)
@@ -1841,10 +1968,143 @@ module.exports = {
 		// create the annotation reader
 		this.annotationFramework.reader = new annotations.Reader(this.annotationFramework.registry)
 		// add annotations to the registry
-		this.annotationFramework.registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Route'))
 
 		var parse = annotations.Reader.prototype.parse;
+		$i('AnnotationReaderCache', {
+			_cache: {},
 
+			_register: function (annota, type, callback) {
+				var annotation = annota.annotation,
+					file = annota.filePath,
+					target = annota.target;
+
+				if (!this._cache[file])
+					this._cache[file] = {}
+				if (!this._cache[file][annotation])
+					this._cache[file][annotation] = {}
+				if (!this._cache[file][annotation][type])
+					this._cache[file][annotation][type] = {}
+				if (!this._cache[file][annotation][type][target]) {
+					this._cache[file][annotation][type][target] = annota;
+					if (callback)
+						callback()
+				}
+
+			},
+
+			get: function (annotation, file, type, target) {
+				if (!this._cache[file])
+					return false;
+				if (!this._cache[file][annotation])
+					return false;
+				if (!this._cache[file][annotation][type])
+					return false;
+				if (!this._cache[file][annotation][type][target])
+					return false;
+
+				return this._cache[file][annotation][type][target];
+
+			},
+
+			getDefinition: function (annotation, file, target) {
+				if (!this._cache[file])
+					return false;
+				if (!this._cache[file][annotation])
+					return false;
+				if (!this._cache[file][annotation]['definition'])
+					return false;
+				if (!target) {
+					var targets = Object.keys(this._cache[file][annotation]['definition'])
+					target = targets.length > 0 ? targets[0] : ''
+				}
+
+				if (!this._cache[file][annotation]['definition'][target])
+					return false;
+
+				return this._cache[file][annotation]['definition'][target];
+
+			},
+
+			getMethod: function (annotation, file, target) {
+				if (!this._cache[file])
+					return false;
+				if (!this._cache[file][annotation])
+					return false;
+				if (!this._cache[file][annotation]['method'])
+					return false;
+				if (!this._cache[file][annotation]['method'][target])
+					return false;
+
+				return this._cache[file][annotation]['method'][target];
+
+			},
+
+
+			getMethods: function (annotation, file) {
+				if (!this._cache[file])
+					return [];
+				if (!this._cache[file][annotation])
+					return [];
+				if (!this._cache[file][annotation]['method'])
+					return [];
+				var methods = []
+				for (const key in this._cache[file][annotation]['method']) {
+					if (this._cache[file][annotation]['method'].hasOwnProperty(key)) {
+						const element = this._cache[file][annotation]['method'][key];
+						methods.push(element)
+					}
+				}
+				return methods;
+
+			},
+
+			getProperty: function (annotation, file, target) {
+				if (!this._cache[file])
+					return false;
+				if (!this._cache[file][annotation])
+					return false;
+				if (!this._cache[file][annotation]['property'])
+					return false;
+				if (!this._cache[file][annotation]['property'][target])
+					return false;
+
+				return this._cache[file][annotation]['property'][target];
+
+			},
+
+			getProperties: function (annotation, file) {
+				if (!this._cache[file])
+					return [];
+				if (!this._cache[file][annotation])
+					return [];
+				if (!this._cache[file][annotation]['property'])
+					return [];
+				var methods = []
+				for (const key in this._cache[file][annotation]['property']) {
+					if (this._cache[file][annotation]['property'].hasOwnProperty(key)) {
+						const element = this._cache[file][annotation]['property'][key];
+						methods.push(element)
+					}
+				}
+				return methods;
+
+
+			},
+
+			getConstructor: function (annotation, file, target) {
+				if (!this._cache[file])
+					return false;
+				if (!this._cache[file][annotation])
+					return false;
+				if (!this._cache[file][annotation]['constructor'])
+					return false;
+				if (!this._cache[file][annotation]['constructor'][target])
+					return false;
+
+				return this._cache[file][annotation]['constructor'][target];
+
+			}
+		});
 		annotations.Reader.prototype.parse = function () {
 			(function (toString) {
 				Buffer.prototype.__tString = toString
@@ -1854,6 +2114,64 @@ module.exports = {
 			})(Buffer.prototype.toString);
 
 			parse.apply(this, arguments);
+			var resolve;
+			var aChain = {
+				_stack: [],
+				then: function (callback) {
+					this._stack.push(callback)
+				},
+				resolve: function () {
+					this._stack.forEach(function (fn) {
+						fn()
+					})
+				}
+			}
+
+			this.definitionAnnotations.forEach((annotation) => {
+				$i('AnnotationReaderCache')._register(annotation, 'definition', function () {
+					aChain.then(function () {
+						R.emit('annotation:read', 'definition', annotation)
+						R.emit('annotation:read.definition.' + annotation.annotation, 'definition', annotation)
+					})
+				});
+
+			});
+
+			this.methodAnnotations.forEach((annotation) => {
+				$i('AnnotationReaderCache')._register(annotation, 'method', function () {
+					aChain.then(function () {
+						R.emit('annotation:read', 'method', annotation)
+						R.emit('annotation:read.method.' + annotation.annotation, 'method', annotation)
+					})
+
+				});
+
+			});
+
+			this.constructorAnnotations.forEach((annotation) => {
+				$i('AnnotationReaderCache')._register(annotation, 'constructor', function () {
+					aChain.then(function () {
+						R.emit('annotation:read', 'constructor', annotation)
+						R.emit('annotation:read.constructor.' + annotation.annotation, 'constructor', annotation)
+					})
+
+				});
+
+
+			});
+
+			this.propertyAnnotations.forEach((annotation) => {
+				$i('AnnotationReaderCache')._register(annotation, 'property', function () {
+					aChain.then(function () {
+						R.emit('annotation:read', 'property', annotation)
+						R.emit('annotation:read.property.' + annotation.annotation, 'property', annotation)
+					})
+
+				});
+
+			});
+
+			aChain.resolve();
 
 			(function (toString) {
 
@@ -1937,14 +2255,14 @@ module.exports = {
 		var div = a.split(':')
 		var viewFn = new ViewFunctions(R);
 		viewFn.__setRequest(this.req);
-		b = lodash.extend((b) ? b : {}, { R: viewFn });
+		b = lodash.extend((b) ? b : {}, { R: viewFn, public: viewFn.public });
 
 		if (div.length == 2 && $injector('R').bundles[div[0]]) {
-			var view = path.join($injector('R').basePath, 'src', $injector('R').bundles[div[0]].path, 'Views', div[1]);
+			var view = path.join($injector('R').bundles[div[0]].absolutePath, 'Views', div[1]);
 
 			return $injector('R').ejs.render(fs.readFileSync(view).toString(), b)
 		} else {
-			return $injector('R').ejs.render(fs.readFileSync(a), b)
+			return $injector('R').ejs.render(fs.readFileSync(a).toString(), b)
 		}
 
 	},

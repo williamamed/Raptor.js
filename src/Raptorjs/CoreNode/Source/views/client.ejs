@@ -48,6 +48,9 @@
 				<% if(typeof plugin[i] == 'object' && plugin[i].name && plugin[i].callback && typeof plugin[i].name=="string" && typeof plugin[i].callback=='object') { %>
 					{name:'<%- plugin[i].name %>',callback:<%- JSON.stringify(plugin[i].callback) %>},
 				<% } %>
+				<% if(typeof plugin[i] == 'object' && plugin[i].name && plugin[i].callback && typeof plugin[i].name=="string" && typeof plugin[i].callback=='string') { %>
+					{name:'<%- plugin[i].name %>',callback:<%- plugin[i].callback %>},
+				<% } %>
 			<% }  %>
 		],
 

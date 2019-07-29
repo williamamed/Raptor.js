@@ -1,9 +1,8 @@
 {
-  "mode": "development",
   "database": {
     "state": "off",
     "options": {
-      "port": 5432,
+      "port": 3306,
       "dialect": "mysql",
       "host": "127.0.0.1"
     },

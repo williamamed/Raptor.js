@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <link rel="icon" href="<% if (R.plugin('ngPortal_icon')) { %><%- R.plugin('ngPortal_icon') %><% }else{ %> /public/rmodules/Util/ngPortalNode/img/logo.png <% } %>">
+        <link rel="icon" href="<% if (R.plugin('ngPortal_icon')) { %><%- R.plugin('ngPortal_icon') %><% }else{ %> <%-public('ngPortalNode/img/logo.png')%> <% } %>">
 
         <title><% if (R.plugin('ngPortal_name')){ %><%- R.plugin('ngPortal_name') %><% }else{ %><%- appname %> <%- version %><% } %></title>
 
@@ -84,7 +84,7 @@
     <body ng-app="ngPortalApp">
 
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top nav-doc-bar" style="z-index:103">
-            <a class="navbar-brand" href="#"> <% if (R.plugin('ngPortal_name')){ %><%- R.plugin('ngPortal_name') %><% }else{ %><%- appname %> <%- version %><% } %></a>
+            <a class="navbar-brand" href="#"><% if (R.plugin('ngPortal_name')){ %><%- R.plugin('ngPortal_name') %><% }else{ %><%- appname %> <%- version %><% } %></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -121,7 +121,7 @@
                 md-whiteframe="4">
 
                 <md-toolbar class="md-theme-indigo">
-                    <p class="text-center" ><img src="<%if (R.plugin('ngPortal_icon')){%><%- R.plugin('ngPortal_icon') %><%}else{%>/public/rmodules/Util/ngPortalNode/img/logo.png <% } %>" height="100"></p>
+                    <p class="text-center" ><img src="<%if (R.plugin('ngPortal_icon')){%><%- R.plugin('ngPortal_icon') %><%}else{%><%-public('ngPortalNode/img/logo.png')%> <% } %>" height="100"></p>
 
                 </md-toolbar>
                 <md-content layout-padding >
@@ -144,7 +144,7 @@
                                                             <img src="<%- "/portal/rmodules/Util/ngPortalNode/menu/"+modules[menuItem].children[child]['icon']+".png" %>" width="25">
                                                         <% } %>     
                                                     <% }else{ %>
-                                                        <img src="/public/rmodules/Util/ngPortalNode/img/menu-item.png"" width="25">
+                                                        <img src="<%-public('ngPortalNode/img/menu-item.png')%>" width="25">
                                                     <% } %>
 
                                                     <%- modules[menuItem].children[child]['name'] %></a></li>
@@ -169,11 +169,11 @@
                                                     <% if (R.plugin('ngPortal_sidebar_iconbase')){ %>              
                                                         <img src="<%- R.plugin('ngPortal_sidebar_iconbase')+modules[menuItem]['icon']+".png" %>" width="25">
                                                     <% }else{ %>
-                                                        <img src="<%- "/public/rmodules/Util/ngPortalNode/menu/"+modules[menuItem]['icon']+".png" %>" width="25">
+                                                        <img src="<%- public('ngPortalNode/menu/'+modules[menuItem]['icon']+'.png') %>" width="25">
                                                     <% } %>                                  
 
                                                 <% }else{ %>
-                                                    <img src="/public/rmodules/Util/ngPortalNode/img/menu-item.png" width="25">
+                                                    <img src="<%-public('ngPortalNode/img/menu-item.png')%>" width="25">
                                                 <% } %>
 
                                                 <%- modules[menuItem]['name'] %></a></li>
@@ -234,8 +234,8 @@
         route: '<%-routename%>'
     }
     </script>
-    <script src="/public/rmodules/Util/ngPortalNode/ng/app.js"></script>
-    <script src="/public/rmodules/Util/ngPortalNode/ng/profile.controller.js"></script>
+    <script src="<%-public('ngPortalNode/ng/app.js')%>"></script>
+    <script src="<%-public('ngPortalNode/ng/profile.controller.js')%>"></script>
     <%- R.plugin('ngPortal_script') %>
 
 </body>

@@ -64,10 +64,10 @@ class ngPortal {
             var viewFn = new R.ViewFunctions(R);
             viewFn.__setRequest(req);
 
-            b = lodash.extend((b) ? b : {}, { R: viewFn });
+            b = lodash.extend((b) ? b : {}, { R: viewFn,public:viewFn.public });
 
             if (div.length == 2 && $injector('R').bundles[div[0]]) {
-                var view = path.join($injector('R').basePath, 'src', $injector('R').bundles[div[0]].path, 'Views', div[1]);
+                var view = path.join($injector('R').bundles[div[0]].absolutePath, 'Views', div[1]);
 
                 return ejs.render(fs.readFileSync(view).toString(), b)
             } else {

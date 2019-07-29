@@ -41,14 +41,15 @@ Ext.define('GestPrivilege.controller.Actions', {
                 beforedeselect: this.onListDeSelect
                 
             },
-            'viewport':{
+            'actionlist':{
                 render:this.onRender
             }
         });
       
     },
-     onRender:function(){
-        //Raptor.controlActions();
+     onRender:function(cmp){
+        
+        Raptor.controlActions(cmp);
     },
     onListSelect: function() {
         if(this.getButtonEdit())

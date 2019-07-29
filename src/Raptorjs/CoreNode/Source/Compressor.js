@@ -17,6 +17,7 @@ class Compressor {
 	}
 
 	compressJS(options){
+		
 		if(options.compress==true)
 			return Compressor._run('uglifyjs',options.input,options.output)
 		else
@@ -40,7 +41,9 @@ class Compressor {
 			this.R.backbone.preCompileApp(path.join(this.R.basePath,'public','rmodules',this.R.bundles[this.bundle].path),compress)
 	}
 
-	static _run(type,input,output,options){
+	static _run(type,input,output,options,cb){
+		
+		var self=this
 		var comp = require('node-minify');
 		if(!options)
 			options={}
@@ -53,6 +56,9 @@ class Compressor {
 		  	if(err)
 		  		console.log(err)
 		  }		
+		})
+		.catch(function(err){
+			console.log("Compressor error:",err.message)
 		});
 
 	}
@@ -66,7 +72,14 @@ class Compressor {
 			   }else {
 
 					if(file==op.marker){
+						op.directory=directory
 						var comp = require('node-minify');
+						op.input=op.input.map(function(val){
+							
+							return val.replace('./',op.directory+"/")
+						})
+						if(!fs.existsSync(path.dirname(path.join(directory,op.output))))
+							fs.mkdirSync(path.dirname(path.join(directory,op.output)))
 						comp.minify({
 						  compressor: op.compressor?op.compressor:'no-compress',
 

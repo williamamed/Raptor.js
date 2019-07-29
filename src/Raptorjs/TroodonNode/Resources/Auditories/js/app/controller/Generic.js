@@ -57,10 +57,10 @@ Ext.define('Auditories.controller.Generic', {
     },
     onRender:function(){
         //Make Raptor control the UI to activate the privilege
-        //Raptor.controlActions();
+        Raptor.controlActions();
         //console.debug();
         this.getGenericStore().load();
-        Raptor.secureTroodon()
+        //Raptor.secureTroodon()
         
     },
     onGrafic:function(){

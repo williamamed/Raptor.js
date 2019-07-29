@@ -2,13 +2,24 @@
 'use strict';
 var fs = require('fs')
 var path = require('path')
-/*
-* Raptor.js - Node framework
-* Generado por Raptor.js
-* 
-*
-*/
+/**
+ * Raptor.js - Node framework
+ * TroodonNode - Componente de seguridad
+ * 
+ * @Biometry({
+ * 	bioSession:"bioTroodon",
+ * 	frontLogin: "/troodon/*",
+ * 	getActiveUser: this.getActiveUser,
+ * 	prototype:"troodon"
+ * })
+ */
 class TroodonNode {
+
+
+
+	getActiveUser(req, res, done) {
+		done(req.user.username)
+	}
 
 	/**
 	 * Raptor.js - Node framework
@@ -65,7 +76,12 @@ class TroodonNode {
 				 * el manejedor con su logica
 				 */
 				'before:middleware': function () {
-
+					
+					if(R.options.database.state=='off' || !R.options.database.state){
+						console.log('TroodonNode require una conexión activa con la base de datos.')
+						return ;
+					}
+					
 					SecurityRegistry
 						.register('Troodon')
 						.setLogin('/troodon([\/\w*]*)?', 'TroodonNode:auth')
@@ -82,6 +98,7 @@ class TroodonNode {
 									model: R.getModels('TroodonNode').security_estructure
 								}]
 							}).then(user => {
+
 								if (user) {
 									R.getModels('TroodonNode').security_user.validPassword(password, user.password, done, user, req)
 								} else {
@@ -151,7 +168,7 @@ class TroodonNode {
 											})
 										} else {
 											req.logger.alert('Access Denied Route: ' + req.url + ' \nMethod: ' + req.method + ' \nParams: ' + JSON.stringify(req.body))
-											res.end('access denied')
+											throw new Error('Access denied')
 										}
 										return null;
 									})
@@ -177,7 +194,7 @@ class TroodonNode {
 									})
 									.catch(function (e) {
 										req.logger.error(e.toString())
-										res.end('access denied for some error')
+										res.end('ACCESO DENEGADO')
 									})
 							})
 
@@ -186,7 +203,7 @@ class TroodonNode {
 						})
 						.setAuditories(function (req, res, next) {
 
-							req.logger.info('Route: ' + req.url + ' \nMethod: ' + req.method + ' \nParams: ' + JSON.stringify(req.body))
+							req.logger.info('Route: ' + req.url + ' \nMethod: ' + req.method + ' \nParams: ' + JSON.stringify(req.body,null, 2))
 							next()
 						})
 				},
@@ -195,48 +212,43 @@ class TroodonNode {
 				 * Evento para leer la Anotacion Troodon en index.js y darle seguridad a rutas
 				 * 
 				 */
-				'after:invoke.middleware': $injector.invokeLater(function (bundle, Annotations) {
+				'annotation:read.definition.Troodon': $injector.invokeLater(function (type, annotation, bundle, Annotations) {
 
-					var reader = new Annotations.Reader(AnnotationFramework.registry);
+					Events.on('securityManager:configured.Troodon', function () {
 
-					reader.parse(path.join(R.basePath, 'src', bundle.path, 'index.js'));
-
-					reader.definitionAnnotations.forEach((annotation) => {
-						if (annotation.annotation === 'Troodon') {
-							SecurityRegistry
-								.get('Troodon')
-								.setLogin(annotation.value,annotation.login?annotation.login:"TroodonNode:auth")
-							
-						}
+						SecurityRegistry
+							.get('Troodon')
+							.setLogin(annotation.value, annotation.login ? annotation.login : "TroodonNode:auth", annotation.token ? annotation.token : false)
 					})
+
 				}),
 
 				/**
 				 * Evento para leer la Anotacion Troodon en Controladores y darle seguridad a rutas
 				 * 
 				 */
-				'init:controller': $injector.invokeLater(function (instance, controllerPath, bundle, Annotations) {
+				'annotation:read.method.Troodon': $injector.invokeLater(function (type, annotation) {
 
-					var reader = new Annotations.Reader(AnnotationFramework.registry);
+					SecurityRegistry
+						.get('Troodon')
+						.setLogin(annotation.value, annotation.login ? annotation.login : "TroodonNode:auth", annotation.token ? annotation.token : false)
 
-					reader.parse(controllerPath);
-
-					reader.definitionAnnotations.forEach((annotation) => {
-						if (annotation.annotation === 'Troodon') {
-							SecurityRegistry
-								.get('Troodon')
-								.setLogin(annotation.value,annotation.login?annotation.login:"TroodonNode:auth")
-							
-						}
-					})
 				}),
 
 				/**
 				 * Correr migraciones
 				 */
-				'database:running': function () {
-					R.migration('TroodonNode')
-				}
+				'migration:ready': $i.later(function (Umzug) {
+
+					Umzug.up("01-troodontables.mig")
+						.then(function (migrations) {
+							console.log('Esquemas de tablas Troodon insertadas!!')
+						})
+						.catch(function (err) {
+							console.log(err.message)
+						})
+
+				})
 			})
 
 		AnnotationFramework.registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Troodon'))
@@ -284,17 +296,19 @@ class TroodonNode {
 					this.log(this.EMERGENCY, log)
 				},
 				write: function (username, ip, state, a_date, log) {
-					R.getModels('TroodonNode').security_trace
-						.create({
-							username: username,
-							ip: ip,
-							state: state,
-							a_date: a_date,
-							log: log
-						})
-						.then(function () {
+					
+					if(R.database.state)
+						R.getModels('TroodonNode').security_trace
+							.create({
+								username: username,
+								ip: ip,
+								state: state,
+								a_date: a_date,
+								log: log
+							})
+							.then(function () {
 
-						})
+							})
 				}
 			}
 

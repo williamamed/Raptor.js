@@ -19,8 +19,14 @@ class KDynamics extends R.Controller {
 	 * @param {*} options 
 	 */
 	static bioMiddleware(options) {
-		var none=function(a,b,c){
-			c()
+		
+		var none=function(req,res,next){
+			
+			next()
+		}
+		if(R.options.database.state=='off' || !R.options.database.state){
+			console.log('BioNode require una conexión activa con la base de datos.')
+			return none;
 		}
 
 		if(!options.passwordField)
@@ -28,30 +34,48 @@ class KDynamics extends R.Controller {
 		
 		if(!options.bioSession){
 			console.error("BioNode Middleware error: configure un nombre para el parametro bioSession")
-			return none()
+			return none
 		}
 
 		if(!options.getActiveUser){
 			console.error("BioNode Middleware error: configure la funcion getActiveUser para devolver el nombre del usuario autenticado")
-			return none()
+			return none
 		}
 
 		var self = this;
 		options.hasNewPassword=function(req,bio,field,done){
 			
 			done(bio!==field)
-		}
-		R.on('sendresponse',function(req){
-			
-			if(req.res.statusCode==401 && new RegExp(options.frontLogin).test(req.url)){
-				req.res.render('BioNode:login', {
-					name: options.passwordField
-				}, function (err, str) {
-					req.viewPlugin.set('after_response_body', str)
-				})
-			}
-				//req.viewPlugin.set('after_response_body',"<script>alert("+req.res.statusCode+")</script>")
-		})
+		};
+		
+		/**(function (push) {
+			R.app._router.stack.__push = push
+			R.app._router.stack.push = function () {
+				return this.unshift.apply(this, arguments);
+			};
+		})(R.app._router.stack.push);
+		R.app.all('/mioooooooo',function(){});
+		(function (push) {
+
+			R.app._router.stack.push = function () {
+				return push.apply(this, arguments);
+			};
+		})(R.app._router.stack.__push);
+
+		console.log(R.app._router.stack)*/
+		if(options.frontLogin)
+			R.on('sendresponse',function(req){
+				
+				if(req.res.statusCode==401 && new RegExp(options.frontLogin).test(req.url)){
+					
+					req.res.render('BioNode:login', {
+						name: options.passwordField
+					}, function (err, str) {
+						req.viewPlugin.set('after_response_body', str)
+					})
+				}
+				
+			})
 		$injector('Bio').watch.push({
 			name: options.bioSession,
 			field: options.passwordField
@@ -65,11 +89,13 @@ class KDynamics extends R.Controller {
 			}
 			if(options.init)
 				options.init.apply(options,arguments)
+			
 			//Verificar si esta autenticado biometricamente, dejarlo entrar si es true
 			if (req.session[options.bioSession+"kb10"]) {
+				
 				next()
 			} else {
-
+				
 				options.getActiveUser.apply(options, [req, res, function (username) {
 					R.getModels('BioNode').biouser
 						.findOne({

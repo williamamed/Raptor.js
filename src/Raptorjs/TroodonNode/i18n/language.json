@@ -311,5 +311,9 @@
 	"msgdeletemulti":{
 		"es":"¿Está seguro que desea eliminar la selección?",
 		"en":"Do you want delete the selected items?"
+	},
+	"category_header":{
+		"es":"Categorías de estructuras",
+		"en":"Structures categories"
 	}
 }

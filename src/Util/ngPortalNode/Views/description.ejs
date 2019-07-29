@@ -7,7 +7,7 @@
     <div class="inner" style="" >
         
             <div class="col-md-12">
-                <h2 class="text-center"><img src="/public/rmodules/Util/ngPortalNode/img/logo.png" height="200" ></h2>
+                <h2 class="text-center"><img src="<%-public('ngPortalNode/img/logo.png')%>" height="200" ></h2>
                 <h2 class="text-center">Bienvenidos a ngPortal</h2>
                 
                 <p class="text-center">ngPortal es suministrado por Raptor.js y sirve como plantilla predefinida para crear un portal en Angularjs donde podemos añadir las funcionalidades de nuestra aplicación.</p>
@@ -21,7 +21,7 @@
                 <p>Los ViewPlugins es una de las funciones propuestas en el framework Raptor PHP 2 y que ahora son implementados para Raptor.js, permite la inyección de contenido en los hotpots declarados en el sistema para determinados patrones de ruta. </p>
                 
                 <p>El entorno tiene 3 puntos principales de inyección de contenido, donde podrán definirse bloques personalizados con el contenido que deseamos logrando personalizar nuestro entorno para el objetivo deseado. </p>
-                <h2 class="text-left"><img src="/public/rmodules/Util/ngPortalNode/img/hotpot.gif" ></h2>
+                <h2 class="text-left"><img src="<%-public('ngPortalNode/img/hotpot.gif')%>" ></h2>
                 <b>Punto 1</b>
                 <p>Inserta contenido dentro del menu de opciones.</p>
                 <p>Nombre hotpot: <code>sidebar</code></p>
@@ -389,7 +389,22 @@ module.exports=MiComponenteNode;
     <script type="text/javascript">
         $(document).ready(function() {
 
-
+            $.post('/api/troodon/login',{
+                username:'admin',
+                password: 'admin'
+            })
+            .done(function(response){
+                $.ajax({
+                    type:'GET',
+                    url:'/migration/down',
+                    headers:{
+                        "Authorization":"Bearer "+response.accessToken
+                    },
+                    success:function(data){
+                        console.log(data)
+                    }
+                })
+            })
         });
         window.prettyPrint && prettyPrint()
        

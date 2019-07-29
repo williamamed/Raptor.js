@@ -32,6 +32,39 @@ class FirstExample extends R.Controller {
 		res.send('hola ruta')
 	}
 
+	/**
+	 * @Route("/ang")
+	 * @param {*} req 
+	 * @param {*} res 
+	 * @param {*} next 
+	 */
+	angularJsExampleRuta(req, res, next) {
+		
+		res.render('exampleNode:AngExample/index.ejs')
+	}
+
+	/**
+	 * @Route("/ang/base/url")
+	 * @param {*} req 
+	 * @param {*} res 
+	 * @param {*} next 
+	 */
+	angularJsFragmentExampleRuta(req, res, next) {
+		
+		res.render('exampleNode:AngExample/index.fragment.ejs')
+	}
+
+	/**
+	 * @Route("/extjs")
+	 * @param {*} req 
+	 * @param {*} res 
+	 * @param {*} next 
+	 */
+	extjsExampleRuta(req, res, next) {
+		
+		res.render('exampleNode:extjsSample/index.ejs')
+	}
+
     /**
      * @Route("/language",method="get")
      *
@@ -41,7 +74,7 @@ class FirstExample extends R.Controller {
 
 		req.language.getCurrentLanguage();
 		req.language.persistCookie()
-		res.show('El lenguaje fue establecido con exito en un cookie', Controller.ERROR)
+		res.show('El lenguaje fue establecido con exito en un cookie', R.Controller.ERROR)
 		//return req.language.getTranslation("prueba");
 	}
 
@@ -49,43 +82,51 @@ class FirstExample extends R.Controller {
      * @Route("/database/foreignkey")
      *
      */
-	dataBaseRequestAction(req, res, next, example_cars, example_users) {
+	dataBaseRequestAction(req, res, next, Database, example_cars, example_users, Umzug) {
+		if(!Database){
+			next(new Error("Para utilizar esta ruta debes configurar una conexión de base de datos."));
+			return;
+		}
+			
+
 		var self = this;
+		const getCars = function () {
+			/**
+			 * Esta funcion puede ser establecida en el classMethods associate del modelo
+			 *
+			 */
+			example_cars.belongsTo(example_users, { foreignKey: 'user_id' })
+			/**
+			 * Para incluir el hidratado del modelo users dentro del cars debe especificarse en el include
+			 *
+			 */
+			example_cars.findAll({
+				include: [{
+					model: example_users
+				}]
+			}).then(function (cars) {
 
+				res.end(JSON.stringify(cars))
 
-		/**
-		 * Esta funcion puede ser establecida en el classMethods associate del modelo
-		 *
-		 */
-		example_cars.belongsTo(example_users,{ foreignKey: 'user_id' })
-
+			}).catch(function (err) {
+				next(err);
+			})
+		}
 		/**
 		 * Creando las tablas users y cars que para este ejemplo no existen
-		 * Migration ejecuta las directivas de creacion definidos en Migration/skeleton.js
+		 * Migration ejecuta las directivas de creacion definidos en Migration/01-example.mig.js
 		 * de este componente 
 		 *
 		 */
-		R.migration("exampleNode")
+		Umzug.up(['01-example.mig'])
 			.then(function () {
-				
-				/**
-				 * Para incluir el hidratado del modelo users dentro del cars debe especificarse en el include
-				 *
-				 */
-				example_cars.findAll({
-					include: [{
-						model: example_users
-					}]
-				}).then(function (cars) {
-
-					res.end(JSON.stringify(cars))
-
-				}).catch(function (err) {
-					next(err);
-				})
+				getCars()
 			})
 			.catch(function (err) {
-				next(err);
+				if (err.message.split('Migration is not pending').length > 1) {
+					getCars()
+				} else
+					next(err);
 			})
 
 

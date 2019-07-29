@@ -1,0 +1,521 @@
+{
+  "ui": {
+    "style": "padding:5px",
+    "extend": "Ext.container.Viewport",
+    "itemId": "Viewport",
+    "defineName": "Example1",
+    "layout": "fit",
+    "items": [
+      {
+        "xtype": "panel",
+        "title": "Panel Extjs de ejemplo",
+        "bodyStyle": "padding:5px",
+        "itemId": "Example12",
+        "layout": "anchor",
+        "items": [
+          {
+            "xtype": "tabpanel",
+            "bodyStyle": "padding:5px",
+            "itemId": "Example14",
+            "anchor": "100% 90%",
+            "items": [
+              {
+                "xtype": "panel",
+                "title": "Opcion 1",
+                "bodyStyle": "padding:5px",
+                "itemId": "Example15",
+                "items": [
+                  {
+                    "xtype": "textfield",
+                    "name": "name",
+                    "fieldLabel": "Name",
+                    "allowBlank": true,
+                    "itemId": "Example18"
+                  }
+                ]
+              },
+              {
+                "xtype": "panel",
+                "title": "Opcion 2",
+                "bodyStyle": "padding:5px",
+                "itemId": "Example17",
+                "items": [
+                  {
+                    "xtype": "combobox",
+                    "name": "name",
+                    "fieldLabel": "Choose state",
+                    "allowBlank": true,
+                    "itemId": "Example19"
+                  }
+                ]
+              },
+              {
+                "xtype": "panel",
+                "title": "Usuarios",
+                "bodyStyle": "padding:5px",
+                "itemId": "Example113",
+                "layout": "fit",
+                "items": [
+                  {
+                    "xtype": "gridpanel",
+                    "title": "Grid",
+                    "bodyStyle": "padding:5px",
+                    "columns": [
+                      {
+                        "text": "Header"
+                      }
+                    ],
+                    "itemId": "Example114"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "xtype": "toolbar",
+            "itemId": "Example110",
+            "anchor": "100% 10%",
+            "items": [
+              {
+                "xtype": "button",
+                "text": "Add",
+                "itemId": "Example111"
+              },
+              {
+                "xtype": "button",
+                "text": "Edit",
+                "itemId": "Example112"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "tree": [
+    {
+      "text": "Ext.container.Viewport",
+      "sample": {
+        "style": "padding:5px",
+        "extend": "Ext.container.Viewport",
+        "itemId": "Viewport",
+        "defineName": "Example1",
+        "layout": "fit"
+      },
+      "uiid": "Viewport",
+      "defineName": "",
+      "parentId": "root",
+      "index": 0,
+      "depth": 1,
+      "expanded": true,
+      "expandable": true,
+      "checked": null,
+      "leaf": false,
+      "cls": "",
+      "iconCls": "",
+      "icon": "",
+      "root": false,
+      "isLast": true,
+      "isFirst": true,
+      "allowDrop": true,
+      "allowDrag": true,
+      "loaded": true,
+      "loading": false,
+      "href": "",
+      "hrefTarget": "",
+      "qtip": "",
+      "qtitle": "",
+      "qshowDelay": 0,
+      "children": [
+        {
+          "text": "Ext.panel.Panel",
+          "sample": {
+            "xtype": "panel",
+            "title": "Panel Extjs de ejemplo",
+            "bodyStyle": "padding:5px",
+            "itemId": "Example12",
+            "layout": "anchor"
+          },
+          "uiid": "Example12",
+          "defineName": "",
+          "index": 0,
+          "depth": 2,
+          "expanded": true,
+          "expandable": true,
+          "checked": null,
+          "leaf": false,
+          "cls": "",
+          "iconCls": "",
+          "icon": "",
+          "root": false,
+          "isLast": true,
+          "isFirst": true,
+          "allowDrop": true,
+          "allowDrag": true,
+          "loaded": true,
+          "loading": false,
+          "href": "",
+          "hrefTarget": "",
+          "qtip": "",
+          "qtitle": "",
+          "qshowDelay": 0,
+          "children": [
+            {
+              "text": "Ext.tab.Panel",
+              "sample": {
+                "xtype": "tabpanel",
+                "bodyStyle": "padding:5px",
+                "itemId": "Example14",
+                "anchor": "100% 90%"
+              },
+              "uiid": "Example14",
+              "defineName": "",
+              "index": 0,
+              "depth": 3,
+              "expanded": true,
+              "expandable": true,
+              "checked": null,
+              "leaf": false,
+              "cls": "",
+              "iconCls": "",
+              "icon": "",
+              "root": false,
+              "isLast": false,
+              "isFirst": true,
+              "allowDrop": true,
+              "allowDrag": true,
+              "loaded": true,
+              "loading": false,
+              "href": "",
+              "hrefTarget": "",
+              "qtip": "",
+              "qtitle": "",
+              "qshowDelay": 0,
+              "children": [
+                {
+                  "text": "Ext.panel.Panel",
+                  "sample": {
+                    "xtype": "panel",
+                    "title": "Opcion 1",
+                    "bodyStyle": "padding:5px",
+                    "itemId": "Example15"
+                  },
+                  "uiid": "Example15",
+                  "defineName": "",
+                  "index": 0,
+                  "depth": 4,
+                  "expanded": false,
+                  "expandable": true,
+                  "checked": null,
+                  "leaf": false,
+                  "cls": "",
+                  "iconCls": "",
+                  "icon": "",
+                  "root": false,
+                  "isLast": false,
+                  "isFirst": true,
+                  "allowDrop": true,
+                  "allowDrag": true,
+                  "loaded": true,
+                  "loading": false,
+                  "href": "",
+                  "hrefTarget": "",
+                  "qtip": "",
+                  "qtitle": "",
+                  "qshowDelay": 0,
+                  "children": [
+                    {
+                      "text": "Ext.form.field.Text",
+                      "sample": {
+                        "xtype": "textfield",
+                        "name": "name",
+                        "fieldLabel": "Name",
+                        "allowBlank": true,
+                        "itemId": "Example18"
+                      },
+                      "uiid": "Example18",
+                      "defineName": "",
+                      "index": 0,
+                      "depth": 5,
+                      "expanded": false,
+                      "expandable": true,
+                      "checked": null,
+                      "leaf": false,
+                      "cls": "",
+                      "iconCls": "",
+                      "icon": "",
+                      "root": false,
+                      "isLast": true,
+                      "isFirst": true,
+                      "allowDrop": true,
+                      "allowDrag": true,
+                      "loaded": true,
+                      "loading": false,
+                      "href": "",
+                      "hrefTarget": "",
+                      "qtip": "",
+                      "qtitle": "",
+                      "qshowDelay": 0,
+                      "children": null
+                    }
+                  ]
+                },
+                {
+                  "text": "Ext.panel.Panel",
+                  "sample": {
+                    "xtype": "panel",
+                    "title": "Opcion 2",
+                    "bodyStyle": "padding:5px",
+                    "itemId": "Example17"
+                  },
+                  "uiid": "Example17",
+                  "defineName": "",
+                  "index": 1,
+                  "depth": 4,
+                  "expanded": false,
+                  "expandable": true,
+                  "checked": null,
+                  "leaf": false,
+                  "cls": "",
+                  "iconCls": "",
+                  "icon": "",
+                  "root": false,
+                  "isLast": false,
+                  "isFirst": false,
+                  "allowDrop": true,
+                  "allowDrag": true,
+                  "loaded": true,
+                  "loading": false,
+                  "href": "",
+                  "hrefTarget": "",
+                  "qtip": "",
+                  "qtitle": "",
+                  "qshowDelay": 0,
+                  "children": [
+                    {
+                      "text": "Ext.form.field.ComboBox",
+                      "sample": {
+                        "xtype": "combobox",
+                        "name": "name",
+                        "fieldLabel": "Choose state",
+                        "allowBlank": true,
+                        "itemId": "Example19"
+                      },
+                      "uiid": "Example19",
+                      "defineName": "",
+                      "index": 0,
+                      "depth": 5,
+                      "expanded": false,
+                      "expandable": true,
+                      "checked": null,
+                      "leaf": false,
+                      "cls": "",
+                      "iconCls": "",
+                      "icon": "",
+                      "root": false,
+                      "isLast": true,
+                      "isFirst": true,
+                      "allowDrop": true,
+                      "allowDrag": true,
+                      "loaded": true,
+                      "loading": false,
+                      "href": "",
+                      "hrefTarget": "",
+                      "qtip": "",
+                      "qtitle": "",
+                      "qshowDelay": 0,
+                      "children": null
+                    }
+                  ]
+                },
+                {
+                  "text": "Ext.panel.Panel",
+                  "sample": {
+                    "xtype": "panel",
+                    "title": "Usuarios",
+                    "bodyStyle": "padding:5px",
+                    "itemId": "Example113",
+                    "layout": "fit"
+                  },
+                  "uiid": "Example113",
+                  "defineName": "",
+                  "index": 2,
+                  "depth": 4,
+                  "expanded": true,
+                  "expandable": true,
+                  "checked": null,
+                  "leaf": false,
+                  "cls": "",
+                  "iconCls": "",
+                  "icon": "",
+                  "root": false,
+                  "isLast": true,
+                  "isFirst": false,
+                  "allowDrop": true,
+                  "allowDrag": true,
+                  "loaded": true,
+                  "loading": false,
+                  "href": "",
+                  "hrefTarget": "",
+                  "qtip": "",
+                  "qtitle": "",
+                  "qshowDelay": 0,
+                  "children": [
+                    {
+                      "text": "Ext.grid.Panel",
+                      "sample": {
+                        "xtype": "gridpanel",
+                        "title": "Grid",
+                        "bodyStyle": "padding:5px",
+                        "columns": [
+                          {
+                            "text": "Header"
+                          }
+                        ],
+                        "itemId": "Example114"
+                      },
+                      "uiid": "Example114",
+                      "defineName": "",
+                      "index": 0,
+                      "depth": 5,
+                      "expanded": false,
+                      "expandable": true,
+                      "checked": null,
+                      "leaf": false,
+                      "cls": "",
+                      "iconCls": "",
+                      "icon": "",
+                      "root": false,
+                      "isLast": true,
+                      "isFirst": true,
+                      "allowDrop": true,
+                      "allowDrag": true,
+                      "loaded": true,
+                      "loading": false,
+                      "href": "",
+                      "hrefTarget": "",
+                      "qtip": "",
+                      "qtitle": "",
+                      "qshowDelay": 0,
+                      "children": null
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "Ext.toolbar.Toolbar",
+              "sample": {
+                "xtype": "toolbar",
+                "itemId": "Example110",
+                "anchor": "100% 10%"
+              },
+              "uiid": "Example110",
+              "defineName": "",
+              "index": 1,
+              "depth": 3,
+              "expanded": true,
+              "expandable": true,
+              "checked": null,
+              "leaf": false,
+              "cls": "",
+              "iconCls": "",
+              "icon": "",
+              "root": false,
+              "isLast": true,
+              "isFirst": false,
+              "allowDrop": true,
+              "allowDrag": true,
+              "loaded": true,
+              "loading": false,
+              "href": "",
+              "hrefTarget": "",
+              "qtip": "",
+              "qtitle": "",
+              "qshowDelay": 0,
+              "children": [
+                {
+                  "text": "Ext.button.Button",
+                  "sample": {
+                    "xtype": "button",
+                    "text": "Add",
+                    "itemId": "Example111"
+                  },
+                  "uiid": "Example111",
+                  "defineName": "",
+                  "index": 0,
+                  "depth": 4,
+                  "expanded": false,
+                  "expandable": true,
+                  "checked": null,
+                  "leaf": false,
+                  "cls": "",
+                  "iconCls": "",
+                  "icon": "",
+                  "root": false,
+                  "isLast": false,
+                  "isFirst": true,
+                  "allowDrop": true,
+                  "allowDrag": true,
+                  "loaded": true,
+                  "loading": false,
+                  "href": "",
+                  "hrefTarget": "",
+                  "qtip": "",
+                  "qtitle": "",
+                  "qshowDelay": 0,
+                  "children": null
+                },
+                {
+                  "text": "Ext.button.Button",
+                  "sample": {
+                    "xtype": "button",
+                    "text": "Edit",
+                    "itemId": "Example112"
+                  },
+                  "uiid": "Example112",
+                  "defineName": "",
+                  "index": 1,
+                  "depth": 4,
+                  "expanded": false,
+                  "expandable": true,
+                  "checked": null,
+                  "leaf": false,
+                  "cls": "",
+                  "iconCls": "",
+                  "icon": "",
+                  "root": false,
+                  "isLast": true,
+                  "isFirst": false,
+                  "allowDrop": true,
+                  "allowDrag": true,
+                  "loaded": true,
+                  "loading": false,
+                  "href": "",
+                  "hrefTarget": "",
+                  "qtip": "",
+                  "qtitle": "",
+                  "qshowDelay": 0,
+                  "children": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "store": [
+    {
+      "type": "Ext.data.Store"
+    },
+    {
+      "type": "Ext.data.Store"
+    }
+  ],
+  "idgen": "15",
+  "conf": {
+    "prefixName": "Example1",
+    "base": "Ext.container.Viewport"
+  }
+}

@@ -45,16 +45,23 @@ class Controller {
 
 				if (typeof router[i] == 'object') {
 					var stack=[]
-					if(router[i].chain){
+					if(router[i].before){
 						
-						for (let index = 0; index < router[i].chain.length; index++) {
-							if(typeof router[i].chain[index]=='function'){
-								stack.push(router[i].chain[index])
+						for (let index = 0; index < router[i].before.length; index++) {
+							if(typeof router[i].before[index]=='function'){
+								stack.push(router[i].before[index])
 							}
 						}
 					}
 					stack.push(router[i].action)
-
+					if(router[i].after){
+						
+						for (let index = 0; index < router[i].after.length; index++) {
+							if(typeof router[i].after[index]=='function'){
+								stack.push(router[i].after[index])
+							}
+						}
+					}
 					if (router[i]['method']) {
 						var meta=[router[i]['method'], i]
 						this.route.apply(this,meta.concat(stack))

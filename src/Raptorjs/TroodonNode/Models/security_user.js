@@ -47,6 +47,10 @@ module.exports = function(sequelize, DataTypes) {
 		lastattempt: {
 			type: DataTypes.DATE,
 			allowNull: true
+		},
+		settings:{
+			type: DataTypes.TEXT,
+			allowNull: true
 		}
 	}, {
 		tableName: 'security_user',

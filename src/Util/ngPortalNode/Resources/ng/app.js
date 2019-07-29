@@ -13,7 +13,9 @@ app.config(function($routeProvider, $locationProvider, $httpProvider,$controller
 
                 config.headers['X-Requested-With'] = 'XMLHttpRequest'
                 //UIR.load.show('Espere....')
-                $('.portal-loading').show()
+               
+                if(config.ignoreLoading!=true)
+                    $('.portal-loading').show()
                 return config;
             },
             'responseError': function(rejection) {
@@ -56,7 +58,8 @@ app.config(function($routeProvider, $locationProvider, $httpProvider,$controller
                 controller: "FrameController"
             })
             .when('/404', {
-                template: "<h1 class='text-center' style='font-size: 110px;margin-top: 40px'>404</h1><p class='text-center'>La página solicitada no existe.</p>"
+                template: "<h1 class='text-center' style='font-size: 110px;margin-top: 40px'>404</h1><p class='text-center'>La página solicitada no existe.</p>",
+                controller: "404Controller"
             })
             .otherwise({redirectTo: '/404'});
 
@@ -75,7 +78,11 @@ app.controller('FrameController', function($scope, $mdSidenav, $routeParams) {
 });
 
 app.controller('EmbededController', function($scope, $mdSidenav) {
+    
 
+});
+app.controller('404Controller', function($scope, $mdSidenav) {
+    $('.portal-loading').fadeOut()
 
 });
 

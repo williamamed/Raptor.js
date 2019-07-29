@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="/public/rmodules/Raptorjs/CoreNode/img/raptor-logo.png">
+    <link rel="icon" href="<%-public('CoreNode/img/raptor-logo.png')%>">
 
     <title>Raptor.js</title>
 
@@ -18,9 +18,6 @@
 
     <!-- Custom styles for this template -->
     
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="/public/bootstrap/js/ie-emulation-modes-warning.js"></script>
     <style type="text/css">
       body {
         padding-top: 50px;
@@ -47,9 +44,9 @@
 
   <body>
 
-    <div style="background:url(/public/rmodules/Raptorjs/CoreNode/img/header-2.png);height:250px;width:100%;padding:25px;background-position:bottom;left:0;position:absolute;top:0px">
+    <div style="background:url(<%-public('CoreNode/img/header-2.png')%>);height:250px;width:100%;padding:25px;background-position:bottom;left:0;position:absolute;top:0px">
      
-      <h2 class="text-center" style="color:#abaaaa;margin-right:25px"><img src="/public/rmodules/Raptorjs/CoreNode/img/raptor-logo.png" height="90"></h2>
+      <h2 class="text-center" style="color:#abaaaa;margin-right:25px"><img src="<%-public('CoreNode/img/raptor-logo.png')%>" height="90"></h2>
       <h3 class="text-center" style="color:#abaaaa;margin-right:25px">Módulo de seguridad Troodon</h3>
       
     </div>
@@ -106,9 +103,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/public/bootstrap/js/jquery.js"></script>
-    <script src="/public/bootstrap//js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="/public/bootstrap/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="/public/bootstrap/v4/js/bootstrap.min.js"></script>
    
   </body>
 </html>

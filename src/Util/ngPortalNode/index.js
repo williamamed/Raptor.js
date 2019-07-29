@@ -2,11 +2,11 @@
 const ngPortalRegistry=require('./Manager/ngPortalRegistry')
 const ngPortal=require('./Manager/ngPortal')
 const path=require('path')
-/*
+/**
 * Raptor.js - Node framework
 * Generado por Raptor.js
 * 
-*
+* @Route("")
 */
 class ngPortalNode {
 

@@ -150,6 +150,15 @@ class ViewFunctions {
 			return script;
 		}
 	}
+
+	public(component){
+		var R=$i('R')
+		var splited=component.split('/')
+		var bundle=splited.shift()
+		if(!R.bundles[bundle])
+			return '';
+		return '/public/rmodules/'+R.bundles[bundle].vendor+'/'+bundle+'/'+splited.join('/')
+	}
 }
 
 module.exports=ViewFunctions;

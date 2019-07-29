@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <link rel="icon" href="">
+
+        <title></title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/public/bootstrap/v4/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/public/angular/angular-material.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                padding-top: 56px;
+            }
+            
+            .nav-doc-bar{
+                box-shadow: 2px 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+                background: #606060;
+            }
+            .md-sidenav-left .md-theme-indigo, .md-sidenav-left .nav-theme {
+                background-color: #33393f;
+                min-height: initial !important;
+            }
+            .md-sidenav-left .md-theme-indigo p{
+                padding:8px;
+            }
+            .md-sidenav-left{
+                width: 250px
+            }
+            
+            .md-virtual-repeat-container.md-autocomplete-suggestions-container{
+                z-index: 1000000;
+            }
+            .portal-loading{
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,.9);
+                z-index:100000000000000;
+                top:0;
+                left:0
+            }
+
+            .portal-loading .portal-loading-container{
+                text-align: center;
+                width: 40%;
+                margin-left: 30%;
+                position: absolute;
+                top:45%
+            }
+            .portal-loading .portal-loading-text{
+                color:white
+            }
+
+        </style>
+    </head>
+
+    <body ng-app="AngExample">
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top nav-doc-bar" style="z-index:103">
+            <a class="navbar-brand" href="#">Texto ejemplo</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div  class="collapse navbar-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+
+                </ul>
+                <ul class="navbar-nav mr-right">
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div layout="column" style="height:100%;" ng-cloak>
+
+        <section layout="row" flex>
+
+            <md-sidenav
+                class="md-sidenav-left"
+                md-component-id="left"
+                md-is-locked-open="$mdMedia('gt-md')"
+                md-whiteframe="4">
+
+                <md-toolbar class="md-theme-indigo">
+                    <p class="text-center" >Texto ejemplo</p>
+
+                </md-toolbar>
+                <md-content layout-padding >
+
+
+                </md-content>
+
+            </md-sidenav>
+
+            <md-content flex layout-padding>
+                    
+                <div layout="column" layout-align="">
+                        
+                    <div role="main" class="container" ng-view></div>
+                    
+                </div>
+
+                <div flex></div>
+
+            </md-content>
+
+
+        </section>
+        <div class="portal-loading">
+            <div class="portal-loading-container">
+                    <p class="portal-loading-text">Espere...</p>
+                    <md-progress-linear md-mode="query"></md-progress-linear>
+            </div>
+            
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/public/bootstrap/js/jquery.js"></script>
+    <script src="/public/bootstrap/v4/js/bootstrap.bundle.min.js"></script>
+    <script src="/public/angular/angular.min.js"></script>
+    <script src="/public/angular/angular-route.min.js"></script>
+    <script src="/public/angular/angular-animate.min.js"></script>
+    <script src="/public/angular/angular-aria.min.js"></script>
+    <script src="/public/angular/angular-messages.min.js"></script>
+    <script src="/public/angular/angular-material.min.js"></script>
+    <script src="/public/Raptor/js/raptor-core.js"></script>
+    
+    <script src="<%-public('exampleNode/AngExample/app.js')%>"></script>
+
+</body>
+</html>

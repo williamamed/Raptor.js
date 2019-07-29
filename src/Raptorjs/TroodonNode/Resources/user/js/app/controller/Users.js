@@ -197,7 +197,7 @@ Ext.define('GestUser.controller.Users', {
         var roles = this.getUserlist().getSelectionModel().getLastSelected().get('security_rols');
         for (var i = 0; i < roles.length; i++) {
             var index = store.findExact('id', roles[i].id);
-            console.debug(roles,index,roles[i].id)
+            //console.debug(roles,index,roles[i].id)
             if (index > -1) {
                 this.getRollist().getSelectionModel().select(index, true, true);
             }
