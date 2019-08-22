@@ -1,0 +1,10 @@
+{
+  "state": true,
+  "name": "raptor-panel",
+  "version": "1.0.5",
+  "author":"William Amed - watamayo90@gmail.com",
+  "require":{
+      "ng-portal":">=1.0.1",
+	  "core":">=2.1.0"
+  }
+}

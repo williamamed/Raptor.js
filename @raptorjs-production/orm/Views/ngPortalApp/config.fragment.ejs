@@ -1,0 +1,95 @@
+<!-- Angularjs Fragment-View, Raptor.js -->
+<div class="container-fluid" ng-controller="config" ng-cloak>
+    <div class="row">
+        <h3>Base de datos</h3>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Determina el estado, si la aplicación utilizará el motor de base de datos"
+                class="control-label" for="activebd">Utilizar base de datos
+                
+            </label>
+            <div class="controls">
+                <md-switch class="md-primary" ng-true-value="'on'" ng-false-value="'off'" ng-model="config.state" aria-label="Switch 1" ng-init="config.state='<%- options.database.state %>'">
+                </md-switch>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Dialecto a utilizar por sequelize para conexión con la base de datos"
+                class="control-label" for="driver">Dialecto</label>
+            <div class="controls">
+                <select class="form-control" ng-init="config.driver='<%- options.database.options.dialect %>'" ng-model="config.driver" name="driver"
+                    id="driver">
+                    <option value="postgres">postgres</option>
+                    <option value="mysql">mysql</option>
+                    <option value="sqlite">sqlite</option>
+                    <option value="mssql">mssql</option>
+                    <option value="mariadb">mariadb</option>
+                </select>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Nombre de la base de datos con la se conectará" class="control-label"
+                for="inputDB">Nombre BD</label>
+            <div class="controls">
+                <input ng-model="config.db" class="form-control" name="db" type="text" id="inputDB" placeholder="" ng-init="config.db='<%- options.database.name%>'">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Dirección e la base de datos" class="control-label" for="inputHost">Host</label>
+            <div class="controls">
+                <input ng-model="config.host" name="host" class="form-control" type="text" id="inputHost" placeholder="" ng-init="config.host='<%- options.database.options.host %>'">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Puerto de la base de datos" class="control-label" for="inputPort">Port</label>
+            <div class="controls">
+                <input ng-model="config.portDB" name="portDB" class="form-control" type="text" id="inputPort" placeholder="" ng-init="config.portDB='<%- options.database.options.port %>'">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Usuario para conectar con la base de datos" class="control-label"
+                for="inputUser">Usuario</label>
+            <div class="controls">
+                <input ng-model="config.user" name="user" class="form-control" type="text"  placeholder="" ng-init="config.user='<%- options.database.user %>'">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Contraseña de la base de datos" class="control-label" for="inputPass">Contraseña</label>
+            <div class="controls">
+                <input ng-model="config.password" name="password" class="form-control" type="password" placeholder="" ng-init="config.password='<%- options.database.password %>'">
+            </div>
+        </div>
+
+    </div>
+    <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
+        <div class="col-md-4">
+            <button type="submit" ng-click="submitForm()" class="btn btn-success">Configurar</button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Angularjs Controller -->
+<script src="/public/@raptorjs/orm/ngPortalApp/config.controller.js" type="text/javascript"></script>

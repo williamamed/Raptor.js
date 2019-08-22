@@ -1,0 +1,16 @@
+{
+  "name": "",
+  "description": "Proyecto con Raptor.js 2",
+  "version": "0.0.1",
+  "scripts": {
+    "start": ""
+  },
+  "dependencies": {
+    "@raptorjs/core":"^2.1.0",
+	"@raptorjs/ng-portal":"^1.0.6",
+	"@raptorjs/extjs":"^4.2.1",
+	"@raptorjs/orm":"^1.0.1",
+	"@raptorjs/troodon":"^1.0.5",
+	"@raptorjs/bio":"^1.0.2"
+  }
+}

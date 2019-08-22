@@ -1,0 +1,15 @@
+{
+  "name": "@raptorjs/troodon",
+  "version": "1.0.5",
+  "description": "Modulo de seguridad que garantiza la implementación de los procesos de identificación-autenticación, autorización y auditoría. Basado en una extensión de los modelos de control de acceso RBAC y CAEM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Amed - watamayo90@gmail.com",
+  "license": "MIT",
+  "dependencies":{
+    "@raptorjs/extjs":"^4.2.1",
+	"@raptorjs/orm":"^1.0.0"
+  }
+}

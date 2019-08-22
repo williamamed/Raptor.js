@@ -1,0 +1,28 @@
+'use strict';
+
+/**
+ * Raptor.js - v2
+ * Generado automaticamente
+ * 
+ * @Route("<%-baseRoute%>")
+ */
+class <%-className%> extends R.Controller{
+
+	configure(){
+		
+	}
+    
+    <% if(templateName){ %>
+    /**
+     * @Route("")
+     */
+	indexAction(req,res,next){
+		
+		res.render("<%-templateName%>");
+	}
+    <%}%>
+
+	
+}
+
+module.exports=<%-className%>;

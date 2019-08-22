@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/public/@raptorjs/core/img/raptor-logo.png">
+
+    <title>Raptor.js</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/public/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+   
+    <!-- <link href="/public/bootstrap/css/flat-bootstrap.css" rel="stylesheet">-->
+
+    <!-- Custom styles for this template -->
+    
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    
+    <style type="text/css">
+      body {
+        padding-top: 50px;
+        background-color: #262b30 !important;
+        background-size: cover
+      }
+      .navbar-inverse{
+        background: #372b53;
+      }
+      body > .container{
+        padding-bottom: 30px;
+      }
+      input{
+        height: 50px !important;
+        padding: 15 !important;
+      }
+      pre{
+          color: rgb(189, 189, 189) !important;
+      }
+      h1,h2,h3,h4,h5,h6 {
+          color: rgb(189, 189, 189) !important;
+      }
+
+      label{
+          color: rgb(189, 189, 189) !important;
+      }
+
+      b,p{
+          color: rgb(189, 189, 189) !important;
+      }
+      .form-control {
+        display: block;
+        width: 100%;
+        
+        color: rgb(197, 197, 197) !important;
+        background-color: #343a40 !important;
+        background-clip: padding-box;
+        border: 1px solid #343a40;
+       
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div style="background:url(/public/@raptorjs/core/img/header-2.png);height:250px;width:100%;padding:25px;background-position:bottom;left:0;position:absolute;top:0px">
+     
+      <h2 class="text-center" style="color:#abaaaa;margin-right:25px"><img src="/public/@raptorjs/core/img/raptor-logo.png" height="90"></h2>
+      <h3 class="text-center" style="color:#abaaaa;margin-right:25px">Panel de control de Raptor.js</h3>
+      
+    </div>
+    <form method="POST">
+    <div class="container" style="margin-top:230px">
+      
+      <div class="row">
+        <div class="col-md-4 offset-4">
+            
+            <% var flash=R.flash('panel_login_error') %>
+            <% if(flash){ %>
+              <h4 class="text-center" style="color:#CC0000;margin-right:25px"><%- flash %></h4>
+            <% } %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 offset-4">
+            <div class="controls">
+                <input class="form-control" type="text" placeholder="usuario" style="height:40px" name="username">
+            </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 15px">
+        <div class="col-md-4 offset-4">
+            <div class="controls">
+                <input class="form-control" type="password" placeholder="contraseña" style="height:40px" name="password">
+            </div>
+        </div>
+      </div>
+      <%- R.csrfField() %>
+      <div class="row" style="margin-top: 15px">
+        <div class="col-md-4 offset-4">
+            <div class="controls">
+                 <button  id="btn-config" class="btn btn-success col-md-12"><i class="icon-raptor-configure icon-white" style="margin-right: 5px"></i>Aceptar</button>
+            </div>
+        </div>
+      </div>
+
+     <div class="row" style="margin-top: 15px">
+        <div class="col-md-4 offset-4">
+            <div class="controls">
+                 <p class="text-center"><b>&copy; Proyecto Raptor</b> 2014-2019</p>
+                 <p class="text-center">#RaptorwebCuba</p>
+            </div>
+        </div>
+      </div>
+     
+      
+       
+    </div><!-- /.container -->
+  </form>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/public/jquery/jquery.min.js"></script>
+    <script src="/public/bootstrap/js/bootstrap.min.js"></script>
+   
+  </body>
+</html>

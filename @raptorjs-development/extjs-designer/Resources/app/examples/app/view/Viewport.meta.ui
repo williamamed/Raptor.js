@@ -1,0 +1,49 @@
+{
+  "base": "Ext.container.Viewport",
+  "config": {
+    "appName": "Radio",
+    "dirName": "C:\\Users\\Amed\\RaptorStudio\\plugins\\Extjs-Designer\\app\\examples"
+  },
+  "defineName": "Viewport",
+  "idgen": 2,
+  "tree": [
+    {
+      "allowDrag": true,
+      "allowDrop": true,
+      "checked": null,
+      "children": null,
+      "cls": "",
+      "defineName": "",
+      "depth": 1,
+      "expandable": true,
+      "expanded": false,
+      "href": "",
+      "hrefTarget": "",
+      "icon": "",
+      "iconCls": "",
+      "index": 0,
+      "isFirst": true,
+      "isLast": true,
+      "leaf": false,
+      "loaded": true,
+      "loading": false,
+      "parentId": "root",
+      "qshowDelay": 0,
+      "qtip": "",
+      "qtitle": "",
+      "root": false,
+      "sample": {
+        "defineName": "Viewport",
+        "itemId": "Viewport1",
+        "style": "padding:5px"
+      },
+      "text": "Ext.container.Viewport",
+      "uiid": "Viewport1"
+    }
+  ],
+  "ui": {
+    "defineName": "Viewport",
+    "itemId": "Viewport1",
+    "style": "padding:5px"
+  }
+}

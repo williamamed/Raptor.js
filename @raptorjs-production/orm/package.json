@@ -1,0 +1,20 @@
+{
+  "name": "@raptorjs/orm",
+  "version": "1.0.4",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies":{
+    "pg": "^6.1.5",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^5.8.6",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.6.5",
+    "umzug": "^2.2.0",
+	"sequelize-auto-v2": "^0.5.3"
+  },
+  "author": "William Amed - watamayo90@gmail.com",
+  "license": "MIT"
+}

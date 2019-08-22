@@ -1,0 +1,254 @@
+<link href="/public/@raptorjs/raptor-panel/css/function-style.css" rel="stylesheet">
+<style>
+    md-select-menu.md-default-theme md-content md-option, md-select-menu md-content md-option {
+        color: whitesmoke
+    }
+</style>
+<div class="starter-template" >
+    <h1>Artefactos</h1>
+    <p class="text-muted">Acciones utilitarias para la creación de artefactos en el proyecto actual</p>
+</div>
+<hr>
+<div class="container-fluid" ng-controller="DeamonController">
+    <div class="row">
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Elija el componente donde ejecutar la acción" class="control-label" for="driver">Componente</label>
+            <div class="controls">
+                <select class="form-control" ng-model="extjs.component">
+                    <option ng-repeat="component in components" ng-value="component" ng-if="component.external">{{component.name}} (external)</option>
+                    <option ng-repeat="component in components" ng-value="component" ng-if="!component.external">{{component.name}}</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <label data-toggle="tooltip" data-placement="top" title="Versión" class="control-label" for="driver">Tecnología - Versión</label>
+            <div class="controls">
+                <select class="form-control" ng-model="extjs.version">
+                    <option ng-repeat="version in versions" ng-value="version">{{version.version}}</option>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+    <hr>
+    <div class="row" ng-repeat="(key, meta) in extjs.version.templates" style="margin-bottom: 10px">
+        <div class="col-md-2">
+            <img ng-if="!meta.image" src="/public/@raptorjs/templates-gen/template1.jpg" style="width: 100%">
+            <img ng-if="meta.image" src="{{meta.image}}" style="width: 100%">
+        </div>
+        <div class="col-md-6">
+            <p>{{meta.title}}</p>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success" ng-click="createTemplate(key,meta,extjs.version.version)">
+                <span ng-if="meta.button&&meta.button.text">{{meta.button.text}}</span>
+                <span ng-if="!meta.button">Crear</span>
+                <span ng-if="meta.button&&!meta.button.text">Crear</span>
+            </button>
+        </div>
+
+    </div>
+
+    <div style="visibility: hidden">
+        <div class="md-dialog-container" id="controller-dialog">
+            <md-dialog layout-padding style="width: 500px">
+
+                <form name="controllerForm" ng-submit="submitControllerForm(controllerForm.$valid)" class="form-horizontal dialog-cmp" method="POST">
+                    <md-toolbar style="background: transparent">
+                        <div class="md-toolbar-tools">
+                            <h4>Crear artefacto</h4>
+                        </div>
+                    </md-toolbar>
+                    <md-dialog-content>
+                        <div class="md-dialog-content">
+
+                            <div class="row" ng-repeat="field in fields">
+                                <div class="col-md-12" ng-if="field.type=='text'">
+                                    <label class="control-label" ng-if="field.required">{{field.label}}
+                                        <span style="color:brown">*</span>
+                                    </label>
+                                    <label class="control-label" ng-if="!field.required">{{field.label}}</label>
+                                    <div class="controls">
+                                        <input ng-model="templateData[field.name]" class="form-control" type="{{field.type}}" placeholder="{{field.placeholder}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12" ng-if="field.type=='select'">
+                                    <label class="control-label" ng-if="field.required">{{field.label}}
+                                        <span style="color:brown">*</span>
+                                    </label>
+                                    <label class="control-label" ng-if="!field.required">{{field.label}}</label>
+                                    <div class="controls">
+                                        <select class="form-control" ng-model="templateData[field.name]" placeholder="{{field.placeholder}}">
+                                            <option ng-repeat="option in field.options" ng-value="option.name">{{option.text}}</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12" ng-if="field.type=='multiselect'">
+                                    <label class="control-label" ng-if="field.required">{{field.label}}
+                                        <span style="color:brown">*</span>
+                                    </label>
+                                    <label class="control-label" ng-if="!field.required">{{field.label}}</label>
+                                    <div class="controls">
+                                        <md-select class="form-control" ng-model="templateData[field.name]" placeholder="{{field.placeholder}}" multiple>
+                                            <md-option ng-repeat="option in field.options" ng-value="option.name">{{option.text}}</md-option>
+                                        </md-select>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12" ng-if="field.type=='switch'">
+                                    <label class="control-label" ng-if="field.required">{{field.label}}
+                                        <span style="color:brown">*</span>
+                                    </label>
+                                    <label class="control-label" ng-if="!field.required">{{field.label}}</label>
+                                    <div class="controls">
+                                        <md-switch class="md-primary" ng-model="templateData[field.name]" aria-label="{{field.label}}">
+                                        </md-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </md-dialog-content>
+                    <md-dialog-actions layout="row">
+                        <md-button ng-click="cancel()">cancelar</md-button>
+                        <md-button ng-click="successTemplate()">Aceptar</md-button>
+                    </md-dialog-actions>
+                </form>
+
+            </md-dialog>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    app.controller("DeamonController", function ($scope, $http, $location, $routeParams, $mdDialog, $mdToast) {
+        $scope.component = null;
+        $scope.templateData = {};
+
+        $scope.loadComponents = function () {
+            $http.get('/raptor/templates/components', { ignoreLoading: true })
+                .then(function (response) {
+                    $scope.components = response.data
+                })
+
+        }
+        $scope.loadComponents()
+        $scope.versionState = '';
+
+        $scope.loadVersion = function () {
+            $http.get('/raptor/templates/version', { ignoreLoading: true })
+                .then(function (response) {
+                    $scope.versions = response.data
+                })
+
+        }
+        $scope.loadVersion()
+
+        $scope.showPrompt = function () {
+            // Appending dialog to document.body to cover sidenav in docs app
+            var confirm = $mdDialog.prompt()
+                .title('Nombre de la plantilla a crear')
+                .placeholder('Nombre de plantilla')
+                .ariaLabel('Nombre de plantilla')
+                .required(true)
+                .ok('Aceptar')
+                .cancel('Cancelar');
+
+            $mdDialog.show(confirm).then(function (result) {
+                $scope.selectedTech.name = result;
+                $http.post('/raptor/templates/create', $scope.selectedTech)
+                    .then(function (response) {
+                        R.message(response.data.msg)
+                    })
+                    .catch(function () {
+                        R.message("Ups, lo sentimos ocurrió un error inesperado.")
+                    })
+
+            }, function () {
+
+            });
+        };
+
+        $scope.create = function (key, version) {
+            $scope.selectedTech = {
+                key: key,
+                tech: version,
+                _csrf: Raptor.getCsrfToken(),
+                component: $scope.extjs.component ? $scope.extjs.component.name : null
+            }
+            $scope.showPrompt()
+
+        }
+
+        $scope.createTemplate = function (key, meta, version) {
+            
+            $scope.templateData = {
+                key: key
+            };
+            $scope.fields = meta.fields
+            if ($scope.fields)
+                $mdDialog.show({
+                    contentElement: '#controller-dialog',
+
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: false
+                })
+            else
+                $scope.question()
+        }
+
+        $scope.cancel = function () {
+
+            $mdDialog.hide();
+        };
+
+        $scope.successTemplate = function () {
+            $scope.sendTemplate()
+        }
+
+        $scope.sendTemplate = function () {
+            $scope.templateData._csrf = Raptor.getCsrfToken();
+            $scope.templateData.component = $scope.extjs.component ? $scope.extjs.component.name : null;
+            $scope.templateData.tech = $scope.extjs.version.version
+
+            $http.post('/raptor/templates/create', $scope.templateData)
+                .then(function (response) {
+                    
+                    var message=response.data.msg;
+                    if(response.data.params && response.data.params.message)
+                        message+=response.data.params.message;
+                    
+                    
+                    R.message(message)
+                    
+                    if(response.data.params && response.data.params.href)
+                        window.open(response.data.params.href)
+                    $scope.cancel()
+                })
+                .catch(function (response) {
+
+                    R.message("Ups, lo sentimos ocurrió un error inesperado. " + response.data.error.message)
+                })
+        }
+
+        $scope.question = function (ev) {
+            var confirm = $mdDialog.confirm()
+                .title("¿Está seguro que desea ejecutar esta acción?")
+                .textContent("Se ejecutará la acción seleccionada en el componente especificado.")
+                .ariaLabel('delete')
+                .ok('Sí')
+                .cancel('No');
+
+            $mdDialog.show(confirm)
+                .then(function () {
+                    $scope.sendTemplate()
+                })
+        }
+
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+
+</script>

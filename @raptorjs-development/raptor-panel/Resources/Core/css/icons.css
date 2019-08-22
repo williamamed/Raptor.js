@@ -1,0 +1,110 @@
+/* 
+    Document   : icons
+    Created on : 18-oct-2014, 11:21:52
+    Author     : Amed
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.icon-del {
+background:url(../img/icons/raptor-cool.png) no-repeat -20px -80px !important;	   
+}
+.icon-user {
+background:url(../img/icons/raptor-cool.png) no-repeat -140px 0 !important;	   
+}
+.icon-image {
+background:url(../img/icons/raptor-cool.png) no-repeat -380px -40px !important;	   
+}
+.icon-edit {
+background:url(../img/icons/raptor-cool.png) no-repeat -80px -60px !important;	   
+}
+.icon-add {
+background:url(../img/icons/raptor-cool.png) no-repeat 0 -80px !important;	   
+}
+.icon-cancel {
+background:url(../img/icons/raptor-cool.png) no-repeat -40px -80px !important;	   
+}
+.icon-acept{
+background:url(../img/icons/raptor-cool.png) no-repeat -60px -80px !important;	 
+}
+/**
+.icon-info{
+background:url(../img/icons/raptor-cool-white.png) no-repeat -100px -80px !important;	 
+}
+**/
+.icon-bundle{
+background:url(../img/icons/raptor-cool.png) no-repeat -200px 0 !important;	 
+}
+
+.icon-table{
+background:url(../img/icons/raptor-cool.png) no-repeat -220px 0 !important;	 
+}
+
+.icon-update{
+background:url(../img/icons/raptor-cool.png) no-repeat -200px -20px !important;	 
+}
+
+.icon-vendor{
+background:url(../img/icons/raptor-cool.png) no-repeat -340px -100px !important;	 
+}
+
+.icon-excep {
+background:url(../img/icons/raptor-cool.png) no-repeat -20px -80px !important;	   
+}
+
+.icon-privilege {
+background:url(../img/icons/raptor-cool.png) no-repeat -220px -20px !important;	    
+}
+
+.icon-actions {
+background:url(../img/icons/raptor-cool.png) no-repeat -160px -20px !important;	    
+}
+
+.icon-house {
+background:url(../img/icons/raptor-cool.png) no-repeat 0 -20px;	    
+}
+
+.icon-estructure {
+background:url(../img/icons/raptor-cool.png) no-repeat -20px -60px !important;	    
+}
+
+.icon-security {
+background:url(../img/icons/raptor-cool.png) no-repeat -240px -20px !important;	    
+}
+.icon-registro{
+background:url(../img/icons/raptor-cool.png) no-repeat 0 -60px !important;	    
+}
+.icon-settings{
+background:url(../img/icons/raptor-cool.png) no-repeat -360px 0 !important;	    
+}
+.icon-detalles{
+background:url(../img/icons/raptor-cool.png) no-repeat -80px -100px !important;	 
+}
+.icon-print{
+background:url(../img/icons/raptor-cool.png) no-repeat -80px -40px !important;	 
+}
+.icon-search{
+background:url(../img/icons/raptor-cool.png) no-repeat -40px 0 !important;	 
+}
+.icon-registro{
+background:url(../img/icons/raptor-cool.png) no-repeat 0 -60px !important;	    
+}
+.icon-tramite{
+background:url(../img/icons/raptor-cool.png) no-repeat -280px -40px !important;	 
+}
+.icon-grafica{
+background:url(../img/icons/raptor-cool.png) no-repeat -380px -40px !important;	 
+}
+.icon-archivos {
+background:url(../img/icons/raptor-cool.png) no-repeat -140px -20px !important;	   
+}
+.icon-index{
+background:url(../img/icons/raptor-cool.png) no-repeat -20px -20px !important;	 
+}
+.icon-mail{
+background:url(../img/icons/raptor-cool.png) no-repeat -60px 0 !important;	 
+}
+
+.icon-close{
+background:url(../img/icons/raptor-cool.png) no-repeat -40px -80px !important;	 
+}

@@ -1,0 +1,142 @@
+{
+  "base": "Ext.panel.Panel",
+  "config": {
+    "appName": "Radio",
+    "dirName": "C:\\Users\\Amed\\RaptorStudio\\plugins\\Extjs-Designer\\app\\examples"
+  },
+  "defineName": "gfd",
+  "idgen": 4,
+  "tree": [
+    {
+      "allowDrag": true,
+      "allowDrop": true,
+      "checked": null,
+      "children": [
+        {
+          "allowDrag": true,
+          "allowDrop": true,
+          "checked": null,
+          "children": null,
+          "cls": "",
+          "defineName": "",
+          "depth": 2,
+          "expandable": true,
+          "expanded": false,
+          "href": "",
+          "hrefTarget": "",
+          "icon": "",
+          "iconCls": "",
+          "index": 0,
+          "isFirst": true,
+          "isLast": false,
+          "leaf": false,
+          "loaded": true,
+          "loading": false,
+          "qshowDelay": 0,
+          "qtip": "",
+          "qtitle": "",
+          "root": false,
+          "sample": {
+            "fieldLabel": "Message",
+            "grow": true,
+            "itemId": "gfd2",
+            "name": "message",
+            "xtype": "textareafield"
+          },
+          "text": "Ext.form.field.TextArea",
+          "uiid": "gfd2"
+        },
+        {
+          "allowDrag": true,
+          "allowDrop": true,
+          "checked": null,
+          "children": null,
+          "cls": "",
+          "defineName": "",
+          "depth": 2,
+          "expandable": true,
+          "expanded": false,
+          "href": "",
+          "hrefTarget": "",
+          "icon": "",
+          "iconCls": "",
+          "index": 1,
+          "isFirst": false,
+          "isLast": true,
+          "leaf": false,
+          "loaded": true,
+          "loading": false,
+          "qshowDelay": 0,
+          "qtip": "",
+          "qtitle": "",
+          "root": false,
+          "sample": {
+            "increment": 10,
+            "itemId": "gfd3",
+            "maxValue": 100,
+            "minValue": 0,
+            "value": 50,
+            "width": 200,
+            "xtype": "slider"
+          },
+          "text": "Ext.slider.Single",
+          "uiid": "gfd3"
+        }
+      ],
+      "cls": "",
+      "defineName": "",
+      "depth": 1,
+      "expandable": true,
+      "expanded": true,
+      "href": "",
+      "hrefTarget": "",
+      "icon": "",
+      "iconCls": "",
+      "index": 0,
+      "isFirst": true,
+      "isLast": true,
+      "leaf": false,
+      "loaded": true,
+      "loading": false,
+      "parentId": "root",
+      "qshowDelay": 0,
+      "qtip": "",
+      "qtitle": "",
+      "root": false,
+      "sample": {
+        "bodyStyle": "padding:5px",
+        "defineName": "gfd",
+        "itemId": "gfd1",
+        "title": "Panel",
+        "xtype": "panel"
+      },
+      "text": "Ext.panel.Panel",
+      "uiid": "gfd1"
+    }
+  ],
+  "ui": {
+    "bodyStyle": "padding:5px",
+    "defineName": "gfd",
+    "itemId": "gfd1",
+    "items": [
+      {
+        "fieldLabel": "Message",
+        "grow": true,
+        "itemId": "gfd2",
+        "name": "message",
+        "xtype": "textareafield"
+      },
+      {
+        "increment": 10,
+        "itemId": "gfd3",
+        "maxValue": 100,
+        "minValue": 0,
+        "value": 50,
+        "width": 200,
+        "xtype": "slider"
+      }
+    ],
+    "title": "Panel",
+    "xtype": "panel"
+  }
+}

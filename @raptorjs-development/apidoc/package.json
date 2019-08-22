@@ -1,0 +1,11 @@
+{
+  "name": "@raptorjs/apidoc",
+  "version": "2.1.0",
+  "description": "Documentación oficial de Raptor.js ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "williamamed",
+  "license": "MIT"
+}

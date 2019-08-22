@@ -1,0 +1,145 @@
+     
+      <div class="starter-template" style="margin-top: 10px">
+        <h1>Configuración del framework</h1>
+        <p class="text-muted">La configuración puede ser editada de forma manual en el archivo config/options.json</p>
+       
+      </div>
+
+      <div class="container-fluid" ng-controller="configController" ng-cloak>
+
+      
+            <form name="configForm" id="raptor-config-form" ng-submit="submitForm(configForm.$valid)" class="form-horizontal" method="POST" >
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="EL nombre de proyecto es usado para identificar la aplicación" class="control-label" for="proyect">Nombre del proyecto</label>
+                        <div class="controls">
+                            <input ng-model="config.proyect"  class="form-control" name="proyect" type="text" id="proyect" placeholder="..." ng-init="config.proyect='<%- options.proyectName %>'" required>
+                        </div>
+                    </div>
+                </div>
+           
+
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Llave secreta, utilizada para crear la protección CSRF, cifrado, tokens etc.." class="control-label" for="inputSecret">Llave secreta</label>
+                        <div class="input-group">
+                            <input ng-model="config.secret" name="secret" class="form-control" type="text" id="inputSecret" placeholder="" ng-init="config.secret='<%- options.secret %>'">
+                            <span class="input-group-btn">
+                                <button class="btn btn-secondary" class="" id="Generator" type="button">Generar!</button>
+                            </span>
+                        </div>
+
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Determina si socket.io estará activo" class="control-label" for="socketio">Socket.io</label>
+                        <div class="controls">
+                            <md-switch ng-model="config.socketio" class="md-primary" aria-label="Switch 1">
+                            </md-switch>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Puerto de conexión http que utilizará Raptor.js" class="control-label" for="raptorPort">Puerto http</label>
+                        <div class="controls">
+                            <input ng-model="config.portHttp" name="portHttp" class="form-control" type="text" id="raptorPort" placeholder="" ng-init="config.portHttp='<%- options.port %>'" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label data-toggle="tooltip" data-placement="top" title="Limite máximo de subscripciones al gestor de eventos del core" class="control-label" for="raptorPort">Max event Listeners</label>
+                        <div class="controls">
+                            <input ng-model="config.maxEventListeners" name="maxEventListeners" class="form-control" type="text" placeholder="" ng-init="config.maxEventListeners='<%- options.maxEventListeners %>'" required>
+                        </div>
+                    </div>
+                </div>
+                <%- R.plugin('raptorpanel_options') %>
+               <div class="row pull-left" style="margin-top: 40px;margin-bottom: 40px;">
+                    <div class="col-md-4">
+                        <button type="submit" id="btn-config" ng-disabled="configForm.$invalid" class="btn btn-success">Configurar</button>
+                    </div>
+                    
+                </div>  
+            </form> 
+               
+       </div>
+     
+       <script type="text/javascript">
+            
+        app.controller("configController", function ($scope, $http, $location,$routeParams,$templateCache,$mdToast) {
+            $scope.config={}
+           
+            function generateSecret() {
+    
+                for (var c = ''; c.length < 32; )
+                    c += 'abcdefgh1234567890@#$%*ijklmnopqrstuvwxyz'.charAt(Math.random() * 26)
+    
+                $('#inputSecret').val(c);
+            }
+            
+           
+            
+            $('#Generator').click(generateSecret);
+            
+            
+            
+            $scope.submitForm = function (isValid) {
+                
+                // check to make sure the form is completely valid
+                if (isValid) {
+                    
+                    $scope.config._csrf = Raptor.getCsrfToken();
+                    
+                    $http.post('/raptor/config/process', $scope.config, {ignoreRequest: true})
+                            .then(function (response) {
+                                if(response.data.code==3)
+                                    $mdToast.show(
+                                        $mdToast.simple()
+                                        .action('Cerrar')
+                                        .highlightAction(true)
+                                        .textContent('Error: '+response.data.msg)
+                                        .position('top right')
+                                        .hideDelay(9000))
+                                        .then(function(response){
+                                            
+                                        })
+                                else{
+                                    
+                                    $mdToast.show(
+                                        $mdToast.simple()
+                                        .action('Cerrar')
+                                        .highlightAction(true)
+                                        .textContent(response.data.msg)
+                                        .position('top right')
+                                        .hideDelay(9000))
+                                        .then(function(response){
+                                            
+                                        })
+                                }
+                                //$location.path('/plataforma/configuracion')
+                            }, function (response) {
+                
+                                $mdToast.show(
+                                    $mdToast.simple()
+                                    .action('Cerrar')
+                                    .highlightAction(true)
+                                    .textContent('Error: '+response.data.msg)
+                                    .position('top right')
+                                    .hideDelay(9000))
+                                    .then(function(response){
+                                        
+                                    })
+
+                            })
+                }
+            }
+            
+            $('[data-toggle="tooltip"]').tooltip();
+        })  
+       
+        
+        </script>    

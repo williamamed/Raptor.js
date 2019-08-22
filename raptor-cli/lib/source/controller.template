@@ -1,0 +1,24 @@
+'use strict';
+
+/**
+ * Raptor.js - v2
+ * 
+ * 
+ * @Route("")
+ */
+class {{classname}} extends R.Controller{
+
+	configure(){
+		
+	}
+    
+    /**
+     * @Route("/{{classname}}/example")
+     */
+	indexAction(req,res,next){
+		
+		res.send("hola mundo controller");
+	}
+}
+
+module.exports={{classname}};

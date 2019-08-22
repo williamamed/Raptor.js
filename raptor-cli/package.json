@@ -1,0 +1,50 @@
+{
+  "author": {
+    "name": "William Amed",
+    "email": "watamayo90@gmail.com",
+    "url": "https://github.com/williamamed"
+  },
+  "bin": {
+    "rap": "./bin/raptor-cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/williamamed/Raptor.js/issues",
+    "email": "watamayo90@gmail.com"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@raptorjs/apidoc": "^2.1.0",
+    "@raptorjs/extjs-designer": "^1.0.1",
+    "@raptorjs/raptor-panel": "^1.0.3",
+    "@raptorjs/templates-gen": "^1.0.2",
+    "adm-zip": "^0.4.13",
+    "check-dependencies": "^1.1.0",
+    "commander": "^3.0.0",
+    "fs-extra": "^8.1.0",
+    "nodemon": "^1.19.1"
+  },
+  "deprecated": false,
+  "description": "Herramienta cli utilitaria de Raptor.js-v2",
+  "engines": {
+    "node": ">=6.10.0"
+  },
+  "homepage": "http://raptorweb.cubava.cu",
+  "keywords": [
+    "express",
+    "full-stack",
+    "webserver",
+    "webframework",
+    "framework",
+    "sequelize",
+    "apiservice"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "raptor-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/williamamed/Raptor.js.git"
+  },
+  "scripts": {},
+  "version": "2.1.2"
+}

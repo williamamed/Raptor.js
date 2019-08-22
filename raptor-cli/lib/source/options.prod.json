@@ -1,0 +1,11 @@
+{
+  "port": 4440,
+  "language": {
+    "default": "es",
+    "usePrefered": false,
+    "cookieName": "RaptorJSLang"
+  },
+  "secret": "3dfa5h2g$ae946e2gdi5cb%g*1#$5e25",
+  "proyectName": "RaptorJS",
+  "mode":"production"
+}

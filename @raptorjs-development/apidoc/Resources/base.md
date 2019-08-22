@@ -1,18 +1,14 @@
-Raptor-cli v2
+Raptor.js - 2
 =======
+<img style="float: right;margin-top: -70px" src="/public/@raptorjs/core/img/raptorjs-full.png" height="90">
 
-El cli de Raptor.js es una herramienta utilitaria de consola para ambientes de desarrollo, permite la
-creación de proyectos Raptor.js-v2 así como la ejecución en modo de desarrollo de la aplicación.
+Raptor.js es un framework de node creado, impulsado y mantenido por el Proyecto Raptor.
 
-¿Qué es Raptor.js?
+Raptor.js es un framework web full stack basado en Node.js, utiliza como core el microframework express de conjunto con otros módulos utilitarios del repositorio npm que permiten el desarrollo de aplicaciones web de forma ágil.
 
-Raptor.js es un framework web full stack basado en Node.js, creado, impulsado y mantenido por el Proyecto Raptor, utiliza como core el microframework express de conjunto con otros módulos utilitarios del repositorio npm que permiten el desarrollo de aplicaciónes web de forma ágil.
+El proyecto propone una arquitectura basada en componentes, donde las responsabilidades de la lógica de nuestra aplicación se encuentran encapsuladas dentro de componentes.
 
-El proyecto utiliza una arquitectura basada en componentes, donde las responsabilidades de la lógica de nuestra aplicación se encuentra encapsulada dentro de componentes, promoviendo reutilización y alta escalabilidad.
-
-La solución incluye un marco de abstracción de seguridad integrado en un módulo (TroodonNode) que garantiza la implementación de los procesos de identificación-autenticación, autorización y auditoría. Implementa un extensión de los modelos de control de acceso RBAC y CAEM. 
-
-Además cuenta con un módulo de reconocimiento biométrico por dinámica de tecleo (BioNode), que se inserta dentro del proceso de identificación-autenticación del módulo de seguridad.
+La solución incluye un marco de abstracción de seguridad integrado en un módulo (TroodonNode) que garantiza la implementación de los procesos de identificación-autenticación, autorización y auditoría. Implementa una extensión de los modelos de control de acceso RBAC y CAEM. Además cuenta con un módulo de reconocimiento biométrico por dinámica de tecleo (BioNode), que se inserta dentro del proceso de identificación-autenticación del módulo de seguridad.
 
 Agradecer a todos los colaboradores que hacen posible el proyecto Raptor.
 
@@ -246,6 +242,33 @@ Adicionalmente también contará con un archivo (`package.json`) que describe al
 
 ```
 
+Ubicaciones compartidas (Nuevo)
+-----
+A partir de la versión 2.0.7 el framework soporta las ubicaciones compartidas, tanto para ambientes de desarrollo como de producción. En principio la ubicación principal de un componente será el directorio src del propio proyecto en ejecución, además podrán ser configuradas otras locaciones donde se encontrarán componentes de uso común para otros proyectos.
+
+### Ubicaciones de desarrollo
+
+Como particularidad en modo de desarrollo se añaden otras 2 locaciones que siempre estarán disponibles cada vez que se ejecute el proyecto a través de raptor-cli. Estas locaciones de modo de desarrollo pueden ser encontradas en:
+
+`$USER_DOCUMENTS/raptor.cli.dev/cli.development`
+
+`$NPM_GLOBAL/node_modules/raptor-cli/node_modules/@raptorjs`
+
+Su función es contener componentes usados solamente en desarrollo y que representan utilitarios comunes que son utilizados en cada uno de los proyectos.
+
+<img style="width: 100%" src="/public/@raptorjs/apidoc/img/share.png" >
+
+En el diagrama anterior los componentes pueden ser identificados como los rectángulos verdes asociados a los proyectos o en el cli asociados a un agrupador cli.development.
+
+Los componentes de desarrollo estarán contenidos en un agrupador llamado cli.development tanto en la primera locación como en la segunda locación de desarrollo.
+
+### Ubicaciones de uso común
+
+Otras ubicaciones que pueden ser configuradas son las ubicaciones de uso común, representan ubicaciones que se compartirán entre proyectos que usan los  mismos componentes utilitarios de producción ej. ngPortal. El objetivo es centralizar el componente, evitar la duplicidad de código que conlleva a una mejor mantención.
+
+Las ubicaciones de uso común son configuradas a través de la variable de entorno `RAPTOR_EXTERNAL_COMPONENT`, donde se especifica la dirección física donde se encuentran los componentes.
+
+<img style="width: 100%" src="/public/@raptorjs/apidoc/img/share2.png" >
 
 Estructura del componente
 -----

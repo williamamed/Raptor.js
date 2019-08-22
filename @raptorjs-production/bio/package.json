@@ -1,0 +1,11 @@
+{
+  "name": "@raptorjs/bio",
+  "version": "1.0.2",
+  "description": "Modulo de control biometrico de autenticacion por patron de tecleo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Amed - watamayo90@gmail.com",
+  "license": "MIT"
+}
