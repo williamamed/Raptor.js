@@ -1,6 +1,6 @@
-Raptor.js - 2
+Raptor.js
 =======
-<img style="float: right;margin-top: -70px" src="/public/@raptorjs/core/img/raptorjs-full.png" height="90">
+<img style="" src="/public/@raptorjs/core/img/raptorjs-full.png" height="90">
 
 Raptor.js es un framework de node creado, impulsado y mantenido por el Proyecto Raptor.
 
@@ -92,7 +92,7 @@ Una vez instalado el cli podemos usar los comandos disponibles para crear y corr
 ```
 
 
-Capítulo 2 – Arquitectura de Raptor.js
+Capítulo 2 – Arquitectura
 ===========
 
 Las responsabilidades de la lógica de nuestra aplicación se encuentran encapsuladas dentro de componentes, cada componente es ubicado dentro de directorios conocidos como agrupadores o vendors encontrados en la raíz del directorio src.
@@ -804,7 +804,7 @@ Objeto registrado por el componente biométrico para la protección con patrón 
 
 $injector API
 -----
-### $injector
+### $injector()
 @param {string} Llave nombre de la dependencia.
 
 @param {string} value Valor a registrar en la dependencia especificada.
@@ -819,7 +819,7 @@ $injector("myObject",{message:"Hi"})
 //get
 $injector("myObject")
 ```
-### invoke
+### invoke()
 @param {Function} funcion Función a invocar utilizando el inyector.
 
 @return null | mixed
@@ -830,7 +830,7 @@ $injector.invoke(function(sequelize){
     console.log(sequelize)
 })
 ```
-### invokeLater
+### invokeLater()
 @param {Function} funcion Función a invocar utilizando el inyector.
 
 @return Function
@@ -1022,6 +1022,677 @@ configure(R, Events){
         R.emit("exampleNode.configured","hola mundo")
     }
 ```
+
+Capítulo 7 – ViewPlugins
+===
+Los ViewPlugins es una de las funciones propuestas en el framework Raptor PHP 2 y que ahora son implementados para Raptor.js, permite la inyección de contenido en los hotpots declarados en el sistema para determinados patrones de ruta. Es un mecanismo útil en la realización de introspección en la capa de presentación, permitiendo incluso la definición de puntos calientes personalizados.
+
+La funcionalidad de ViewPlugin puede ser encontrada definida dentro del request de la petición actual, este objeto contiene un grupo de funciones para el manejo de este concepto.
+
+req.viewPlugin
+-----
+### set()
+
+@param {string} name nombre del hotpot donde se insertará el contenido.
+
+@param {string}  value Valor a registrar en la dependencia especificada.
+
+Esta función es utilizada en la inserción de contenido en el hotpot deseado.
+
+### get()
+@param {string} name nombre del hotpot.
+
+@return Array
+
+Devuelve un array con todo el contenido insertado para un hotpot
+
+### remove()
+@param {string} name nombre del hotpot.
+
+Elimina todo el contenido insertado para el hotpot especificado.
+
+### removeAll()
+Elimina todo el contenido de todos los hotpot definidos
+
+Hotpot definidos por defecto
+-----
+### before_response_body
+punto de inserción antes del cuerpo html de cada respuesta, solo es aplicable a todos los response que rendericen contenido HTML.
+
+### after_response_body
+ punto de inserción después del cuerpo html de cada respuesta, solo es aplicable a todos los response que rendericen contenido HTML.
+``` javascript
+req.viewPlugin.set('after_response_body','<script>alert("hola mundo")</script>')
+```
+
+### raptor_client 
+punto de inserción dentro del objeto Raptor definido en cada página HTML renderizada, el valor insertado en este punto deberá ser una definición válida de objeto de configuración donde el objeto debe contener una llave name que representa el nombre con que será accedida la propiedad que podrá ser una función, un objeto o un string.
+
+``` javascript
+req.viewPlugin.set('raptor_client',{
+    name:"myProperty",
+    callback: function(){
+        alert("hola mundo")
+    }
+})
+
+req.viewPlugin.set('raptor_client',{
+    name:"myProperty2",
+    callback: {
+        age: 25,
+        lastname: "Adam"
+    }
+})
+
+```
+
+Capítulo 8 – ViewFunctions 
+===
+Los ViewFunctions son funciones definidas para su utilización en las plantillas ejs, estas funciones son implementadas por Raptor.js y comprenden la definición de puntos calientes (hotpot), acceso a la internacionalización así como la definición de tokens CSRF.
+
+API
+-----
+
+### R.plugin()
+@param {string} hotpot  nombre del hotpot deseado
+
+@return {Array}
+Retorna todo el contenido registrado para el hotpot especificado.
+
+``` html
+<%- R.plugin('ngPortal_name') %>
+```
+### R.flash()
+@param {string} nombre nombre del mensaje flash configurado en el request.
+
+@return {string}
+
+Devuelve el valor del mensaje flash configurado en el request.
+
+### R.lang()
+@param {string} tag nombre del tag que contiene el texto del mensaje.
+
+@param {string} componente [opcional] nombre del componente en donde se buscará el tag del mensaje.
+
+@return {string}
+
+Devuelve el mensaje definido para el tag especificado en el idioma actual configurado para el sistema.
+
+### R.csrfField()
+@return {string}
+
+Devuelve una definición en modo texto de un input type=hidden que contiene el token CSRF del request actual.
+
+### R.csrfToken()
+@return {string}
+
+Devuelve el valor del  token CSRF del request actual.
+
+Capítulo 9 – Internacionalización 
+===
+La internacionalización del framework permite la utilización del lenguaje configurado para el sistema a través de la definición de las traducciones de mensajes en cada componente. En el directorio i18n de cada componente se encontrará un archivo language.json que define los lenguajes que soporta el componente.
+``` javascript
+{
+    "prueba":{
+        "en": "test",
+        "ru": "тест"
+    }
+}
+```
+Las llaves de esta definición representa el nombre del mensaje, mientras que dentro se especifican para cada abreviatura de lenguaje la traducción correspondiente.
+
+Las funciones de acceso a la internacionalización han sido definidas en el request actual y en las plantillas ejs, estas permiten el acceso a los mensajes definidos en la internacionalización según el lenguaje establecido en el sistema.
+
+req.language
+-----
+En el request actual se encuentra la definición del objeto language configurado por uno de los middleware del framework. Contiene un grupo de métodos que permiten la manipulación de las funciones del lenguaje.
+
+Adicionalmente a este api en el request estará disponible la función abreviada lang, esta permite el acceso a la internacionalización en el componente donde se invoque, la función lang es el método de acceso abreviado a `req.language.getTranslation`.
+``` javascript
+req.lang('error_message')
+```
+
+### getCurrentLanguage()
+@return {string} abreviatura del lenguaje actual
+
+Devuelve la abreviatura del lenguaje activo
+
+### setCurrentLanguage()
+@param {string} abbr abreviatura del lenguaje a utilizar.
+
+Establece el lenguaje a través de su abreviatura.
+``` javascript
+req.language.setCurrentLanguage("es");
+```
+
+### persistCookie()
+@return {boolean}
+
+Persiste el lenguaje actual en la cookie de lenguaje, esto significa que el lenguaje establecido será el preferido para las próximas peticiones.
+
+### setUsePreferedLanguage()
+@param {boolean} prefered valor para determinar si se usa el lenguaje del agente de usuario, true para usarlo.
+
+Establece si el framework deberá tener como prioridad el lenguaje del agente de usuario
+
+### getTranslation()
+@param {string} tag, Etiqueta del mensaje que se desea del lenguaje actual.
+
+@param {string} component, Componente donde se buscará la etiqueta especificada como primer argumento.
+
+@return {string}
+
+Devuelve la traducción de la etiqueta especificada para el lenguaje actual (currentLanguage)
+
+
+Capítulo 10 – Migrations 
+===
+Las migraciones en tecnologías como sequelize son un concepto diseñado originalmente para controlar las actualizaciones del esquema de base de datos. Para Raptor.js este concepto se encuentra en evolución y en estas primeras versiones se enfoca en la creación, eliminación y exportación de estos esquemas, en próximas versiones se incluirá el soporte a la actualización de los esquemas creados.
+
+Raptor.js a partir de la versión 2.0.5 delega las funciones de migración en el paquete Umzug, con soporte completo a las funcionalidades propuestas por el ORM sequelize.
+
+Las migraciones solo estarán disponibles cuando el framework detecte una configuración activa con la base de datos configurada.
+
+Dentro de cada componente podremos definir la migración creando un directorio Migrations que contendrá un archivo en estándar common js con extensión .mig.js, además en el inicio del nombre del archivo se describirá el número de la versión de la migración y seguidamente de un guión se especificará el nombre de la migración, ejemplo: `01-troodontables.mig.js`
+
+Este archivo básicamente describirá la forma en que se crean y modifican los esquemas, es necesaria en este archivo la definición de dos métodos up y down donde se describirá la lógica.
+
+Formato del migration
+-----
+``` javascript
+module.exports={
+    up: $i.later(function(query,datatype,Bio_biouser){
+        return Bio_biouser.sync()
+    }),
+    down:function(query){
+        return query.dropTable('biouser')
+    }
+}
+```
+Cada una delas funciones recibirá como parámetros el queryInterface de sequelize así como el datatype, adicionalmente es posible inyectar otros parámetros usando el inyector de dependencias como aparece en la gráfica anterior.
+
+Ejecución de un Migration
+-----
+Para ejecutar una migración debemos utilizar el objeto Umzug presente en el inyector de dependencias, este objeto cuenta con los métodos down y up que podemos invocar pasándole como parámetro las migraciones que deseamos ejecutar. Para más información puede encontrar la documentación de Umzug en línea así como de Sequelize.
+``` javascript
+Umzug.up(["01-mistablas.mig", "02-misdatos.mig"])
+    .then(function (migrations) {
+        console.log('Esquemas de tablas insertadas!!')
+    })
+    .catch(function (err) {
+        console.log(err.message)
+    })
+```
+
+Podemos invocar los migration utilizando en el evento `migration:ready` generado por el propio framework
+``` javascript
+    /**
+     * Correr migraciones
+     */
+    'migration:ready': $i.later(function (Umzug) {
+
+        Umzug.up(["01-mistablas.mig","02-misdatos.mig"])
+        .then(function (migrations) {
+            console.log('Esquemas de tablas insertadas!!')
+        })
+        .catch(function (err) {
+            console.log(err.message)
+        })
+
+    })
+```
+
+Capítulo 11 – Core de Raptor.js (R) 
+===
+El core de Raptor.js fue movido desde esta serie 2 hacia el interior de la arquitectura, específicamente el componente CoreNode, dentro encontramos un directorio Source que contiene todas las funciones específicas del núcleo del framework. Raptor.js define un objeto R que representa el core del framework y se encuentra accesible de forma global al igual que el $injector, en próximas versiones el acceso global al objeto R será removido ya que podrá será accesible a través del propio inyector.
+
+El objeto R hereda de EventEmitter, por lo a través de este se pueden escuchar y lanzar eventos.
+
+Propiedades
+-----
+### bundles
+@type {Object} Contiene la definición leída de los componentes reconocidos por Raptor en el directorio src.
+
+``` javascript
+{
+    name: 'exampleNode',
+    path: '...',
+    absolutePath: '...',
+    vendor: 'Raptorjs',
+    manifest: {
+        name:"exampleNode",
+        version:"0.0.1",
+        state:true
+    },
+    main: new exampleNode(),
+    instance: true,
+    controllers: [...],
+    models: { ... },
+    init: false,
+    modelsConfig: { ... },
+    middlewares: [...]
+
+}
+```
+
+### basePath
+@type {string} Ruta absoluta hasta la base del proyecto.
+
+### scopes
+@type {Array} Scopes o locaciones donde el framework buscará componentes Raptor.js, configurados a través de options.json o variables de entorno.
+
+### externalDirectories
+@type {Array} Ubicaciones compartidas configuradas vía variables de entorno.
+
+Métodos
+-----
+### main()
+@param {string} basepath ruta absuluta donde fue inicializado el proyecto.
+
+Entrada principal del Core, inicializa Raptor.js, el inyector y configura el núcleo para su ejecución leyendo toda la configuración definida en options.json
+
+### configure()
+Configura el servicio web para su ejecución, se prepara el stack de express y sus middlewares.
+
+### start()
+Inicia el core de Raptor.js, teniendo en cuenta la configuración se inicia el servicio web y conexión de base de datos principal a través de sequelize.
+
+### startServer()
+Inicia el servicio web configurado para express, esta función es invocada por la función start del core. Tenga en cuenta que si en las opciones globales el atributo http se encuentra en false, este método no tendrá ningún efecto.
+
+### addPublish()
+@param {string} package Nombre del paquete dentro de node_modules que será publicado
+
+@param {string} relative Ruta relativa dentro del paquete que será publicada
+
+Expone el contenido del paquete especificado a través de express, será expuesto utilizando el prefijo de ruta `/public` y a continuación la ruta del propio paquete, es útil para añadir dinamicamente al registro de contenido público lo recursos js, css e imagenes de paquetes ubicados en node_modules.
+``` javascript
+/**
+ * Expone el recurso de node_modules a la ruta:
+ * localhost:4440/public/bootstrap/bootstrap.min.js
+ */
+R.addPublish("bootstrap","dist")
+/**
+ * Expone el recurso de node_modules a la ruta:
+ * localhost:4440/public/jquery/jquery.min.js
+ */
+R.addPublish("jquery","dist")
+R.addPublish("angular")
+R.addPublish("angular-animate")
+```
+### addExternalComponents()
+@param {string|Array} rutas Ubicaciones compartidas que deseamos añadir a la configuración
+
+Añade ubicaciones compartidas al registro, el core buscará en estas ubicaciones componentes Raptor.js válidos.
+
+### getExternalComponents()
+@return {Array} Devuelve las ubicaciones compartidas configuradas.
+
+### scanVendor()
+@param {string} ruta Ruta hacia el vendor o scope que se desea escanear
+
+Escanea un vendor o scope en busca de componentes Raptor.js válidos.
+
+### addComponent()
+@param {string} component Ruta del componnte
+
+@param {boolean} validate Si se desea validar el componente
+
+Añade el componente especificado al registro a partir de su ruta y opcionalmente si se desea validar
+
+
+### registerComponent()
+@param {string} comp nombre del componente
+
+@param {string} vendor nombre del vendor
+
+@param {boolean} validate determina si será validado por el gestor de componentes, dependencias hacia otros componentes
+
+@param {string} external De ser especificado se configura el componente en modo externo y se ajusta su ruta absoluta
+
+Registra un componente en el core de Raptor. La estructura física del componente debe estar creada al invocar esta función, es posible además registrar componentes en tiempo de ejecución. Opcionalmente se ejecutará una validación para este componente, revisando si las dependencias requeridas están completas.
+
+### validateComponent()
+@param {string} bundle nombre del componente
+
+Valida el componente especificado, si las dependencias requeridas no están resueltas desactiva el componente.
+
+### prepareComponent()
+@param {string} bundle nombre del componente
+
+Ejecuta la preparación del componente según las directivas del framework, en esta funcionalidad se leen los controladores y anotaciones.
+
+### copyResources()
+@param {string} bundle nombre del componente
+
+@param {function} callback función a ejecutar luego de la rutina de copia
+
+@param {boolean} preCompile precompilar los recursos copiados, se reconocen por defecto extjs
+
+Utilitario para copiar los recursos de un componente hacia public/rmodules
+
+### requireNode()
+@param {string} name Ruta relativa al nombre del componente.
+
+@return {Mixed}
+
+Devuelve los recursos relativos al componente especificado, si no se especifica subruta entonces se devuelve la clase principal del componente.
+``` javascript
+R.requireNode("exampleNode/Lib/MyClass.js")
+```
+
+### resolveLocal()
+@param {string} name ruta relativa al componente especificado
+
+@return {string}
+
+Devuelve la dirección absoluta del recurso especificado relativamente al componente
+
+``` javascript
+R.resolveLocal("exampleNode/Lib/MyClass.js")
+```
+
+### getSecurityManager()
+@param {string} name nombre del SecurityManager
+
+@return {SecurityManager}
+
+Devuelve una nueva instancia de un SecurityManager con el nombre especificado o returna el existente.
+
+### template()
+@param {string} location ruta relativa al componente
+
+@param {object} data Parámetros a pasar a la plantilla
+
+@return {string}
+
+Devuelve la plantilla ejs compilada perteneciente a un componente.
+
+### lockNodemon()
+Crea un archivo de bloqueo de nodemon, raptor-cli lo interpreta como una orden
+para no reiniciar el servicio en modo de desarrollo hasta que se desbloquee.
+
+### unlockNodemon()
+Desbloquea nodemon en modo de desarrollo para que continúe su lógica.
+
+Capítulo 12 – Annotation Framework 
+===
+Dentro de los componentes es posible especificar metadatos relacionados a las clases y funciones a través de anotaciones, un ejemplo de esto es la definición de rutas en los controladores a través de la anotación `@Route`, permitiendo una declaración elegante y limpia de este concepto. La lectura de declaración de anotaciones se realiza gracias al AnnotationFramework disponible desde el inyector de dependencias.
+
+Para leer una anotación personalizada es necesaria la declaración de la clase que define dicha anotación. En esta clase es necesario establecer los posibles objetivos de esta anotación (DEFINITION, CONSTRUCTOR, PROPERTY, METHOD).
+``` javascript
+'use strict'
+const Annotation = require('ecmas-annotations').Annotation;
+
+class CustomAnnotation extends Annotation{
+    /**
+     * The possible targets
+     *
+     * (Annotation.DEFINITION, Annotation.CONSTRUCTOR, Annotation.PROPERTY, Annotation.METHOD)
+     *
+     * @type {Array}
+     */
+    static get targets() { return [Annotation.METHOD,Annotation.DEFINITION] }
+    
+    init(data) {
+        this.annotation='CustomAnnotation'
+    }
+}
+module.exports=Troodon;
+```
+Ejemplo de utilización de la anotación.
+``` javascript
+    /**
+     * @CustomAnnotation("some value", sample="here is an attribute")
+     */
+    function MySample(){}
+```
+Para leer las anotaciones establecidas en las clases se invoca al AnnotationFramework para leer las definiciones, esta operación es realizada en la clase principal de los componentes.
+``` javascript
+configure(R, Events, AnnotationFramework, Annotations) {
+	  // Registro de la anotación para que sea accesible
+        AnnotationFramework
+            .registry.registerAnnotation(require.resolve(__dirname + '/Annotation/CustomAnnotation'))
+
+        Events
+            .register({
+                /**
+                 * Evento para leer la Anotación cuando se
+                 * inicialicen los Controladores
+                 * 
+                 */
+                'init.controller': function (instance, controllerPath, bundle) {
+                    var reader = new Annotations.Reader(AnnotationFramework.registry);
+
+                    reader.parse(controllerPath);
+                    //Leer las anotaciones de los métodos
+                    reader.methodAnnotations.forEach((annotation) => {
+                        if (annotation.annotation === 'CustomAnnotation') {
+                            console.log(annotation.value, annotation.sample)
+                        }
+                    })
+                    //Leer las anotaciones de la clase
+                    reader.definitionAnnotations.forEach((annotation) => {
+                        if (annotation.annotation === 'CustomAnnotation') {
+                            console.log(annotation.value, annotation.sample)
+                        }
+                    })
+                }
+            })
+    }
+
+```
+
+Capítulo 13 – Componentes Raptor.js 
+===
+Los componentes utilitarios de Raptor.js complementan el framework con funcionalidades encargadas de otorgar la abstracción necesaria en el proceso de desarrollo, la propuesta conceptual del proyecto Raptor para todas sus tecnologías incluyendo esta rama para Node.js incluye un panel de control de desarrollo (@raptorjsjs/raptor-panel), módulo de seguridad (@raptorjs/troodon), módulo de reconocimiento de usuario por patrón de tecleo o keystrokeDynamics (@raptorjs/bio) y un portal de usuario prediseñado (@raptor/ng-portal) utilizado además por @raptorjs/raptor-panel.
+
+Cada uno de estos componentes puede ser activado y utilizado según se requiera debido a las características de nuestra aplicación.
+
+raptor-panel(dev)
+-----
+El componente RaptorNode se encuentra activo por defecto una vez creado un proyecto Raptor.js, entre sus funciones implementa un portal de desarrollo accesible en la ruta /raptor. 
+
+Este componente desde la versión 2.0.7 se encuentra en una ubicación compartida de desarrollo, concretamente dentro del propio cli por lo que solo será accesible desde desarrollo y no desde producción. Estando en un ubicación compartida el componente es utilizado por todos los proyectos creados que se ejecutan con el cli a través del comando rap run.
+
+Una vez que accedemos al portal se encuentran funciones para interactuar con la configuración en el archivo `options.json`, crear  controladores dinámicamente de forma visual, publicar nuestros recursos web contenidos en el directorio Resources de cada componente.
+
+Pantalla de inicio
+
+<img style="width: 100%" src="./img/panel.png">
+
+### Configuración
+Son editadas algunas de las directivas más importantes, una vez configurado el servidor será reiniciado para ejecutar la configuración.
+
+<img style="width: 100%" src="./img/panel-config.png">
+
+### Generación de componentes
+Es un proceso intuitivo donde marcaremos en el árbol la posición en donde queremos generar el componente o el controlador.
+
+<img style="width: 100%" src="./img/panel-comp.png">
+
+### Publicar recursos
+Si deseamos publicar los recursos de nuestros componentes manualmente podemos hacerlo marcando en el árbol los componentes que deseamos y pulsamos en publicar.
+
+<img style="width: 100%" src="./img/panel-publish.png">
+
+### Perfilador
+Este componente incluye además para el modo de desarrollo un perfilador minificado que aparece en la parte inferior derecha en cada página renderizada por el framework, permitiéndonos ver de forma visual parámetros como la sesión, rutas reconocidas, tiempo de respuesta y el lenguaje activo.
+
+<img style="width: 100%" src="./img/panel-perfil1.png">
+
+<img style="width: 100%" src="./img/panel-perfil2.png">
+
+troodon
+-----
+La seguridad es el elemento más repetitivo e importante dentro de cualquier proceso de desarrollo, garantizar un cierto nivel de seguridad puede ser desde tedioso hasta complicado, todo en dependencia de cuán bueno se quiera ser, estadísticamente estos conceptos ocupan hasta el 40% del proceso de desarrollo.  
+Si me preguntan, ahorrar 2 o 3 meses de desarrollo de estos elementos me parece genial, es parte de la abstracción y se sería un iluso en no considerarlo. Todas las maquinarias productivas de software del mundo se basan en esta abstracción, la seguridad solo se desarrolla una vez, luego queda como una plataforma actualizable y reutilizable para posteriores desarrollos.
+
+Raptor incluye en su marco de seguridad un módulo (@raptorjs/troodon) encargado de implementar los procesos de identificación-autenticación, autorización y auditoria, garantizando una reducción considerable del tiempo que se invierte en la implementación de la seguridad. Garantiza además mediante la aplicación de estándares y modelos un nivel alto de seguridad.
+
+Troodon implementa una extensión del modelo de control de acceso RBAC basado en estructuras jerárquicas, permitiéndole adaptarse a cualquier contexto organizacional. Esto añade una complejidad adicional al sistema, requiriendo la adaptación de la gestión de roles a un enfoque estructurado, concretamente realizar jerarquías de roles.
+
+El RBAC jerárquico se basa en la perspectiva real de las estructuras organizacionales que existen en el mundo que nos rodea, donde las personas no solo cumplen un rol determinado sino que también pertenecen a diferentes niveles dentro de una estructura organizacional.
+
+<img style="width: 100%" src="./img/troodon-tree.png">
+
+Con esta aproximación es posible que 4 usuarios con igual rol, asignados a niveles de estructuras diferentes, tengan otra perspectiva de interacción con los activos del sistema. El modelado de una estructura organizacional toma forma de árbol, implementado bajo los basamentos de objetos recursivos expresados por Europio Engine.
+
+El otro avance en este modelo es la expansión del concepto de privilegio. Digamos que en este concepto un privilegio podría ser administración de recursos, donde este podría tener varias acciones como `insertar`, `editar`, `eliminar` y `listar`, conocido también como CRUD. Así que la definición de privilegio incluye a su vez la creación de un nuevo concepto acciones. La definición de acción es mucho más granular, pudiendo ajustar para un determinado rol, ciertos privilegios, con ciertas acciones.
+
+El modelo en general plantea un sistema de usuarios basados en estructuras, roles, privilegios y acciones, por lo que es posible aplicarlo en casi todos los contextos.
+
+### Utilización del módulo de seguridad
+
+El componente TroodonNode aparece desactivado por defecto dentro de los proyectos Raptor.js, para activar el componente debemos ir al manifiesto y cambiar el atributo state a true o simplemente ejecutar el comando de activación de un componente.
+
+``` bash
+rap enable troodon
+```
+
+Una vez activado el componente, ejecutará la migración con el objetivo de crear la estructura de tablas de base de datos necesaria para su funcionamiento. <i>Tener en cuenta que la implementación de este módulo está diseñada para motores relacionales de base de datos.</i>
+
+Por defecto la instalación automática del componente registra un usuario admin con contraseña admin.
+
+Las funcionalidades del módulo de seguridad para gestionar los conceptos podrán ser accedidas a través de las siguientes rutas:
+
+`/troodon/user` Gestión de usuarios
+
+`/troodon/rol` Gestión estructurada de roles
+
+`/troodon/privilege` Gestión de privilegios
+
+`/troodon/auditories` Gestión de trazas del sistema
+
+`/troodon/structure` Gestión de estructuras
+
+### Gestionando usuarios
+Accediendo a la funcionalidad de gestión de usuarios encontraremos a la izquierda las estructuras, uno de los conceptos propuestos por el modelo de control de acceso. Inicialmente se mostrará solamente Raptor2 registrada por defecto, las estructuras son diseñadas en forma de árbol a las que le serán asociados los usuarios del sistema. Pulsando sobre Raptor2 se listaran los usuarios registrados en la que aparecerá el usuario por defecto admin.
+
+<img style="width: 100%" src="./img/troodon-user.png">
+
+En esta funcionalidad podremos adicionar, modificar y eliminar usuarios, por defecto los usuarios adicionados aparecerán en estado inactivo, para cambiar el estado se deberá pulsar en el indicador del estado donde se desplegará un menú donde podremos hacer el cambio de estado.
+
+La opción de asignación de roles listará en una ventana los roles disponibles para asignar al usuario que deseemos, inicialmente en este listado no aparecerán roles disponibles debido a que el rol del usuario admin no tiene roles hijos definidos. La jerarquía de roles es un mecanismo para evitar la escalada de privilegios en este tipo de esquema basados en estructuras.
+
+### Gestionando roles
+La funcionalidad de gestión de roles permite adicionar, modificar y eliminar roles así como la asignación de privilegios a los roles creados.
+
+Como característica los roles siempre tendrán un padre definido, esto significa que solo un usuario con el rol padre podrá asignar roles hijos a otro usuario evitando así la escalada de privilegios en la funcionalidad de gestión de usuarios.
+
+Para crear un rol usted deberá marcar el padre del rol que intenta insertar, una vez creado usted podrá asignar los permisos del rol seleccionado pulsando sobre la opción privilegios.
+
+<img style="width: 100%" src="./img/troodon-rol.png">
+
+### Gestión de privilegios
+La gestión de privilegios se encarga del registro de todas las funcionalidades desarrolladas en nuestra aplicación. Este concepto implica el entendimiento de la extensión del modelo tradicional de privilegio propuesto por el modelo CAEM (Control de Acceso para Escenarios Multientidad), donde ahora está determinado por la aparición del concepto acciones.
+
+Para un privilegio clásico como Ej. gestionar persona ahora aparecen adicionalmente acciones `create`, `edit`, `delete`, `list` que definen el privilegio original. De esta forma un privilegio en el módulo de seguridad podrá aparecer en 3 categorías.
+
+Un privilegio podrá ser:
+`Contenedor`, actúa como contenedor de privilegios, podrá agrupar otros contenedores, índices y acciones, es identificado en la funcionalidad en forma de carpeta.
+
+`Índice`, representa al privilegio tradicional, al índice le podrán ser asociadas las acciones.
+
+`Acción`, las acciones serán el concepto más básico y granular del privilegio, siempre estarán asociadas algún índice.
+
+<img style="width: 100%" src="./img/troodon-privilege.png">
+
+Una vez añadido un índice, o sea una ruta que pertenece a una funcionalidad, entonces podemos añadir las acciones relacionadas a este índice. Si la ruta perteneciente al índice y las subrutas relacionadas a este índice ya se encuentran definidas en los controladores entonces el framework añadirá las acciones automáticamente, esto garantiza un proceso de registro automático del índice con sus acciones correspondiente.
+
+### Protegiendo nuestra funcionalidad
+Para proteger las funcionalidades de nuestra aplicación el modulo seguridad provee una anotación que puede ser definida en la clase principal del componente o en los propios controladores, indicándole el módulo de seguridad que se debe proteger un determinado patrón de ruta.
+``` javascript
+/**
+* Raptor.js - Node framework
+* 
+* 
+* @Troodon("/examples/*")
+*/
+class exampleNode {
+
+```
+
+La anotación `@Troodon` es la que se encarga de indicar al módulo de seguridad que se debe proteger la ruta especificada, en caso del ejemplo indica que se protejan todas las rutas que comiencen con `/examples/`. En esta anotación adicionalmente se puede especificar la plantilla de login que se quiere se renderice, el único requisito para esta plantilla es que para el formulario de login los campos de usuario y contraseña tengan name igual a `username` y `password` respectivamente.
+``` javascript
+/**
+* Raptor.js - Node framework
+* 
+* 
+* @Troodon("/examples/*",login="exampleNode:login.ejs")
+*/
+class exampleNode {
+```
+
+bio
+-----
+El componente @raptorjs/bio (módulo de reconocimiento biométrico) aparece como un complemento de seguridad reforzando el proceso de autenticación. Se encarga de la validación de la identidad del usuario que está intentando acceder al sistema. Este tipo de tecnología es conocida como Keystroke Dynamics y se basa en el reconocimiento del patrón de tecleo del usuario al escribir su contraseña. Múltiples investigaciones realizadas en este campo refieren el carácter identitario de las características de tecleo de una persona, clasificado como características biométricas.
+
+El proyecto Raptor lanza su utilización a partir de la investigación realizada en el año 2017 que incluyó un reto en línea donde se entregaban las credenciales de administración del sistema. Hasta el día de hoy nadie ha podido acceder aun conociendo las credenciales de administración.
+
+En esta versión el módulo de BioNode rompe su dependencia con el componente de seguridad TroodonNode y ya puede ser utilizado para proteger cualquier ventana de login, incluyendo el propio panel de control. A partir de las versiones superiores a la 2.0.5 es posible la utilización del componente a través de la anotación Biometry donde se especifica el funcionamiento.
+### API
+En la clase principal del componente se especifica en la cabecera de la clase la anotación de la siguiente forma
+``` javascript
+/**
+ * TroodonNode - Componente de seguridad
+ * 
+ * @Biometry({
+ *  bioSession:"bioTroodon",
+ *  frontLogin: "/troodon/*",
+ *  getActiveUser: this.getActiveUser,
+ *  prototype:"troodon"
+ * })
+ */
+class TroodonNode {
+
+    getActiveUser(req, res, done) {
+        done(req.user.username)
+    }
+```
+La anotación Biometry espera por parámetro un objeto de configuración con los siguientes atributos, alguno de estos serán obligatorios.
+
+`bioSession`: El nombre de la sesión que contendrá los datos biométricos (obligatorio).
+
+`frontLogin`: Este atributo contiene la ruta que se protegerá biométricamente, coincide con la ruta especificada en el enrutador (obligatorio).
+
+`getActiveUser`: Esta función se le pasan por parámetro el request, response y una función a ejecutar pasándole por parámetro el usuario resuelto (generalmente desde la sesión) del proceso de autenticación (obligatorio).
+
+`init`: Este atributo es opcional, es una función que se invoca una vez ejecutado el middleware, es utilizada generalmente para la redefinición del logout.
+
+`prototype`: Nombre del prototipo a definir o utilizar por esta configuración biométrica, si el nombre ya ha sido definido entonces se utiliza esa configuración, en caso de no existir se define un nuevo prototipo con la configuración establecida en la actual.
+
+Usted debe tener en cuenta que una vez logueado biométricamente se debe reimplementar la lógica para cerrar la sesión ejecutando la función de logout original así como la destrucción de la sesión biométrica, en el método init se encuentra accesible la función this.logout para dar soporte a esta lógica.
+
+template-gen(dev)
+-----
+Los `artefactos` es uno de los nuevos conceptos propuestos para la versión 2.0.7, se basa en la creación de conceptos relacionados al proyecto y que son conocidos como artefactos. La lógica de esto está implementada en el componente @raptorjs/template-gen que puede ser encontrado en una de las ubicaciones compartidas de desarrollo.
+
+En este componente encontraremos utilitarios para la creación de controladores, api, interfaces visuales para cada una de las tecnologías, comandos, compresores,  etc.
+
+Tiene como particularidad que pueden ser definidas otras tareas y tecnologías a través de la importación de componentes que implementen las acciones.
+
+<img style="width: 100%" src="./img/template-gen1.png">
+
+Para crear un artefacto solo debemos seleccionar el componente donde se creará, elegir la tecnología y seleccionar en el listado de acciones pinchando sobre el botón crear.
+
+Algunas de las acciones definidas requerirán datos adicionales para completar la acción.
+
+<img style="width: 100%" src="./img/template-gen2.png">
+
+extjs-designer(dev)
+-----
+Este componente es un utilitario de desarrollo que aparece para la versión 2.0.7, complementa la creación de artefactos relacionados a la tecnología Extjs que aparece por defecto en el generador de artefactos.
+
+Fue importado desde Raptor Studio (Descontinuado) y ahora puede ser utilizado en Raptor.js para el diseño visual de interfaces paraExtjs. Aunque el componente se encuentra en beta resulta de mucha utilidad por la rapidez en la que se pueden definir los componentes visuales de nuestra aplicación Extjs.
+
+<img style="width: 100%" src="./img/extjs-designer1.png">
+
+Pulsando sobre el botón abrir en el Diseñador de interfaces para Extjs podemos ver todos los directorios Resources de cada componente donde estará nuestra aplicación Extjs. Para poder cargar una edición de interfaz debemos anteriormente haber creado un Esqueleto de proyecto para aplicación Extjs en algún componente dentro de nuestro proyecto.
+
+<img style="width: 100%" src="./img/extjs-designer2.png">
+
+<img style="width: 100%" src="./img/extjs-designer3.png">
 
 
 Proyecto Raptor
