@@ -241,18 +241,21 @@ class CreateComponent extends R.Controller {
 	 * @param {*} res 
 	 * @param {*} next 
 	 */
-	genModelNodeAction(req, res, next) {
-		/**process.on('SIGUSR2', function () {
-			console.log('quiere apagar')
-		});
-		console.log('registro')*/
+	genControllerAction(req, res, next) {
+		
+		var composed=req.body.controllername.split('/');
+		var controllerName=composed.pop();
+		var prefix=composed.pop();
+		if(!prefix)
+			prefix=''
 		var es6 = $injector('R').template('raptor-panel:GenerateNode/node-template/ControllerES6.js.ejs', {
-			classname: req.body.controllername
+			classname: controllerName
 		});
 
 		var src = path.join(this.R.basePath, 'src');
 		R.lockNodemon()
-		fs.writeFileSync(path.join(src, this.R.bundles[req.body.component].vendor, req.body.component, 'Controllers/' + req.body.controllername + '.js'), es6);
+		fse.ensureDirSync(path.join(src, this.R.bundles[req.body.component].vendor, req.body.component, 'Controllers',prefix))
+		fs.writeFileSync(path.join(src, this.R.bundles[req.body.component].vendor, req.body.component, 'Controllers' ,prefix, controllerName + '.js'), es6);
 		R.unlockNodemon()
 		res.show('El controlador fue creado correctamente.')
 	}

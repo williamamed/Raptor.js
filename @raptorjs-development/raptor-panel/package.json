@@ -1,11 +1,15 @@
 {
-  "name": "@raptorjs/raptor-panel",
-  "version": "1.0.5",
+  "author": {
+    "name": "William Amed - watamayo90@gmail.com"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
   "description": "Panel de control de desarrollo para proyectos Raptorjs",
+  "license": "MIT",
   "main": "index.js",
+  "name": "@raptorjs/raptor-panel",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "William Amed - watamayo90@gmail.com",
-  "license": "MIT"
+  "version": "1.0.6"
 }

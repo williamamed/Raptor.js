@@ -48,6 +48,8 @@ class CoreNode {
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'SessionFilter'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Csrf'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Cors'))
+		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Inyectable'))
+		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Controller'))
 
 
 		Events.register({
@@ -71,8 +73,9 @@ class CoreNode {
 			'annotation:read.method.SessionFilter': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
+				
 				if (route) {
-					var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath, '..', '..', 'index.js'));
+					var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath.split('Controller')[0], 'index.js'));
 
 					var prefix = comp ? comp.value : '';
 					var own = AnnotationReaderCache.getDefinition('Route', annotation.filePath)
@@ -101,7 +104,7 @@ class CoreNode {
 
 				var route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
 				if (route) {
-					var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath, '..', '..', 'index.js'));
+					var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath.split('Controller')[0], 'index.js'));
 
 					var prefix = comp ? comp.value : '';
 					var own = AnnotationReaderCache.getDefinition('Route', annotation.filePath)
@@ -160,10 +163,20 @@ class CoreNode {
 			 * Evento para leer las Anotaciones en index.js
 			 * 
 			 */
-			'after:invoke.configure': $injector.invokeLater(function (bundle, Annotations, AnnotationReaderCache) {
-				var reader = new Annotations.Reader(AnnotationFramework.registry,bundle.instance);
-				reader.parse(path.join(bundle.absolutePath, 'index.js'));
-			}),
+			'after:configure': function(){
+				for (const key in R.bundles) {
+					
+					let bundle=R.bundles[key];
+					$injector.invoke(function (Annotations, AnnotationReaderCache) {
+					
+						var reader = new Annotations.Reader(AnnotationFramework.registry,bundle.instance);
+						reader.parse(path.join(bundle.absolutePath, 'index.js'));
+						
+					})
+				}
+				
+				
+			},
 
 			/**
 			 * Evento para leer las Anotaciones Route en Controladores
@@ -172,18 +185,26 @@ class CoreNode {
 			'init:controller': $i.later(function (instance, controllerPath, bundle, Annotations) {
 				var reader = new Annotations.Reader(AnnotationFramework.registry, instance);
 				reader.parse(controllerPath);
-				var comp = AnnotationReaderCache.getDefinition('Route', path.join(controllerPath, '..', '..', 'index.js'));
-
+				var comp = AnnotationReaderCache.getDefinition('Route', path.join(bundle.absolutePath, 'index.js'));
+				
 				var routes = {}
 
 				var prefix = comp ? comp.value : '';
+				
 				var own = AnnotationReaderCache.getDefinition('Route', controllerPath)
 				var prefixController = own ? own.value : '';
 				prefix += prefixController;
 				var scope = instance;
+				
+				if(instance instanceof R.Controller){
 
+				}else{
+					
+					return;
+				}
 				AnnotationReaderCache.getMethods('Route', controllerPath)
 					.forEach(function (annotation) {
+						//console.log(annotation.before,annotation.value)
 						if (own) {
 							annotation.before = annotation.before ? annotation.before : []
 							own.before = own.before ? own.before : []
@@ -218,10 +239,10 @@ class CoreNode {
 								before: annotation.before,
 								after: annotation.after
 							}
-
+						
 					})
 				if (Object.keys(routes).length > 0) {
-
+					
 					instance.routes(routes);
 
 					R.emit('routes:' + bundle.name + '.' + instance.name, instance, controllerPath, bundle)

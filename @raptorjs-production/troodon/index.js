@@ -1,7 +1,9 @@
 
 'use strict';
-var fs = require('fs')
-var path = require('path')
+const fs = require('fs')
+const path = require('path')
+
+
 /**
  * Raptor.js - Node framework
  * TroodonNode - Componente de seguridad
@@ -44,9 +46,16 @@ class TroodonNode {
 	 * @param Raptor R instancia de la aplicacion Raptor
 	 *
 	 */
-	configure(R, SecurityRegistry, Events, express, AnnotationFramework, Options) {
+	configure(R, SecurityRegistry, Events, express, AnnotationFramework, Options, AnnotationReaderCache) {
+
 
 		var self = this;
+		var dynamicPrivilege;
+		const DynamicPrivilege = require('./Lib/DynamicPrivilege')
+
+		$i('DynamicPrivilege', dynamicPrivilege = new DynamicPrivilege());
+		var Service = require('./Lib/TroodonDataService')
+		$i('TroodonDataService', new Service());
 
 		Events
 			.register({
@@ -60,8 +69,7 @@ class TroodonNode {
 							if (err.code && err.code == "TroodonError") {
 								res.show(err.message, 3)
 							} else {
-								console.log(err);
-								res.show(req.lang('operation_error','troodon'), 3)
+								res.show(req.lang('operation_error', 'troodon'), 3)
 							}
 						} else {
 							if (err.code && err.code == "TroodonError") {
@@ -77,21 +85,26 @@ class TroodonNode {
 				 * el manejedor con su logica
 				 */
 				'before:middleware': function () {
-					
+
 					if (!R.hasDatabaseConfig()) {
 						SecurityRegistry
 							.register('Troodon')
 							.setLogin('/troodon([\/\w*]*)?', 'troodon:auth')
 							.setAuthentication(function (req, username, password, done) {
-								if(Options.mode=='development')
+								if (Options.mode == 'development')
 									req.res.send('troodon requiere una conexión activa con la base de datos.')
 								else
 									req.res.send('')
-									
+
 							})
 
 						console.log('troodon requiere una conexión activa con la base de datos.')
 						return;
+					}
+
+					if (Options.mode == 'development') {
+						console.log('Troodon - componente de seguridad se encuentra en modo de desarrollo.')
+						console.log('Troodon: activados los privilegios dinámicos')
 					}
 
 					SecurityRegistry
@@ -125,7 +138,7 @@ class TroodonNode {
 						.setAuthorization(function (req, res, next) {
 
 
-							$injector.invoke(function (troodon_security_privilege, Op, troodon_security_rol) {
+							$injector.invoke(function (troodon_security_privilege, Op, troodon_security_rol, DynamicPrivilege) {
 
 								var matchingRoutes = self.matchRoutes(req)
 								//var matchingRoutes=this.R.app._router.matchRequests(req)
@@ -135,6 +148,13 @@ class TroodonNode {
 								};*/
 								var roles = req.user.idRol
 								var result = null;
+
+								if (Options.mode == 'development') {
+									
+									DynamicPrivilege.authorizationFlow(req, next, paths);
+
+									return;
+								}
 
 								troodon_security_privilege
 
@@ -246,24 +266,71 @@ class TroodonNode {
 						.setLogin(annotation.value, annotation.login ? annotation.login : "troodon:auth", annotation.token ? annotation.token : false)
 
 				}),
+				/**
+				 * Lectura de anotaciones Privilege en clases
+				 */
+				'annotation:read.definition.Privilege': function (type, annotation) {
+
+					var route = AnnotationReaderCache.getDefinition('Route', annotation.filePath, annotation.target);
+					if (route) {
+						var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath.split('Controller')[0], 'index.js'));
+
+						var prefix = comp ? comp.value : '';
+
+						dynamicPrivilege.addPrivilege(annotation.value, prefix + route.value, annotation.class)
+
+					}
+				},
+
+				'annotation:read.method.Privilege': function (type, annotation) {
+					const route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
+					if (route) {
+						var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath.split('Controller')[0], 'index.js'));
+
+						var prefix = comp ? comp.value : '';
+						var own = AnnotationReaderCache.getDefinition('Route', annotation.filePath)
+						var prefixController = own ? own.value : '';
+						prefix += prefixController;
+
+						dynamicPrivilege.addPrivilege(annotation.value, prefix + route.value, annotation.class)
+
+					}
+				},
 
 				/**
 				 * Correr migraciones
 				 */
 				'migration:ready': $i.later(function (Umzug) {
+					if (Options.mode == 'development')
+						Umzug.up("01-troodontables.mig")
+							.then(function (migrations) {
+								console.log('Esquemas de tablas Troodon insertadas!!')
+							})
+							.catch(function (err) {
+								console.log(err.message)
+							})
 
-					Umzug.up("01-troodontables.mig")
-						.then(function (migrations) {
-							console.log('Esquemas de tablas Troodon insertadas!!')
-						})
-						.catch(function (err) {
-							console.log(err.message)
-						})
+				}),
+				'ready': function () {
+					if (Options.mode == 'development') {
+						dynamicPrivilege.addPrivilege("Seguridad->Usuarios", "/troodon/user")
+						dynamicPrivilege.addPrivilege("Seguridad->Roles", "/troodon/rol")
+						dynamicPrivilege.addPrivilege("Seguridad->Privilegios", "/troodon/privilege")
+						dynamicPrivilege.addPrivilege("Seguridad->Estructuras", "/troodon/structure")
+						dynamicPrivilege.addPrivilege("Seguridad->Categorías", "/troodon/category")
+						dynamicPrivilege.addPrivilege("Seguridad->Auditoría", "/troodon/auditories")
+						dynamicPrivilege.createActions()
+						R.emit('troodon:dynamicPrivilege.ready')
+					}
 
-				})
+				},
+				'artefacts:ready': function () {
+					R.bundles['templates-gen'].manifest.technologies['Troodon-' + R.bundles['troodon'].manifest.version] = require(path.join(__dirname, 'Artefacts'))
+				}
 			})
 
 		AnnotationFramework.registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Troodon'))
+		AnnotationFramework.registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Privilege'))
 
 		var parseUrl = require('parseurl');
 
@@ -309,11 +376,11 @@ class TroodonNode {
 				},
 				write: function (username, ip, state, a_date, log) {
 
-					if (R.database.state)
+					if (R.database)
 						R.getModels('troodon').security_trace
 							.create({
 								username: username,
-								ip: ip,
+								ip: ip?ip:'unknown',
 								state: state,
 								a_date: a_date,
 								log: log

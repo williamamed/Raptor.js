@@ -33,3 +33,14 @@
 - Arreglado el comando run para reconocer las ubicaciones compartidas.
 - Actualizado el core que en su liberación 2.1.0 no reconocia el modo de desarrollo.
 - Agregado al componente orm la configuracion de base de datos en modo de desarrollo.
+
+2.1.3 / 2019-08-26
+-------------------
+- Agregado los privilegios dinamicos al componente troodon.
+- Arreglado en el cli la lectura de componentes en el scope @raptorjs
+- Agregado al core la lectura de anotaciones @Inyectable, @Controller
+- Arreglado en el core el register del securityRegistry
+- Actualizada la documentacion
+- Arreglado el panel de control la escritura del perfil de usuario.
+- Arreglado el ngPortal para la lectura de privilegios dinamicos
+- Agregado a troodon el TroodonDataService para recuperar los servicios independientemte del modo.

@@ -7,8 +7,9 @@ module.exports={
 	    if(window.Ext){
 	            
 	            var actions = Raptor.dataTroodon.actions;
-	            var root = Raptor.dataTroodon.root;
-	            if (actions != false) {
+				var root = Raptor.dataTroodon.root;
+				
+	            if (actions !== false) {
 	                var actionsSize = actions.length;
 	                var selector = new Array();
 	                for (var i = 0; i < actionsSize; i++) {
@@ -40,7 +41,7 @@ module.exports={
 	            
 	            var actions = Raptor.dataTroodon.actions;
 	            var root = Raptor.dataTroodon.root;
-	            if (actions != false) {
+	            if (actions !== false) {
 	                var actionsSize = actions.length;
 	                var sel=selector.join(',');
 	                $("[privilegeName]").hide();

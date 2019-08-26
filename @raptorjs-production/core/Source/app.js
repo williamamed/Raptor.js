@@ -7,7 +7,7 @@ var basedir=process.cwd();
 var format= require('./util/format')
 var fs = require('fs')
 var msg=fs.readFileSync(__dirname+'/util/raw.data').toString();
-console.log(format.get(msg,format.GREEN));
+
 if(process.env.RAPTOR_DEV_EXTERNAL_COMPONENTS){
     Raptor.addExternalComponents(process.env.RAPTOR_DEV_EXTERNAL_COMPONENTS.split(','))
 }
@@ -27,5 +27,9 @@ for (let i = 0; i < arg.length; i++) {
         Raptor.options[opt.shift()]=opt.join('=');
     }
 }
+if(Raptor.options.mode=='development')
+    console.log(format.get(msg,format.GREEN));
+else
+    console.log(format.get("Raptor.js > Corriendo...",format.GREEN));
 
 Raptor.start()

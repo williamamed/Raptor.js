@@ -78,9 +78,9 @@ function CommanLineTool(dirname) {
 	if (fs.existsSync(path.join(process.cwd(), 'src')))
 		componentes = componentes.concat(this.getModules(path.join(process.cwd(), 'src')))
 
-	if (fs.existsSync(path.join(process.cwd(), 'src', 'node_modules', '@raptorjs')))
-		componentes = componentes.concat(this.getScopeModules(path.join(process.cwd(), 'src', 'node_modules', '@raptorjs')))
-
+	if (fs.existsSync(path.join(process.cwd(),  'node_modules', '@raptorjs')))
+		componentes = componentes.concat(this.getScopeModules(path.join(process.cwd(), 'node_modules', '@raptorjs')))
+	
 	/**
 	 * Bucando comandos en el proyecto
 	 */

@@ -7,7 +7,7 @@
 Ext.application({
     name: 'GestUser',
     paths:{
-        'GestUser': '/public/rmodules/Raptorjs/TroodonNode/user/js/app'
+        'GestUser': '/public/@raptorjs/troodon/user/js/app'
     },
     requires: ['Ext.container.Viewport'],
     // automatically create an instance of AM.view.Viewport

@@ -2,8 +2,8 @@
   "state": true,
   "name": "ng-portal",
   "author":"William Amed - watamayo90@gmail.com",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "require":{
-	"core":">=2.1.0"
+	"core":">=2.1.3"
   }
 }

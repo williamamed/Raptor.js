@@ -118,9 +118,10 @@ class ngPortal {
             var securityManager = 'Troodon'
             if (typeof callback == 'function')
                 securityManager = 'ngPortal' + self.name
+            
             var promise = $injector('SecurityRegistry')
                 .register(securityManager)
-                .setLogin('/' + self.name + '([\/\w*]*)?', template ? template : 'TroodonNode:auth')
+                .setLogin('/' + self.name + '([\/\w*]*)?', template ? template : 'troodon:auth')
             self.securityManager = promise;
             self.securityManager.setLogout = function (callbackLogout) {
                 self.__logout = callbackLogout;

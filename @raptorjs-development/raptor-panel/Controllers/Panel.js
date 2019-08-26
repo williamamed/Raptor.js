@@ -92,11 +92,13 @@ class PanelController extends R.Controller{
 		if(changepass){
 		    var options={};
 			try {
+				delete require.cache[path.join(R.basePath, 'config','options.json')]
 				options = require(path.join(this.R.basePath, 'config','options.json'));
 			} catch (error) {
 				console.log('Error leyendo options.json:',error.message)
 			}
-			
+			if(!options.panel)
+				options.panel={}
     		req.mapOption('password','panel.password',options);
     		req.mapOption('username','panel.username',options);
     		req.mapOption('username','panel.secure',options,function(value){
@@ -104,7 +106,7 @@ class PanelController extends R.Controller{
     		});
     		res.show("Las credenciales fueron actualizadas, estamos reiniciando el server.")
             
-    		var body = JSON.stringify(this.R.options, null, 2);
+    		var body = JSON.stringify(options, null, 2);
     
     		var fd=fs.openSync(this.R.basePath+'/config/options.json','w')
     		fs.writeSync(fd,body);

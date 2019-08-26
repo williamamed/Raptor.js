@@ -67,7 +67,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider,$controller
 });
 
 app.controller('FrameController', function($scope, $mdSidenav, $routeParams) {
-    $('.frame-ngPortal').load(function(){
+    $('.frame-ngPortal').on('load',function(){
         //UIR.load.hide()
         $('.portal-loading').fadeOut()
     })
@@ -88,7 +88,7 @@ app.controller('404Controller', function($scope, $mdSidenav) {
 
 app.controller('MyController', function($scope, $mdSidenav) {
     $('.nav-sidebar a.nav-link').each(function(){
-        if($(this).hasClass('ngPortal-embedded')){
+        if($(this).hasClass('ngPortal-embedded') || $(this).hasClass('embed')){
             if($(this).attr("route"))
                 $(this).attr("href",'#!/e'+$(this).attr("route"))
         }else{

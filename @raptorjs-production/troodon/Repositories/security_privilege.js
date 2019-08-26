@@ -1,6 +1,9 @@
 'use strict';
 var lodash=require('lodash')
 module.exports={
+	initRepo:function(){
+		
+	},
 	getTree:function(id,callback){
 		var list=[];
 		var hash=[];

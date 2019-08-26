@@ -99,35 +99,35 @@ class MiComponenteNode {
 	* @param Raptor R instancia de la aplicacion Raptor
 	*
 	*/
-	configure(R){
-	    //Cuando el ngPortal este listo configurar nuestro portal
-	    R.on('ngPortal:ready',function(){
-	       
-	        var ngPortal=$injector('ngPortal')
-	        // Llamar al registro de portales a traves del inyector de dependencias
-	        // y setear una nueva instancia de portal
-		    $injector('ngPortalRegistry').set(
-		        // Creamos un nuevo portal con prefijo de ruta micomponente
-                        new ngPortal('micomponente')
-                            .config(function(){
-                                // Configuramos los puntos calientes para personalizar nuestro portal
-                                this
-                                    .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
-                                    .viewPlugin('name','Raptor.js')
-                                    .viewPlugin('icon','/public/logo.png')
-                                    .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
-                                    .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
-                                    // Desabilita la gestion del perfil de usuario
-                                    .disableProfile()
-                                    // Desabilita la carga de privilegios desde el modulo TroodonNode
-                                    .disableSecurityMenu()
-                                
-                            })
-                            // Indica al portal que debera ser protegido por el modulo de seguridad
-                            .auth('MiComponenteNode:auth.ejs')
-		    );
-		    
-	    })
+	configure(R, Events){
+
+        Events.register({
+            //Cuando el ngPortal este listo configurar nuestro portal
+            'ioc:ngPortal.ready':$i.later(function(ngPortal, ngPortalRegistry){
+
+                var portal=new ngPortal('micomponente');
+                portal.config(function(){
+                    // Configuramos los puntos calientes para personalizar nuestro portal
+                    this
+                        .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+                        .viewPlugin('name','Raptor.js')
+                        .viewPlugin('icon','/public/logo.png')
+                        .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+                        .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
+                        // Desabilita la gestion del perfil de usuario
+                        .disableProfile()
+                        // Desabilita la carga de privilegios desde el modulo TroodonNode
+                        .disableSecurityMenu()
+                    
+                })
+                // Indica al portal que debera ser protegido por el modulo de seguridad
+                .auth('MiComponenteNode:auth.ejs')
+
+                ngPortalRegistry.set(portal)
+            })
+        })
+	    
+	    
 	}
 }
 module.exports=MiComponenteNode;
@@ -154,7 +154,7 @@ module.exports=MiComponenteNode;
                     </i>
                 </p>
                 <b>Seteando el modo en un portal protegido por seguridad</b>
-                <p>Por defecto las funcionalidades serán renderizadas en modo enmarcado excepto que se especifique explicitamente lo contrario. Para especificar el modo embebido, la funcionalidad registrada en el módulo de seguridad deberá contener la clase <b>ngPortal-embedded</b>.
+                <p>Por defecto las funcionalidades serán renderizadas en modo enmarcado excepto que se especifique explicitamente lo contrario. Para especificar el modo embebido, la funcionalidad registrada en el módulo de seguridad deberá contener la clase <b>ngPortal-embedded</b> o simplemente <b>embed</b>.
                     Cuando el portal se encuentra protegido, en el panel lateral aparecerán todas las funcionalidades que el usuario tiene permiso.
                 </p>
                 <p>Para protejer el portal a través de seguridad se debe llamar la función <b>auth</b> en el
@@ -162,56 +162,55 @@ module.exports=MiComponenteNode;
                     los procesos de autenticación, autorización y aditoría así como los métodos de logout y verificación de autenticación.
                 </p>
                 <pre class="prettyprint linenums">
-R.on('ngPortal:ready',function(){
-   
-    var ngPortal=$injector('ngPortal')
-    // Llamar al registro de portales a traves del inyector de dependencias
-    // y setear una nueva instancia de portal
-    $injector('ngPortalRegistry').set(
-        // Creamos un nuevo portal con prefijo de ruta micomponente
-	    new ngPortal('micomponente')
-	        .config(function(){
-		        // Configuramos los puntos calientes para personalizar nuestro portal
-		        this.viewPlugin('name','Raptor.js')   
-		        
-		    })
-		    // Redefiniendo el manejador de seguridad
-		    .auth('MiComponenteNode:auth.ejs',function(autenticator){
-		        autenticator
-		            .setCondition(function(req,res,next){
-    					
-    					if(!req.session.mi_panel){
-    						return true;
-    					}else
-    						return false;
-    				})
-    				.setAuthentication(function(req,username,password,done){
-    				    
-    					if(username==R.options.panel.username && password==R.options.panel.password){
-    						req.session.mi_panel={
-    							username: username
-    						}
-    						
-    					}else{
-    						req.flash('panel_login_error','El usuario o la contraseña son inválidos')
-    					}
-    					req.session.save(function(){
-    						req.res.redirect(req.url)
-    					})	
-    				})
-    				.setAuthorization(function(req,res,next){
-    					next()
-    				})
-    				.logout(function(req,res,next){
-    				    delete req.session.mi_panel;
-    				    req.session.save(function(){
-                			res.redirect('/micomponente/home')
-                		})
-    			    })
-		    })
-    )
-    
+Events.register({
+    //Cuando el ngPortal este listo configurar nuestro portal
+    'ioc:ngPortal.ready':$i.later(function(ngPortal, ngPortalRegistry){
+
+        var portal=new ngPortal('micomponente');
+        portal.config(function(){
+            // Configuramos los puntos calientes para personalizar nuestro portal
+            this.viewPlugin('name','Raptor.js')  
+            
+        })
+        // Redefiniendo el manejador de seguridad
+        .auth('MiComponenteNode:auth.ejs',function(autenticator){
+            autenticator
+                .setCondition(function(req,res,next){
+                    
+                    if(!req.session.mi_panel){
+                        return true;
+                    }else
+                        return false;
+                })
+                .setAuthentication(function(req,username,password,done){
+                    
+                    if(username==R.options.panel.username && password==R.options.panel.password){
+                        req.session.mi_panel={
+                            username: username
+                        }
+                        
+                    }else{
+                        req.flash('panel_login_error','El usuario o la contraseña son inválidos')
+                    }
+                    req.session.save(function(){
+                        req.res.redirect(req.url)
+                    })	
+                })
+                .setAuthorization(function(req,res,next){
+                    next()
+                })
+                .logout(function(req,res,next){
+                    delete req.session.mi_panel;
+                    req.session.save(function(){
+                        res.redirect('/micomponente/home')
+                    })
+                })
+        })
+
+        ngPortalRegistry.set(portal)
+    })
 })
+
                 </pre>
                
                 <br>
@@ -273,23 +272,23 @@ R.on('ngPortal:ready',function(){
 
                  </pre>
                 <pre class="prettyprint linenums">
-//Y en nuestro configurador del portal mandamos a inyectar esta definicion en el entorno           
-R.on('ngPortal:ready',function(){
-   
-    var ngPortal=$injector('ngPortal')
-    // Llamar al registro de portales a traves del inyector de dependencias
-    // y setear una nueva instancia de portal
-    $injector('ngPortalRegistry').set(
-        // Creamos un nuevo portal con prefijo de ruta micomponente
-	    new ngPortal('micomponente')
-	        .config(function(){
-		        // Configuramos los puntos calientes para personalizar nuestro portal
-		        this.viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
-		        
-		    })
-    )
-    
-})
+//Y en nuestro configurador del portal mandamos a inyectar esta definicion en el entorno 
+Events.register({
+    //Cuando el ngPortal este listo configurar nuestro portal
+    'ioc:ngPortal.ready':$i.later(function(ngPortal, ngPortalRegistry){
+
+        var portal=new ngPortal('micomponente');
+        portal.config(function(){
+            // Configuramos los puntos calientes para personalizar nuestro portal
+            this.viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+            
+        })
+        // Indica al portal que debera ser protegido por el modulo de seguridad
+        .auth('MiComponenteNode:auth.ejs')
+
+        ngPortalRegistry.set(portal)
+    })
+})          
                 </pre>
                 <br>
                 <b>Personalizar página de autenticación</b>
@@ -297,25 +296,20 @@ R.on('ngPortal:ready',function(){
                  en el primer parámetro de la función la plantilla de la ventana de autenticación, 
                     el único requisito es que los nombres de los parametros enviados en el formulario de login debe ser <code>username</code> y <code>password</code>.</p>
                 <pre class="prettyprint linenums">
-        
-R.on('ngPortal:ready',function(){
-   
-    var ngPortal=$injector('ngPortal')
-    // Llamar al registro de portales a traves del inyector de dependencias
-    // y setear una nueva instancia de portal
-    $injector('ngPortalRegistry').set(
-        // Creamos un nuevo portal con prefijo de ruta micomponente
-	    new ngPortal('micomponente')
-	        .config(function(){
-		        // Configuramos los puntos calientes para personalizar nuestro portal
-		        this
-		            .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
-		        
-		    })
-		    // Plantilla personalizada de login
-		    .auth('MiComponenteNode:auth.ejs')
-    )
-    
+Events.register({
+    //Cuando el ngPortal este listo configurar nuestro portal
+    'ioc:ngPortal.ready':$i.later(function(ngPortal, ngPortalRegistry){
+
+        var portal=new ngPortal('micomponente');
+        portal.config(function(){
+            // Configuramos los puntos calientes para personalizar nuestro portal
+            this
+                .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+            
+        })
+        // Plantilla personalizada de login
+        .auth('MiComponenteNode:auth.ejs')
+    })
 })
                 </pre>
                 <br>
@@ -352,30 +346,27 @@ class MiComponenteNode {
 	*
 	*/
 	configure(R){
-	    //Cuando el ngPortal este listo configurar nuestro portal
-	    R.on('ngPortal:ready',function(){
-	       
-	        var ngPortal=$injector('ngPortal')
-	        // Llamar al registro de portales a traves del inyector de dependencias
-	        // y setear una nueva instancia de portal
-		    $injector('ngPortalRegistry').set(
-		        // Creamos un nuevo portal con prefijo de ruta micomponente
-    		    new ngPortal('micomponente')
-    		        .config(function(){
-        		        // Configuramos los puntos calientes para personalizar nuestro portal
-        		        this
-        		            .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
-        		            .viewPlugin('name','Raptor.js')
-        		            .viewPlugin('icon','/public/logo.png')
-        		            .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
-        		            .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
-        		        
-        		    })
-        		    // Indica al portal que debera ser protegido por el modulo de seguridad TroodonNode
-        		    .auth('MiComponenteNode:auth.ejs')
-		    )
-		    
-	    })
+        //Cuando el ngPortal este listo configurar nuestro portal
+        Events.register({
+            //Cuando el ngPortal este listo configurar nuestro portal
+            'ioc:ngPortal.ready':$i.later(function(ngPortal, ngPortalRegistry){
+        
+                var portal=new ngPortal('micomponente');
+                portal.config(function(){
+                    // Configuramos los puntos calientes para personalizar nuestro portal
+                    this
+                        .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+                        .viewPlugin('name','Raptor.js')
+                        .viewPlugin('icon','/public/logo.png')
+                        .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+                        .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
+                    
+                })
+                // Plantilla personalizada de login
+                .auth('MiComponenteNode:auth.ejs')
+            })
+        })
+	    
 	}
 }
 module.exports=MiComponenteNode;

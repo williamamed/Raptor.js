@@ -9,8 +9,11 @@ var express = require('express'),
 	fs = require('fs'),
 	path = require('path'),
 	ViewFunctions = require('./ViewFunctions'),
-	semver = require("semver")
+	semver = require("semver");
 
+
+
+//console.log(require('module').Module)
 
 var fse = require('fs-extra')
 var format = require('./util/format')
@@ -56,10 +59,10 @@ const defered = {
 		}
 
 		comp.markers.execute = function (relativePath) {
-			
+
 			comp.markers.forEach(function (func) {
-				
-				comp.marker(relativePath,func)
+
+				comp.marker(relativePath, func)
 				//func(relativePath)
 			})
 		}
@@ -160,13 +163,13 @@ module.exports = {
 		}
 	},
 
-	addPublish:function(name,relative){
-		if(this.options){
-			if(this.options.publish)
-				this.options.publish[name]=relative?relative:"";
-			else{
-				this.options.publish={}
-				this.options.publish[name]=relative?relative:"";
+	addPublish: function (name, relative) {
+		if (this.options) {
+			if (this.options.publish)
+				this.options.publish[name] = relative ? relative : "";
+			else {
+				this.options.publish = {}
+				this.options.publish[name] = relative ? relative : "";
 			}
 		}
 	},
@@ -204,7 +207,7 @@ module.exports = {
 			},
 			"secret": "SomeKeyToProtectEverything",
 			"proyectName": "RaptorJS",
-			"maxEventListeners":80
+			"maxEventListeners": 80
 		}
 		var preferEnv = false;
 
@@ -333,14 +336,14 @@ module.exports = {
 		this.container = {}
 		var self = this;
 
-		
 
-		this._startStack=new Promise(function(res,rej){
-			self._startResolver=res;
+
+		this._startStack = new Promise(function (res, rej) {
+			self._startResolver = res;
 		})
-		this.startStack={}
-		this.startStack.then=function(){
-			self._startStack=self._startStack.then.apply(self._startStack,arguments)
+		this.startStack = {}
+		this.startStack.then = function () {
+			self._startStack = self._startStack.then.apply(self._startStack, arguments)
 			return self.startStack;
 		}
 
@@ -361,6 +364,7 @@ module.exports = {
 		Object.defineProperty(global, 'R', {
 			value: me
 		});
+
 		/**
 		 * Definir el injector de dependencias como global
 		 */
@@ -495,32 +499,32 @@ module.exports = {
 		passport.deserializeUser(function (user, done) {
 			done(null, user);
 		});
-		
+
 		/**
 		 * Servir otros archivos estaticos, tener en cuenta NGINX
 		 */
 		this.app.use('/public', express.static(basepath + '/public'));
-		
+
 
 		this.app.use(this.requestViewPlugin())
 		this.autoPublishComponent = false;
 		this.readConfig();
-		if(this.options.publish){
+		if (this.options.publish) {
 			for (const tag in this.options.publish) {
 				try {
-					let part=require.resolve(tag);
-					let real=part.split(path.normalize(tag))[0];
-					let tagFixed=tag.split('\\')
-					let resulting =[tagFixed.pop()]
-					let last=tagFixed.pop()
-					if(last)
+					let part = require.resolve(tag);
+					let real = part.split(path.normalize(tag))[0];
+					let tagFixed = tag.split('\\')
+					let resulting = [tagFixed.pop()]
+					let last = tagFixed.pop()
+					if (last)
 						resulting.push(last)
-					tagFixed=resulting.reverse().join('/')
-					this.app.use('/public/'+tagFixed, express.static(path.join(real,tag,this.options.publish[tag])));
+					tagFixed = resulting.reverse().join('/')
+					this.app.use('/public/' + tagFixed, express.static(path.join(real, tag, this.options.publish[tag])));
 				} catch (error) {
-					
+
 				}
-				
+
 			}
 		}
 
@@ -666,7 +670,7 @@ module.exports = {
 		this.emit('run.prepare')
 		this.i18n = this.i18nClass(__i18nDefinition)
 		this.emit('after:prepare')
-
+		
 		this.emit('config:error.middleware')
 		/**
 		 * Agregar middleware gestion de errores de aplicacion
@@ -688,9 +692,11 @@ module.exports = {
 					res.end(msg);
 				}
 			}
+
 			if (typeof err == "string") {
 				res.status(200);
 				showError(err.toString())
+
 			} else {
 				if (err.code && $injector('Errors').exist(err.code)) {
 					R.emit('error:' + err.code, err, req, res, next)
@@ -723,7 +729,7 @@ module.exports = {
 			// html
 			if (~accept.indexOf('html')) {
 				if (err.status != 404)
-					res.render($injector('TemplateBasic'), { msg: err.toString() })
+					res.render($injector('TemplateBasic'), { msg: 'Ups, Ocurrió un Error' })
 				else
 					res.render($injector('Template404'), { msg: err.message })
 
@@ -747,15 +753,15 @@ module.exports = {
 	 */
 	start: function () {
 		this.configure()
-		
+
 		this.startStack
-			.then(result=>{
-				
+			.then(result => {
+
 				this.startServer();
 			})
-		
+
 		this._startResolver();
-		
+
 	},
 
 	/*
@@ -892,11 +898,11 @@ module.exports = {
 
 		try {
 			this.scopes.push(path.join(require.resolve('@raptorjs/core'), '..', '..'))
-		} catch (error) {}
+		} catch (error) { }
 
-		if(this.options.scopes && this.options.scopes.length){
+		if (this.options.scopes && this.options.scopes.length) {
 			for (let i = 0; i < this.options.scopes.length; i++) {
-				this.scanVendor(path.join(this.basePath,'node_modules',this.options.scopes[i]));
+				this.scanVendor(path.join(this.basePath, 'node_modules', this.options.scopes[i]));
 			}
 		}
 
@@ -925,17 +931,17 @@ module.exports = {
 					fs
 						.readdirSync(path.join(value))
 						.filter(function (fileNode) {
-							return (fs.statSync(path.join(value,fileNode)).isDirectory()) && (fileNode.indexOf('.') !== 0) && (fileNode !== 'index.js') && (fs.existsSync(path.join(value, fileNode, 'manifest.json')))
+							return (fs.statSync(path.join(value, fileNode)).isDirectory()) && (fileNode.indexOf('.') !== 0) && (fileNode !== 'index.js') && (fs.existsSync(path.join(value, fileNode, 'manifest.json')))
 						})
 						.forEach(function (comp) {
-							
+
 							me.registerComponent(comp, path.basename(value), false, path.dirname(value))
 
 						})
 				}
 
 			} catch (error) {
-				
+
 			}
 
 		}
@@ -1076,11 +1082,12 @@ module.exports = {
 				//me.bundles[bundle].hooks.config('before').resolve(me)
 				me.emit('before:invoke.configure', me.bundles[bundle])
 				me.emit('before:' + bundle + '.configure', me.bundles[bundle])
-				R.addPublish(me.bundles[bundle].absolutePath,"Resources")
+				R.addPublish(me.bundles[bundle].absolutePath, "Resources")
 				$injector.process(main.configure, main)
 
 				//me.bundles[bundle].hooks.config('after').resolve(me)
 				me.emit('after:' + bundle + '.configure', me.bundles[bundle])
+
 				me.emit('after:invoke.configure', me.bundles[bundle])
 			}
 			//Nueva forma de llamar los middleware v2.0.0
@@ -1197,90 +1204,66 @@ module.exports = {
 		 */
 		controllers: function (R, bundle) {
 
-			var rutaSrc = R.basePath + '/src';
-			var pathController = path.join(bundle.absolutePath, 'Controllers');
+
+			var directoryController = path.join(bundle.absolutePath, 'Controllers');
 
 
 			var mainInstance = bundle.instance;
 			var prefix = (mainInstance.prefix) ? mainInstance.prefix : '';
-			//var routes = R.getAnnotationRouteConfig(path.join(rutaSrc, bundle.path, 'index.js'))
-			var routes = false
-			if (typeof routes == 'string')
-				prefix = routes
+
 			R.emit('before:prepare.controller', bundle)
-			if (fs.existsSync(pathController)) {
 
-				fs
-					.readdirSync(pathController)
-					.filter(function (file) {
-						return (file.indexOf('.') !== 0) && (file !== 'index.js')
-					})
-					.forEach(function (file) {
+			var search = function (pathController) {
+				if (fs.existsSync(pathController)) {
 
-						var controller = require(path.join(pathController, file))
+					fs
+						.readdirSync(pathController)
+						.filter(function (file) {
+							return (file.indexOf('.') !== 0) && (file !== 'index.js')
+						})
+						.forEach(function (file) {
+							if (!fs.statSync(path.join(pathController, file)).isDirectory()) {
+								var controller = require(path.join(pathController, file))
 
-						/**
-						 * @deprecated este tipo de objeto no esta recomendado y en desuso, utilizar
-						 * clases ES6
-						 */
-						if (typeof controller == 'object') {
+								/**
+								 * Clase ES6
+								 * Modificado en la version 2.1.3
+								 * la lectura del controlador
+								 */
+								if (typeof controller == 'function') {
+									var claseES6 = new controller();
+									if (claseES6 instanceof R.Controller) {
+										
+										claseES6.init(R, prefix, mainInstance, R.mainNodeBundle(mainInstance, R, bundle));
 
-							var commonJSPrefix = '';
-							if (controller['prefix'] && typeof controller['prefix'] == 'string')
-								commonJSPrefix = controller['prefix'];
-
-							var controllerInstance = new R.Controller(R, prefix + commonJSPrefix, mainInstance, R.mainNodeBundle(mainInstance, R, bundle));
-
-							for (var i in controller) {
-
-								if (typeof i == 'string') {
-									if (i !== 'prefix') {
-										if (typeof controller[i] == 'function') {
-											controllerInstance.route('all', i, controller[i])
-											//R.app.all( prefix + commonJSPrefix  + i , R.proxy( R.mainNodeBundle(mainInstance,R,bundle) , controllerInstance), R.proxy(controller[i],controllerInstance))
-										}
-
-										if (typeof controller[i] == 'object') {
-											if (controller[i]['method']) {
-												controllerInstance.route(controller[i]['method'], i, controller[i].action)
-											} else {
-												controllerInstance.route('all', i, controller[i].action)
+										R.emit('init:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
+										R.emit('init:controller', claseES6, path.join(pathController, file), bundle)
+										bundle.controllers.push(claseES6);
+										if (claseES6.configure) {
+											$injector.process(claseES6.configure, claseES6)
+											R.emit('config:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
+											R.emit('config:controller', claseES6, path.join(pathController, file), bundle)
+											//var route = R.getAnnotationRouteConfig(path.join(pathController, file), claseES6)
+											var route = false;
+											if (typeof route == "object") {
+												claseES6.routes(route)
+												R.emit('routes:' + bundle.name + '.' + controller.name, claseES6, path.join(pathController, file), bundle)
+												R.emit('routes:controller', claseES6, path.join(pathController, file), bundle)
 											}
 										}
 									}
 								}
-
+							}else{
+								search(path.join(pathController, file));
 							}
 
-							bundle.controllers.push(controller);
-						}
+						})
 
-						/**
-						 * Clase ES6
-						 */
-						if (typeof controller == 'function') {
-							var claseES6 = new controller(R, prefix, mainInstance, R.mainNodeBundle(mainInstance, R, bundle));
-
-							R.emit('init:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
-							R.emit('init:controller', claseES6, path.join(pathController, file), bundle)
-							bundle.controllers.push(claseES6);
-							if (claseES6.configure) {
-								$injector.process(claseES6.configure, claseES6)
-								R.emit('config:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
-								R.emit('config:controller', claseES6, path.join(pathController, file), bundle)
-								//var route = R.getAnnotationRouteConfig(path.join(pathController, file), claseES6)
-								var route = false;
-								if (typeof route == "object") {
-									claseES6.routes(route)
-									R.emit('routes:' + bundle.name + '.' + controller.name, claseES6, path.join(pathController, file), bundle)
-									R.emit('routes:controller', claseES6, path.join(pathController, file), bundle)
-								}
-							}
-						}
-
-					})
-
+				}
 			}
+
+			search(directoryController);
+
 			R.emit('after:prepare.controller', bundle)
 
 		},
@@ -1631,6 +1614,8 @@ module.exports = {
 			__container: {},
 			register: function (name) {
 				var reg = me.getSecurityManager(name);
+				if (this.get(name))
+					return this.get(name);
 				this.__container[name] = reg;
 				return this.__container[name];
 			},
@@ -2038,6 +2023,11 @@ module.exports = {
 
 			}
 		});
+
+		annotations.Reader.prototype.setTargets = function (targets) {
+			this.targets = targets;
+		}
+
 		annotations.Reader.prototype.parse = function () {
 			(function (toString) {
 				Buffer.prototype.__tString = toString
@@ -2061,47 +2051,86 @@ module.exports = {
 			}
 
 			this.definitionAnnotations.forEach((annotation) => {
-				$i('AnnotationReaderCache')._register(annotation, 'definition', function () {
-					aChain.then(function () {
-						R.emit('annotation:read', 'definition', annotation)
-						R.emit('annotation:read.definition.' + annotation.annotation, 'definition', annotation)
-					})
-				});
+				let fn = function () {
+					$i('AnnotationReaderCache')._register(annotation, 'definition', function () {
+
+						aChain.then(function () {
+							R.emit('annotation:read', 'definition', annotation)
+							R.emit('annotation:read.definition.' + annotation.annotation, 'definition', annotation)
+						})
+					});
+				}
+
+				if (!this.targets) {
+					fn()
+				} else {
+					this.targets.forEach(element => {
+						if (element == annotation.annotation)
+							fn()
+					});
+				}
+
 
 			});
 
 			this.methodAnnotations.forEach((annotation) => {
-				$i('AnnotationReaderCache')._register(annotation, 'method', function () {
-					aChain.then(function () {
-						R.emit('annotation:read', 'method', annotation)
-						R.emit('annotation:read.method.' + annotation.annotation, 'method', annotation)
-					})
+				let fn = function () {
+					$i('AnnotationReaderCache')._register(annotation, 'method', function () {
+						aChain.then(function () {
+							R.emit('annotation:read', 'method', annotation)
+							R.emit('annotation:read.method.' + annotation.annotation, 'method', annotation)
+						})
 
-				});
-
+					});
+				}
+				if (!this.targets) {
+					fn()
+				} else {
+					this.targets.forEach(element => {
+						if (element == annotation.annotation)
+							fn()
+					});
+				}
 			});
 
 			this.constructorAnnotations.forEach((annotation) => {
-				$i('AnnotationReaderCache')._register(annotation, 'constructor', function () {
-					aChain.then(function () {
-						R.emit('annotation:read', 'constructor', annotation)
-						R.emit('annotation:read.constructor.' + annotation.annotation, 'constructor', annotation)
-					})
+				let fn = function () {
+					$i('AnnotationReaderCache')._register(annotation, 'constructor', function () {
+						aChain.then(function () {
+							R.emit('annotation:read', 'constructor', annotation)
+							R.emit('annotation:read.constructor.' + annotation.annotation, 'constructor', annotation)
+						})
 
-				});
-
-
+					});
+				}
+				if (!this.targets) {
+					fn()
+				} else {
+					this.targets.forEach(element => {
+						if (element == annotation.annotation)
+							fn()
+					});
+				}
 			});
 
 			this.propertyAnnotations.forEach((annotation) => {
-				$i('AnnotationReaderCache')._register(annotation, 'property', function () {
-					aChain.then(function () {
-						R.emit('annotation:read', 'property', annotation)
-						R.emit('annotation:read.property.' + annotation.annotation, 'property', annotation)
-					})
+				let fn = function () {
+					$i('AnnotationReaderCache')._register(annotation, 'property', function () {
+						aChain.then(function () {
+							R.emit('annotation:read', 'property', annotation)
+							R.emit('annotation:read.property.' + annotation.annotation, 'property', annotation)
+						})
 
-				});
-
+					});
+				}
+				if (!this.targets) {
+					fn()
+				} else {
+					this.targets.forEach(element => {
+						if (element == annotation.annotation)
+							fn()
+					});
+				}
 			});
 
 			aChain.resolve();
@@ -2117,7 +2146,68 @@ module.exports = {
 		this.annotations = annotations;
 		$injector('Annotations', annotations)
 		this.annotationFramework.Annotations = annotations
-		$injector('AnnotationFramework', this.annotationFramework)
+		$injector('AnnotationFramework', this.annotationFramework);
+		this.annotationFramework.autoResolve = [];
+
+		(function (resol, AnnotationFramework) {
+			var Module = require('module');
+
+			require('module').Module._load = function (a, b) {
+				var filename = Module._resolveFilename.apply(this, arguments);
+				var loadOne = require.cache[filename] ? true : false;
+				var data = resol.apply(this, arguments);
+
+
+				var resolveAnnotation = function (file, resolved) {
+					var reader = new annotations.Reader(AnnotationFramework.registry);
+					reader.setTargets(['Inyectable', 'Controller'].concat(AnnotationFramework.autoResolve))
+					reader.parse(file);
+					var inyectable = $i('AnnotationReaderCache').getMethods('Inyectable', file);
+					var controller = $i('AnnotationReaderCache').getDefinition('Controller', file);
+					R.emit('AutoResolveAnnotation', reader, file);
+					if (typeof data == 'function' && controller) {
+						const util = require('util');
+
+						util.inherits(data, R.Controller);
+
+					}
+
+					if (typeof resolved == 'function' && inyectable) {
+						if (inyectable.length) {
+							inyectable.forEach(element => {
+								if (resolved.prototype[element.target]) {
+									resolved.prototype[element.target] = $i.invokeLater(resolved.prototype[element.target], resolved)
+								}
+
+							});
+						}
+
+					}
+
+				}
+
+				if (!loadOne && require.cache[filename]) {
+					if (filename.indexOf(path.join(R.basePath, 'src')) >= 0 && path.extname(filename) == '.js') {
+						resolveAnnotation(filename, data)
+					}
+					R.scopes.forEach(element => {
+						if (filename.indexOf(path.join(element)) >= 0 && path.extname(filename) == '.js') {
+							resolveAnnotation(filename, data)
+						}
+					});
+					R.externalDirectories.forEach(element => {
+						if (filename.indexOf(path.join(element)) >= 0 && path.extname(filename) == '.js') {
+							resolveAnnotation(filename, data)
+						}
+					});
+
+
+				}
+
+				return data;
+			}
+		})(require('module').Module._load, this.annotationFramework);
+
 
 	},
 

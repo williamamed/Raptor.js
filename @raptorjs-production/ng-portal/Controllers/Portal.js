@@ -16,17 +16,16 @@ class ngPortal extends R.Controller{
     
     /**
      * @Route("/:base/home")
-     * 
+     * @Privilege("Home",class="hide")
      */
-	indexAction(req,res,next){
+	indexAction(req,res,next,TroodonDataService){
 		
 	    var portal=$injector('ngPortalRegistry').get(req.params.base);
 	    var self=this;	
 	    
 	    if(portal.securityMenu){
-        	
-    		this.R.getModels('troodon').security_privilege
-        		.getTreeByRol([1])
+			TroodonDataService
+				.getPrivilegesTree([1])
         		.then(function(tree){
         		    var menu=[]
         		    self.prepareMenu(menu,tree,1)
@@ -75,7 +74,7 @@ class ngPortal extends R.Controller{
 	
 	/**
      * @Route("/:base/profile")
-     * 
+     * @Privilege("profile",class="hide")
      */
 	profileAction(req,res,next){
 	    

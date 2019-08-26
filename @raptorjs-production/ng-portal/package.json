@@ -1,11 +1,8 @@
 {
-  "name": "@raptorjs/ng-portal",
-  "version": "1.0.6",
-  "description": "Componente para crear portales genericos basados en Angularjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "author": {
+    "name": "William Amed - watamayo90@gmail.com"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "angular": "^1.7.8",
     "angular-animate": "^1.7.8",
@@ -21,6 +18,13 @@
     "angular-sanitize": "^1.7.8",
     "angular-touch": "^1.7.8"
   },
-  "author": "William Amed - watamayo90@gmail.com",
-  "license": "MIT"
+  "deprecated": false,
+  "description": "Componente para crear portales genericos basados en Angularjs",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "@raptorjs/ng-portal",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.7"
 }

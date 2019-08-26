@@ -11,6 +11,11 @@ class Controller {
 	constructor(R, prefix, main, beforeTask) {
 		// always initialize all instance properties
 
+	}
+
+	init(R, prefix, main, beforeTask) {
+		// always initialize all instance properties
+
 		this.prefix = '';
 		this.prefixNode = (prefix) ? prefix : '';
 		this.mainClass = main;

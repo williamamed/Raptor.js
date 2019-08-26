@@ -603,6 +603,9 @@ module.exports=exampleNode
 Capítulo 4 – Controladores
 ======
 Los controladores son clases definidas dentro del directorio Controllers, encargados de la descripción de la interacción entre la capa de presentación (Frontend) y la capa de negocio (Backend). Estas clases heredan de Controller y en ellas pueden ser definidos metadatos en forma de anotaciones que lo vinculan con el enrutador (@Route), pudiendo en ellas definirse respuestas a determinados patrones de ruta o sea peticiones hechas a través de un cliente http.
+
+A partir de la versión 2.1.3 se comienza a utilizar la anotación @Controller para marcar la clase como controladora, sigue teniendo soporte legacy la herencia de R.Controller. Al existir la anotación @Controller en la definición de la clase el framework internamente preparará la herencia sobre la clase R.Controller.
+
 ``` javascript
 'use strict';
 
@@ -610,8 +613,9 @@ Los controladores son clases definidas dentro del directorio Controllers, encarg
  * prefijo de ruta todas las definiciones en el controlador
  * 
  * @Route("/example") 
+ * @Controller
  */
-class MiControlador extends R.Controller {
+class MiControlador {
 
     configure() {
 
@@ -749,6 +753,70 @@ En las acciones de los controladores también puede hacerse uso del inyector de 
     }
 ```
 Raptor.js configura en el inyector un grupo de dependencias del propio framework así como otras dependencias configuradas por los componentes instalados. En el siguiente listado se encuentran las dependencias registradas por Raptor.
+
+Inyectado desde anotación
+-----
+En la versión 2.1.3 del core se incluye la forma de inyectado por anotación, esta técnica solo podrá ser usada en los métodos de las clases ES6. Debes tener en cuenta que las acciones de un controlador marcadas con @Route ya realizan está técnica para la resolución de dependencias.
+
+Concretamente podemos marcar los métodos de una clase con la anotación `@Inyectable` para resolver dependencias, esto evita que en algunos casos podamos envitarnos llamar a `$i.invoke` directamente.
+
+``` javascript
+/**
+ * 
+ * 
+ * @Route("/galaxia")
+ * @Controller
+ */
+class Thanos{
+
+	configure(){
+		
+    }
+    
+    /**
+     * @Inyectable
+     */ 
+	destroyHumans(Options){
+        console.log(Options)
+	}
+
+    /**
+     * @Route("/gotoearth")
+     */
+	goToEarthAction(req,res,next){
+		this.destroyHumans();
+		res.send("Welcome thanos");
+	}
+}
+module.exports=Thanos;
+```
+
+``` javascript
+
+class Humanos{
+
+	constructor(){
+		
+    }
+    
+    /**
+     * @Inyectable
+     */ 
+	caminar(Options, express, SecurityRegistry){
+        // Algo que deseas hacer
+        express.use(function(req,res,next){
+            // y algo más
+            next()
+        })
+	}
+
+    
+	empezar(){
+		this.caminar();
+	}
+}
+module.exports=Thanos;
+```
 
 Dependencias
 -----
@@ -1623,6 +1691,47 @@ La anotación `@Troodon` es la que se encarga de indicar al módulo de seguridad
 */
 class exampleNode {
 ```
+
+### Privilegios dinámicos
+En la versión 2.1.3 fue incluido en el componente de seguridad los privilegios dinámicos, un concepto que permite la declaración de los privilegios en forma de anotaciones. 
+
+En modo de desarrollo el componente trabaja con los privilegios declarados con las anotaciones @Privilege, realizando la asignación de estos al rol activo en tiempo de ejecución, esto significa que en modo de desarrollo usted no debe precuparse por registrar privilegios y acciones en el modulo de seguridad ni tampoco la asignación de permisos al rol, el sistema realiza este proceso automaticamente en memoria. La tabla security_privilege estará vacía todo el tiempo que se trabaje en el modo de desarrollo.
+
+Una vez que se decide pasar a modo de producción usted puede utilizar el importador de privilegios para la tabla security_user y asignarlos automaticamente a un rol. La funcionalidad del importador está disponible tanto en el generador de artefactos como a través del comando `rap troodon-import`.
+
+``` javascript
+    /**
+     * @Route("/miruta/example")
+	 * @Privilege("Agrupador del menu->Ejemplo",class="")
+     */
+	indexAction(req,res,next){
+		
+		res.send("hola mundo controller");
+	}
+```
+La anotación @Privilege deberá ser ubicada en una clase o action donde este presente la anotación @Route, en el valor de la anotación se establecerá el nombre con el que aparecerá en el gestor de privilegios, si usted desea crear agrupadores podrá indicarlo a través del indicador `->` donde en la parte izquierda del indicador corresponderá a los agrupadores(contenedor) y en la parte derecha del indicador el nombre del privilegio con el que aparecerá en el menú.
+
+El atributo `class` corresponde al campo class name o nombre de clase del privilegio. En el ejemplo anterior se creará un privilegio con ruta `/miruta/example`, nombre de la funcionalidad `Ejemplo` dentro de un contenedor nombrado `Agrupador del menu`, además el nombre de clase se encuentra vacío.
+
+### Importando privilegios
+Para pasar a modo producción usted primeramente tendrá que importar los privilegios dinámicos hacia el esquema real de base de datos. Esto puede realizarse de forma muy sencilla en 2 formas.
+
+`Comando troodon-import`
+
+Este comando está disponible desde la consola y puede invocarse en desarrollo para crear el esquema real de privilegios en BD, solo necesita 1 argumento correspondiente al nombre de rol existente en BD que le serán asignados los privilegios al insertarlos.
+``` batch
+>rap troodon-import "Raptor admin"
+```
+Una vez ejecutado el comando puedes correr el proyecto en modo de producción trabajando con los privilegios físicos en BD.
+
+`Vía generador de Artefactos`
+
+En el generador de artefactos disponible en el panel de control encontrarás en el menú la tecnología troodon, solo debes seleccionarla, al listarse las acciones encontrarás la acción de importado, solo pulsamos en importar, se levantará una ventana requiriendo el campo Rol que se utilizará para asignar los privilegios.
+
+<img style="width: 100%" src="./img/troodon-import1.png">
+
+<img style="width: 100%" src="./img/troodon-import2.png">
+
 
 bio
 -----
