@@ -3,7 +3,7 @@
   "name": "troodon",
   "author": "William Amed - watamayo90@gmail.com",
   "description": "Modulo de seguridad que garantiza la implementación de los procesos de identificación-autenticación, autorización y auditoría. Basado en una extensión de los modelos de control de acceso RBAC y CAEM",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "require": {
     "core": ">=2.1.3",
     "orm": ">=1.0.0",

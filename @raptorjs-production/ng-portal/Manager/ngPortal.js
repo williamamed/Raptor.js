@@ -105,6 +105,7 @@ class ngPortal {
     }
 
     auth(template, callback) {
+
         this.protect = true
         var self = this;
         this.securityMenu = true
@@ -113,11 +114,22 @@ class ngPortal {
             callback = template
             template = undefined
         }
-
+		
+                
+		
         $injector('R').on('before:middleware', function () {
             var securityManager = 'Troodon'
             if (typeof callback == 'function')
                 securityManager = 'ngPortal' + self.name
+			else{
+				if(!$injector('SecurityRegistry').get('Troodon')){
+					self.protect = false
+					self.securityMenu = false
+					self.profile = false
+					console.log('ngPortal warning: El módulo de seguridad troodon se encuentra desactivado, actívelo para poder usar la funcionalidad .auth()')
+					return;
+				}
+			}
             
             var promise = $injector('SecurityRegistry')
                 .register(securityManager)

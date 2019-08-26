@@ -50,22 +50,10 @@ module.exports = {
                 return Migration.reIndex('security_estructure', 'id')
             })
             .then(function () {
-                return query.bulkInsert('security_privilege', data['security_privilege'])
-            })
-            .then(function () {
-                return Migration.reIndex('security_privilege', 'id')
-            })
-            .then(function () {
                 return query.bulkInsert('security_rol', data['security_rol'])
             })
             .then(function () {
                 return Migration.reIndex('security_rol', 'id')
-            })
-            .then(function () {
-                return query.bulkInsert('security_rol_security_privilege', data['security_rol_security_privilege'])
-            })
-            .then(function () {
-                return Migration.reIndex('security_rol_security_privilege', 'id')
             })
             .then(function () {
                 return query.bulkInsert('security_user', data['security_user'])
