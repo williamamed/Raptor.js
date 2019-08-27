@@ -128,6 +128,14 @@ class ngPortal {
 					self.profile = false
 					console.log('ngPortal warning: El módulo de seguridad troodon se encuentra desactivado, actívelo para poder usar la funcionalidad .auth()')
 					return;
+                }
+                
+                if(!R.hasDatabaseConfig || !R.hasDatabaseConfig()){
+					self.protect = false
+					self.securityMenu = false
+					self.profile = false
+					console.log('ngPortal warning: El módulo de seguridad troodon se encuentra desactivado, actívelo para poder usar la funcionalidad .auth()')
+					return;
 				}
 			}
             

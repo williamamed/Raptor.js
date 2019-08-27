@@ -25,7 +25,7 @@ class ngPortal extends R.Controller{
 	    
 	    if(portal.securityMenu){
 			TroodonDataService
-				.getPrivilegesTree([1])
+				.getPrivilegesTree(req.user.idRol)
         		.then(function(tree){
         		    var menu=[]
         		    self.prepareMenu(menu,tree,1)
