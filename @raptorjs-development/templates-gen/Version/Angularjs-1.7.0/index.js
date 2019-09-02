@@ -84,7 +84,7 @@ module.exports={
                     R.template(path.join(__dirname,'templates','fragment','fragment.ejs'),{
                         appName: req.body.appName,
                         controllerName: req.body.controllerName,
-                        controllerRoute: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.appName+"/"+req.body.controllerName+".controller.js')%>"
+                        controllerRoute: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.appName+"/"+req.body.controllerName+".controller.js"
                     }))
                 }else
                     throw new Error("Alguno de los argumentos obligatorios están vacíos.")
