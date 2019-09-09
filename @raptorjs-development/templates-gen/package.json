@@ -1,6 +1,6 @@
 {
   "name": "@raptorjs/templates-gen",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Generador de artefactos para Raptor.js",
   "main": "index.js",
   "scripts": {
