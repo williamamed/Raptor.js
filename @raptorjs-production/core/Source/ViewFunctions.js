@@ -157,7 +157,7 @@ class ViewFunctions {
 		var bundle=splited.shift()
 		if(!R.bundles[bundle])
 			return '';
-		return '/public/rmodules/'+R.bundles[bundle].vendor+'/'+bundle+'/'+splited.join('/')
+		return '/public/'+R.bundles[bundle].vendor+'/'+bundle+'/'+splited.join('/')
 	}
 }
 
