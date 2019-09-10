@@ -140,26 +140,23 @@ class ngPortal extends R.Controller{
 		.then(function(proy){
 		    var finish=false;
 			var compare=false;
-			var bcrypt = require('bcrypt-nodejs')
-			bcrypt.compare(req.body.password, proy.password, function(err, isMatch){
 			
-			    if (isMatch) {
-    			    compare=true
-    			}
-    			finish=true;
-    		})
-    		$injector('R').waitUntil(finish)
-    		if(compare){
-    		    var modified={
-    				'password': req.body.password
-    			}
-    			
-    			return proy.update(modified)
-    		}else{
-    		    
-    		    return Promise.reject("La contraseña actual no es correcta")
-    		    
-    		}
+			var bcrypt = require('bcryptjs')
+			return new Promise(function(resolve, reject){
+				bcrypt.compare(req.body.current_password, proy.password, function(err, isMatch){
+					if (isMatch) {
+						compare=true;
+						var modified={
+							'password': req.body.password
+						}
+						
+						resolve(proy.update(modified))
+					}else{
+						reject("La contraseña actual no es correcta")
+					}
+					finish=true;
+				})
+			})
 			
 		})
 		.then(function(){
