@@ -1,7 +1,6 @@
 
 Raptor.js
 =======
-<img style="" src="/public/@raptorjs/core/img/raptorjs-full.png" height="90">
 
 Raptor.js es un framework de node creado, impulsado y mantenido por el Proyecto Raptor.
 
