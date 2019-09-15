@@ -1,0 +1,20 @@
+
+module.exports={
+    /**
+     * Inicializa el repositorio, pueden establecerse en esta funcion 
+     * las relaciones entre esquemas
+     * Ej.
+     * Relacion de muchos a muchos con model a travesde la tabla table_name_many
+     * this.belongsToMany(Model, { through: 'table_name_many', foreignKey: 'id_user' })
+     * 
+     * Relacion de uno a muchos con Model
+     * this.belongsTo(Model, { foreignKey: 'id_estructure' })
+     * 
+     * Ej. de Eventos
+     * Adicionando un hook para realizar acciones con el modelo
+     * this.addHook('beforeCreate')
+     */
+    initRepo:function(){
+        
+    }
+}

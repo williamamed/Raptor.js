@@ -158,7 +158,7 @@ module.exports = {
                         name: req.body.name + ".view.Viewport"
                     }))
 					fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath, 'Views', req.body.name, 'index.ejs'), R.template(__dirname + "/templates/basic/index.ejs", {
-                        ruta: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.name+"/all-classes.js')%>"
+                        ruta: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.name+"/all-classes.js"
                     }))
                 } else
                     throw new Error("Alguno de los argumentos obligatorios están vacíos.")

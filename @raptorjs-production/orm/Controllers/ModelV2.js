@@ -86,8 +86,18 @@ class ModelV2 extends R.Controller {
 				auto.run(function (err) {
 					if (err)
 						res.show('Los modelos no pudieron ser generados, ocurrió un error interno en la generación', 3)
-					else
+					else{
+						const path=require('path');
+						const fs=require('fs');
+						var repo=path.join(dir,'..','Repositories');
+						if(!fs.existsSync(repo))
+							fs.mkdirSync(repo)
+						
+						tables.forEach(element => {
+							fs.writeFileSync(path.join(repo,element+'.js'),R.template('orm:repository.ejs'));
+						});
 						res.show("Los modelos fueron generados correctamente")
+					}
 					R.unlockNodemon()
 				});
 			} else {

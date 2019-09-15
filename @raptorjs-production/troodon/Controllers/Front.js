@@ -33,7 +33,10 @@ class Front extends R.Controller {
      */
 	indexAction(req, res, next, Options, troodon_security_user, troodon_security_rol, troodon_security_estructure) {
 		var bcrypt = require('bcryptjs')
-
+		if(!req.body.username && !req.body.password){
+			res.status(401).send('');
+			return;
+		}
 
 		troodon_security_user
 			.findOne({

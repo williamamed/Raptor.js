@@ -24,13 +24,10 @@
             <label data-toggle="tooltip" data-placement="top" title="Dialecto a utilizar por sequelize para conexión con la base de datos"
                 class="control-label" for="driver">Dialecto</label>
             <div class="controls">
-                <select class="form-control" ng-init="config.driver='<%- options.database.options.dialect %>'" ng-model="config.driver" name="driver"
+                <select class="form-control" ng-change="onChange()" ng-init="config.driver='<%- options.database.options.dialect %>'" ng-model="config.driver" name="driver"
                     id="driver">
-                    <option value="postgres">postgres</option>
-                    <option value="mysql">mysql</option>
-                    <option value="sqlite">sqlite</option>
-                    <option value="mssql">mssql</option>
-                    <option value="mariadb">mariadb</option>
+                    <option >Seleccione la base de datos</option>
+                    <option ng-repeat="db in databases" value="{{db.name}}">{{db.name}}</option>
                 </select>
             </div>
 

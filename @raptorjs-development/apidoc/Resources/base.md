@@ -476,7 +476,7 @@ class exampleNode {
     * Entrada de configuracion del componente
     * se ejecuta cuando se registran los componentes
     * 
-    * @param Raptor R instancia de la aplicacion Raptor
+    * `@param` Raptor R instancia de la aplicacion Raptor
     *
     */
     configure(R, Events, express) {
@@ -758,7 +758,7 @@ Inyectado desde anotación
 -----
 En la versión 2.1.3 del core se incluye la forma de inyectado por anotación, esta técnica solo podrá ser usada en los métodos de las clases ES6. Debes tener en cuenta que las acciones de un controlador marcadas con @Route ya realizan está técnica para la resolución de dependencias.
 
-Concretamente podemos marcar los métodos de una clase con la anotación `@Inyectable` para resolver dependencias, esto evita que en algunos casos podamos envitarnos llamar a `$i.invoke` directamente.
+Concretamente podemos marcar los métodos de una clase con la anotación `@Injectable` para resolver dependencias, esto evita que en algunos casos podamos envitarnos llamar a `$i.invoke` directamente.
 
 ``` javascript
 /**
@@ -774,7 +774,7 @@ class Thanos{
     }
     
     /**
-     * @Inyectable
+     * @Injectable
      */ 
 	destroyHumans(Options){
         console.log(Options)
@@ -800,7 +800,7 @@ class Humanos{
     }
     
     /**
-     * @Inyectable
+     * @Injectable
      */ 
 	caminar(Options, express, SecurityRegistry){
         // Algo que deseas hacer
@@ -873,9 +873,9 @@ Objeto registrado por el componente biométrico para la protección con patrón 
 $injector API
 -----
 ### $injector()
-@param {string} Llave nombre de la dependencia.
+`@param` {string} Llave nombre de la dependencia.
 
-@param {string} value Valor a registrar en la dependencia especificada.
+`@param` {string} value Valor a registrar en la dependencia especificada.
 
 @return null | mixed
 
@@ -888,7 +888,7 @@ $injector("myObject",{message:"Hi"})
 $injector("myObject")
 ```
 ### invoke()
-@param {Function} funcion Función a invocar utilizando el inyector.
+`@param` {Function} funcion Función a invocar utilizando el inyector.
 
 @return null | mixed
 
@@ -899,7 +899,7 @@ $injector.invoke(function(sequelize){
 })
 ```
 ### invokeLater()
-@param {Function} funcion Función a invocar utilizando el inyector.
+`@param` {Function} funcion Función a invocar utilizando el inyector.
 
 @return Function
 
@@ -929,37 +929,120 @@ configure(R, Events){
         })
     }
 ```
+Desde la versión 2.1.5 podemos utilizar la anotación @Event para suscribirnos a eventos desde cualquier clase ES6 incluyendo la clase principal del componente. La implementación anterior podríamos definirla también de la siguiente forma:
+``` javascript
+class MiComponente{
+
+    /**
+     * @Event("sendresponse")
+     */
+    onSendresponse(){
+
+    }
+
+    /**
+     * @Event("session:config")
+     */
+    onSessionConfig(){
+        
+    }
+
+    configure(R, Events){
+        
+    }
+}
+```
+Podemos combinar la anotación `@Event` con `@Injectable` para hacer resolución de dependencias en el método objetivo.
+``` javascript
+class MiComponente{
+
+    /**
+     * @Event("sendresponse")
+     */
+    onSendresponse(){
+
+    }
+
+    /**
+     * @Event("session:config")
+     * @Injectable
+     */
+    onSessionConfig(Options){
+        console.log(Options.mode);//development
+    }
+
+    configure(R, Events){
+        
+    }
+}
+```
+
 La suscripción a determinados eventos es realizada generalmente en el método configure de la clase principal index del componente, ya que nos suscribimos a estos eventos antes de que sean lanzados por el framework producto a que el método configure es una de las primeras rutinas invocadas por Raptor.js. 
 
 Debemos tener en cuenta que la suscripción deberá realizarse antes del lanzamiento de cualquier evento de lo contrario nuestra suscripción nunca será invocada.
 
 A continuación se describen los eventos generados por el framework.
 
+Ejecución de eventos
+-----
+En una aplicación Raptor.js resulta importante conocer el orden de ejecución de los eventos de la aplicación ya que están divididos en 2 flujos (arranque y trabajo), en estos 2 momentos el framework emite diferentes eventos descritos en el api que permiten la configuración del comportamiento de los componentes y el sistema.
+
+Cuando se indica el inicio de la aplicación primeramente se ejecuta el flujo de `arranque` que permite la configuración del framework y sus componentes, una vez terminado este flujo y el proyecto se encuentra escuchando en el puerto configurado entonces comienza la escucha del flujo de `trabajo` manejado por el marco de aplicación web `express`.
+
+### Flujo de arranque
+El flujo de arranque comienza desde que se indica el inicio de la aplicación hasta que Raptor.js emite el evento `ready` y comienza la escucha en el puerto configurado. Este proceso lo podemos observar en el terminal desde que ordenamos el comando `rap run` hasta que el framework emite la señal que se encuentra escuchando en el puerto.
+
+En este espacio de tiempo se lee la configuración en los archivos dispuestos en el directorio config del proyecto, se escanean, leen y configuran los componentes detectados en src, scopes y locaciones compartidas, se configura el stack de middleware de express y finalmente se levanta el servicio web.
+
+El orden de ejecución de los eventos en el flujo de arranque se describe en la siguiente imagen:
+
+<img style="width: 100%" src="./img/arranque.png">
+
+A través del objetos Events nos podemos suscribir a los eventos del flujo de arranque para realizar acciones de configuración en el momento que el framework se encuentra en el proceso de arranque, con el que podemos incluso cambiar el comportamiento por defecto desde un componente creado o importado en el proyecto.
+
+### Flujo de trabajo
+El flujo de trabajo comienza una vez el framework indica que se encuentra escuchando en el puerto configurado, y está determinado por el orden de los middlewares en el marco de aplicación express, simplemente un flujo de trabajo es la atención a una petición web entrante hasta que se indica una respuesta desde nuestra aplicación. 
+
+Recuerde siempre que todos los middlewares registrados en el stack de express forman parte del flujo de trabajo, así como las rutas configuradas en nuestro proyecto.
+
+La representación visual del stack de express a través del patrón middleware puede observarse en la siguiente imagen que indica como son procesadas y respondidas las peticiones web entrantes por los diferentes métodos (GET, POST, PUT, DELETE, ALL).
+
+<img style="width: 100%" src="./img/express.png">
+
+Tenga en cuenta que esta gráfica es solo un ejemplo de como funciona el patrón middleware y que no representa exactamente los middleware que Raptor.js configura para el proyecto. Utilizando los eventos del flujo de `arranque` podemos registrar middlewares en posiciones determinadas dentro del stack de middlewares de express que nos permitan atender determinadas peticiones antes o después del enrutador que atiende las rutas configuradas en los controladores.
+
+
 Eventos
 -----
-### sendresponse 
-Lanzado cuando se envía cualquier respuesta hacia el cliente a través del método send, incluye además el render. En la suscripción del evento se recibe como parámetros el request actual y el core (R) del framework en ese orden. Es posible añadir más datos en la respuesta actual a través de los viewPlugins.
-``` javascript
-Events.register({
-    'sendresponse':function(req,R){
-          //Escribiendo una respuesta adicional
-          if (req.header('accept').indexOf('text/html') != -1)
-             req.viewPlugin.set('after_response_body', "<b>Hola mundo</b>")
-          }
-    })
-```
-### sendresponse:[urlpath] 
-Evento lanzado cuando se envía cualquier respuesta hacia el cliente a través del método send que coincida con el [urlpath] especificado.
-``` javascript
-Events.register({
-    'sendresponse:/raptor/home':function(req,R){
-          //Escribiendo una respuesta adicional
-          if (req.header('accept').indexOf('text/html') != -1)
-             req.viewPlugin.set('after_response_body', "<b>Hola mundo</b>")
-          }
-    })
-```
+### before:configure
+Este evento es lanzado antes de la lectura y configuración de los componentes, o sea antes que sean invocados los configure de cada clase principal de los componentes.
+
+### before:invoke.configure 
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado antes que se ejecute el método configure de la clase principal del componente, recibe como parámetro el componente actual.
+
+### before:[nombre-componente].configure 
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado antes que se ejecute el método configure de la clase principal del componente especificado, recibe como parámetro el componente actual.
+
+### after:[nombre-componente].configure 
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que se ejecute el método configure de la clase principal del componente especificado, recibe como parámetro el componente actual.
+
+### after:invoke.configure 
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que se ejecute el método configure de la clase principal del componente, recibe como parámetro el componente actual.
+
+### after:configure 
+Este evento es lanzado cuando se ha terminado de ejecutar todos los configure de cada clase principal de los componentes así como su validación por el framework.
+
 ### session:config 
+`@param` {express-session} Función middleware de definición del manejador de sesiones
+
 Evento lanzado antes que se configure el manejador de sesión por defecto configurado por Raptor, recibe como parámetro el middleware definido por el paquete express-session. Puede ser utilizado para cancelar el manejador por defecto y configurar uno personalizado.
 ``` javascript
 Events.register({
@@ -977,20 +1060,110 @@ Events.register({
     }
 })
 ```
-### helmet:config 
+
+### helmet:config
+`@param` {helmet} Función middleware de definición de helmet
+
 Evento lanzado luego que es configurado el middleware de helmet, recibe como parámetro la definición de helmet importada por Raptor, puede ser utilizada para configurar otros parámetros adicionales. Consultar la documentación de helmet
-### before:middleware 
+
+### before:middleware
 Evento lanzado antes que se ejecute el método middleware de la clase principal index de cada componente.
-### run:middlewares 
+
+### run.middlewares 
 Evento lanzado para invocar la ejecución del método middleware de la clase principal de cada componente.
-### after:middleware 
+
+### before:invoke.middleware 
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado antes que se ejecute el método middleware de la clase principal del componente, recibe como parámetro el componente actual.
+
+### before:[nombre-componente].middleware
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado antes que se ejecute el método middleware de la clase principal del componente especificado, recibe como parámetro el componente actual.
+
+### after:[nombre-componente].middleware
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que se ejecute el método middleware de la clase principal del componente especificado, recibe como parámetro el componente actual.
+
+### after:invoke.middleware
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que se ejecute el método middleware de la clase principal del componente, recibe como parámetro el componente actual.
+
+### after:middleware
 Evento lanzado después que se ejecute el método middleware de la clase principal index de cada componente.
+
 ### before:prepare 
 Evento lanzado antes que se ejecute la preparación del componente, la lectura de los controladores, ejecución del configure de cada controller, lectura de anotación de rutas, configuración de rutas, compressor.
-### run:prepare 
+
+### run.prepare 
 Evento que invoca la preparación de los componentes.
-### afer:prepare 
+
+### before:prepare.controller
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado antes que se lean y configuren los controladores de un componente, recibe como parámetro el componente actual.
+
+### init:[nombre-componente].[nombre-controlador]
+`@param` {Controller} Instancia del controlador incializado
+
+`@param` {String} Ruta absoluta al controlador
+
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado cuando se inicializa el controlador y componente especificado, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
+``` javascript
+Events.register({
+    'init:RaptorNode.PanelController':function(controller,ruta,componente){
+        
+    }
+})
+```
+
+### init:controller
+`@param` {Controller} Instancia del controlador incializado
+
+`@param` {String} Ruta absoluta al controlador
+
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado cuando se inicializa el controlador de un componente, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
+``` javascript
+Events.register({
+    'init:controller':function(controller,ruta,componente){
+        
+    }
+})
+```
+
+### config:[nombre-componente].[nombre-controlador]
+`@param` {Controller} Instancia del controlador incializado
+
+`@param` {String} Ruta absoluta al controlador
+
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que es ejecutado el método configure del controlador y componente especificado, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
+
+### config:controller 
+`@param` {Controller} Instancia del controlador incializado
+
+`@param` {String} Ruta absoluta al controlador
+
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que es ejecutado el método configure de cada controlador, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
+
+### after:prepare.controller
+`@param` {Object} Objecto de definición de un componente
+
+Evento lanzado después que son leídos y configurados los controladores de un componente, recibe como parámetro el componente actual.
+
+### after:prepare 
 Evento lanzado después que se ejecute la preparación del componente, la lectura de los controladores, ejecución del configure de cada controller, lectura de anotación de rutas, configuración de rutas, compressor.
+
 ### config:error.middleware 
 Evento lanzado antes de configurar en el stack de express el middleware de gestión de errores, es posible configurar antes un manejador de excepciones personalizado.
 ``` javascript
@@ -1002,6 +1175,37 @@ Events.register({
     }
 })
 ```
+
+### serverrunning 
+Evento lanzado cuando el servidor http comienza escuchar en el puerto configurado.
+
+### ready 
+Evento lanzado cuando el framework ha terminado el flujo de arranque.
+
+### sendresponse 
+Lanzado cuando se envía cualquier respuesta hacia el cliente a través del método send, incluye además el render. En la suscripción del evento se recibe como parámetros el request actual y el core (R) del framework en ese orden. Es posible añadir más datos en la respuesta actual a través de los viewPlugins.
+``` javascript
+Events.register({
+    'sendresponse':function(req,R){
+          //Escribiendo una respuesta adicional
+          if (req.header('accept').indexOf('text/html') != -1)
+             req.viewPlugin.set('after_response_body', "<b>Hola mundo</b>")
+          }
+    })
+```
+
+### sendresponse:[urlpath] 
+Evento lanzado cuando se envía cualquier respuesta hacia el cliente a través del método send que coincida con el [urlpath] especificado.
+``` javascript
+Events.register({
+    'sendresponse:/raptor/home':function(req,R){
+          //Escribiendo una respuesta adicional
+          if (req.header('accept').indexOf('text/html') != -1)
+             req.viewPlugin.set('after_response_body', "<b>Hola mundo</b>")
+          }
+    })
+```
+
 ### error:[code] 
 Evento generado cuando ocurra un error que tiene como código el especificado, para que este evento sea lanzado debe de estar registrado en el contenedor de errores del core. En la lógica de la aplicación las excepciones lanzadas deben especificar el código de error que Raptor procesará para invocar este evento.
 ``` javascript
@@ -1014,68 +1218,31 @@ Events.register({
 ```
 ### database:running 
 Evento lanzado cuando la conexión de base de datos principal (Sequelize) configurada por Raptor se conectó correctamente.
+
 ### database:failed 
 Evento lanzado cuando ocurrió un error en la conexión de base de datos principal configurada por Raptor.
 ready Evento lanzado cuando core ha terminado la configuración y se encuentra listo , tenga en cuenta que es posible que el servidor http o la conexión con base de datos pudieran estar desactivadas.
-### before:config 
-Este evento es lanzado antes de la lectura y configuración de los componentes, o sea antes que sean invocados los configure de cada clase principal de los componentes.
-### after:configure 
-Este evento es lanzado cuando se ha terminado de ejecutar todos los configure de cada clase principal de los componentes así como su validación por el framework.
-### before:invoke.configure 
-Evento lanzado antes que se ejecute el método configure de la clase principal del componente, recibe como parámetro el componente actual.
-### before:[nombre-componente].configure 
-Evento lanzado antes que se ejecute el método configure de la clase principal del componente especificado, recibe como parámetro el componente actual.
-### after:[nombre-componente].configure 
-Evento lanzado después que se ejecute el método configure de la clase principal del componente especificado, recibe como parámetro el componente actual.
-### after:invoke.configure 
-Evento lanzado después que se ejecute el método configure de la clase principal del componente, recibe como parámetro el componente actual.
-### before:invoke.middleware 
-Evento lanzado antes que se ejecute el método middleware de la clase principal del componente, recibe como parámetro el componente actual.
-### before:[nombre-componente].middleware 
-Evento lanzado antes que se ejecute el método middleware de la clase principal del componente especificado, recibe como parámetro el componente actual.
-### after:[nombre-componente].middleware 
-Evento lanzado después que se ejecute el método middleware de la clase principal del componente especificado, recibe como parámetro el componente actual.
-### after:invoke.middleware 
-Evento lanzado después que se ejecute el método middleware de la clase principal del componente, recibe como parámetro el componente actual.
-### before:prepare.controller 
-Evento lanzado antes que se lean y configuren los controladores de un componente, recibe como parámetro el componente actual.
-### init:[nombre-componente].[nombre-controlador] 
-Evento lanzado cuando se inicializa el controlador y componente especificado, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
-``` javascript
-Events.register({
-    'init:RaptorNode.PanelController':function(controller,ruta,componente){
-        
-    }
-})
-```
-### init:controller 
-Evento lanzado cuando se inicializa el controlador de un componente, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
-``` javascript
-Events.register({
-    'init:controller':function(controller,ruta,componente){
-        
-    }
-})
-```
 
-### config:[nombre-componente].[nombre-controlador] 
-Evento lanzado después que es ejecutado el método configure del controlador y componente especificado, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
-### config:controller 
-Evento lanzado después que es ejecutado el método configure de cada controlador, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
-### routes:[nombre-componente].[nombre-controlador]
-Evento lanzado después que es configurada las rutas del controlador y componente especificado, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
-### routes:controller 
-Evento lanzado después que es configurada las rutas década controlador, recibe como parámetro la instancia del controlador, ruta absoluta y objeto de configuración del componente.
-### after:prepare.controller 
-Evento lanzado después que son leídos y configurados los controladores de un componente, recibe como parámetro el componente actual.
-### ioc:[nombre-dependencia].ready 
+### ioc:[nombre-dependencia].ready
 Evento lanzado cuando el nombre de dependencia especificada ha sido añadida al inyector de dependencias y está listo para consumirse, recibe como parámetro la dependencia recién añadida.
+
 ### migration:ready 
 Evento lanzado cuando las migraciones están lista para su ejecución, solo le lanzará cuando exista una conexión exitosa con alguno de los motores de base de datos.
-### annotation:read.definition.[ClassName] 
+
+### annotation:read.definition.[ClassName]
 Evento lanzado cuando las anotaciones de la clase ClassName fueron leídas, recibe como parámetro el tipo de anotación que se leyó (definition) y la definición de la anotación recién leída.
-### annotation:read.method.[ClassName] 
+
+### annotation:read.method.[ClassName]
 Evento lanzado cuando las anotaciones de los métodos de la clase ClassName fueron leídas, recibe como parámetro el tipo de anotación que se leyó (method) y la definición de la anotación recién leída.
+
+### AutoResolveAnnotation
+`@param` {ecmas-annotations.Reader} Instancia creada para leer las anotaciones
+
+`@param` {String} Ruta del archivo que está siendo analizado
+
+`@param` {Mixed} El dato del archivo resuelto a través del require
+
+Evento lanzado cuando se abre un archivo por primera vez por la instrucción require, permite analizar a través del Reader si cuenta con las anotaciones definidas en la lista AnnotationFramework.autoResolve
 
 Envió de eventos personalizados
 -----
@@ -1101,21 +1268,21 @@ req.viewPlugin
 -----
 ### set()
 
-@param {string} name nombre del hotpot donde se insertará el contenido.
+`@param` {string} name nombre del hotpot donde se insertará el contenido.
 
-@param {string}  value Valor a registrar en la dependencia especificada.
+`@param` {string}  value Valor a registrar en la dependencia especificada.
 
 Esta función es utilizada en la inserción de contenido en el hotpot deseado.
 
 ### get()
-@param {string} name nombre del hotpot.
+`@param` {string} name nombre del hotpot.
 
 @return Array
 
 Devuelve un array con todo el contenido insertado para un hotpot
 
 ### remove()
-@param {string} name nombre del hotpot.
+`@param` {string} name nombre del hotpot.
 
 Elimina todo el contenido insertado para el hotpot especificado.
 
@@ -1162,7 +1329,7 @@ API
 -----
 
 ### R.plugin()
-@param {string} hotpot  nombre del hotpot deseado
+`@param` {string} hotpot  nombre del hotpot deseado
 
 @return {Array}
 Retorna todo el contenido registrado para el hotpot especificado.
@@ -1171,16 +1338,16 @@ Retorna todo el contenido registrado para el hotpot especificado.
 <%- R.plugin('ngPortal_name') %>
 ```
 ### R.flash()
-@param {string} nombre nombre del mensaje flash configurado en el request.
+`@param` {string} nombre nombre del mensaje flash configurado en el request.
 
 @return {string}
 
 Devuelve el valor del mensaje flash configurado en el request.
 
 ### R.lang()
-@param {string} tag nombre del tag que contiene el texto del mensaje.
+`@param` {string} tag nombre del tag que contiene el texto del mensaje.
 
-@param {string} componente [opcional] nombre del componente en donde se buscará el tag del mensaje.
+`@param` {string} componente [opcional] nombre del componente en donde se buscará el tag del mensaje.
 
 @return {string}
 
@@ -1226,7 +1393,7 @@ req.lang('error_message')
 Devuelve la abreviatura del lenguaje activo
 
 ### setCurrentLanguage()
-@param {string} abbr abreviatura del lenguaje a utilizar.
+`@param` {string} abbr abreviatura del lenguaje a utilizar.
 
 Establece el lenguaje a través de su abreviatura.
 ``` javascript
@@ -1239,14 +1406,14 @@ req.language.setCurrentLanguage("es");
 Persiste el lenguaje actual en la cookie de lenguaje, esto significa que el lenguaje establecido será el preferido para las próximas peticiones.
 
 ### setUsePreferedLanguage()
-@param {boolean} prefered valor para determinar si se usa el lenguaje del agente de usuario, true para usarlo.
+`@param` {boolean} prefered valor para determinar si se usa el lenguaje del agente de usuario, true para usarlo.
 
 Establece si el framework deberá tener como prioridad el lenguaje del agente de usuario
 
 ### getTranslation()
-@param {string} tag, Etiqueta del mensaje que se desea del lenguaje actual.
+`@param` {string} tag, Etiqueta del mensaje que se desea del lenguaje actual.
 
-@param {string} component, Componente donde se buscará la etiqueta especificada como primer argumento.
+`@param` {string} component, Componente donde se buscará la etiqueta especificada como primer argumento.
 
 @return {string}
 
@@ -1355,7 +1522,7 @@ Propiedades
 Métodos
 -----
 ### main()
-@param {string} basepath ruta absuluta donde fue inicializado el proyecto.
+`@param` {string} basepath ruta absuluta donde fue inicializado el proyecto.
 
 Entrada principal del Core, inicializa Raptor.js, el inyector y configura el núcleo para su ejecución leyendo toda la configuración definida en options.json
 
@@ -1369,9 +1536,9 @@ Inicia el core de Raptor.js, teniendo en cuenta la configuración se inicia el s
 Inicia el servicio web configurado para express, esta función es invocada por la función start del core. Tenga en cuenta que si en las opciones globales el atributo http se encuentra en false, este método no tendrá ningún efecto.
 
 ### addPublish()
-@param {string} package Nombre del paquete dentro de node_modules que será publicado
+`@param` {string} package Nombre del paquete dentro de node_modules que será publicado
 
-@param {string} relative Ruta relativa dentro del paquete que será publicada
+`@param` {string} relative Ruta relativa dentro del paquete que será publicada
 
 Expone el contenido del paquete especificado a través de express, será expuesto utilizando el prefijo de ruta `/public` y a continuación la ruta del propio paquete, es útil para añadir dinamicamente al registro de contenido público lo recursos js, css e imagenes de paquetes ubicados en node_modules.
 ``` javascript
@@ -1389,7 +1556,7 @@ R.addPublish("angular")
 R.addPublish("angular-animate")
 ```
 ### addExternalComponents()
-@param {string|Array} rutas Ubicaciones compartidas que deseamos añadir a la configuración
+`@param` {string|Array} rutas Ubicaciones compartidas que deseamos añadir a la configuración
 
 Añade ubicaciones compartidas al registro, el core buscará en estas ubicaciones componentes Raptor.js válidos.
 
@@ -1397,50 +1564,50 @@ Añade ubicaciones compartidas al registro, el core buscará en estas ubicacione
 @return {Array} Devuelve las ubicaciones compartidas configuradas.
 
 ### scanVendor()
-@param {string} ruta Ruta hacia el vendor o scope que se desea escanear
+`@param` {string} ruta Ruta hacia el vendor o scope que se desea escanear
 
 Escanea un vendor o scope en busca de componentes Raptor.js válidos.
 
 ### addComponent()
-@param {string} component Ruta del componnte
+`@param` {string} component Ruta del componnte
 
-@param {boolean} validate Si se desea validar el componente
+`@param` {boolean} validate Si se desea validar el componente
 
 Añade el componente especificado al registro a partir de su ruta y opcionalmente si se desea validar
 
 
 ### registerComponent()
-@param {string} comp nombre del componente
+`@param` {string} comp nombre del componente
 
-@param {string} vendor nombre del vendor
+`@param` {string} vendor nombre del vendor
 
-@param {boolean} validate determina si será validado por el gestor de componentes, dependencias hacia otros componentes
+`@param` {boolean} validate determina si será validado por el gestor de componentes, dependencias hacia otros componentes
 
-@param {string} external De ser especificado se configura el componente en modo externo y se ajusta su ruta absoluta
+`@param` {string} external De ser especificado se configura el componente en modo externo y se ajusta su ruta absoluta
 
 Registra un componente en el core de Raptor. La estructura física del componente debe estar creada al invocar esta función, es posible además registrar componentes en tiempo de ejecución. Opcionalmente se ejecutará una validación para este componente, revisando si las dependencias requeridas están completas.
 
 ### validateComponent()
-@param {string} bundle nombre del componente
+`@param` {string} bundle nombre del componente
 
 Valida el componente especificado, si las dependencias requeridas no están resueltas desactiva el componente.
 
 ### prepareComponent()
-@param {string} bundle nombre del componente
+`@param` {string} bundle nombre del componente
 
 Ejecuta la preparación del componente según las directivas del framework, en esta funcionalidad se leen los controladores y anotaciones.
 
 ### copyResources()
-@param {string} bundle nombre del componente
+`@param` {string} bundle nombre del componente
 
-@param {function} callback función a ejecutar luego de la rutina de copia
+`@param` {function} callback función a ejecutar luego de la rutina de copia
 
-@param {boolean} preCompile precompilar los recursos copiados, se reconocen por defecto extjs
+`@param` {boolean} preCompile precompilar los recursos copiados, se reconocen por defecto extjs
 
 Utilitario para copiar los recursos de un componente hacia public/rmodules
 
 ### requireNode()
-@param {string} name Ruta relativa al nombre del componente.
+`@param` {string} name Ruta relativa al nombre del componente.
 
 @return {Mixed}
 
@@ -1450,7 +1617,7 @@ R.requireNode("exampleNode/Lib/MyClass.js")
 ```
 
 ### resolveLocal()
-@param {string} name ruta relativa al componente especificado
+`@param` {string} name ruta relativa al componente especificado
 
 @return {string}
 
@@ -1461,16 +1628,16 @@ R.resolveLocal("exampleNode/Lib/MyClass.js")
 ```
 
 ### getSecurityManager()
-@param {string} name nombre del SecurityManager
+`@param` {string} name nombre del SecurityManager
 
 @return {SecurityManager}
 
 Devuelve una nueva instancia de un SecurityManager con el nombre especificado o returna el existente.
 
 ### template()
-@param {string} location ruta relativa al componente
+`@param` {string} location ruta relativa al componente
 
-@param {object} data Parámetros a pasar a la plantilla
+`@param` {object} data Parámetros a pasar a la plantilla
 
 @return {string}
 
@@ -1506,7 +1673,7 @@ class CustomAnnotation extends Annotation{
         this.annotation='CustomAnnotation'
     }
 }
-module.exports=Troodon;
+module.exports=CustomAnnotation;
 ```
 Ejemplo de utilización de la anotación.
 ``` javascript
@@ -1550,6 +1717,416 @@ configure(R, Events, AnnotationFramework, Annotations) {
     }
 
 ```
+Auto Resolve
+-----
+La lista autoResolve contenida dentro del AnnotationFramework permite registrar Anotaciones objetivo en el momento de una resolución automática de una clase o archivo.
+
+Raptor.js notifica mediante el evento `AutoResolveAnnotation` cuando está abriendo un archivo js dentro del proyecto por primera vez fruto de una instrucción `require`. El evento envía como primer argumento el Reader aprobado para esta lectura y que solo lee los nombres de anotaciones objetivo definidos en la lista AnnotationFramework.autoResolve, en la práctica permite procesar una anotación definida en la clase que estamos tratando de cargar vía `require` en el mismo instante en que se realiza la carga.
+
+Esta característica fue agregada en versiones recientes 2.1.2 y está sugeta a mejoras.
+
+Si queremos que nuestra anotación sea resuelta automaticamente primeramente debemos registrarla en el AnnotationFramework y luego añadir el nombre de la anotación a la lista AnnotationFramework.autoResolve
+``` javascript
+
+class Thanos{
+
+    constructor(){
+
+    }
+
+    /**
+     * @Deprecated
+     */
+    eliminarMundo(){
+        console.log("Utilizare las gemas del universo")
+    }
+}
+module.exports=Thanos;
+```
+``` javascript
+configure(R, Events, AnnotationFramework, Annotations) {
+	   // Registro de la anotación para que sea accesible
+        AnnotationFramework
+            .registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Deprecated'))
+        
+        // Registrar el nombre de la anotacion para hacer un autoResolve, de lo contrario el Reader
+        // aprobado en la auto resolucion no la procesa
+        AnnotationFramework.autoResolve.push('Deprecated');
+
+
+        Events
+            .register({
+                'AutoResolveAnnotation':$i.later(function(reader, file, loaded, AnnotationReaderCache){
+                    
+                    // En este ejemplo a todos los metodos de la clase marcados con la anotacion
+                    // Deprecated lo sobrescribimos con un mensaje de advertencia
+                    
+                    var customs=AnnotationReaderCache.getMethods('Deprecated', file);
+                    customs.forEach(element => {
+                        if (loaded.prototype[element.target]) {
+                            resolved.prototype[element.target] = function(){
+                                console.log('Lo sentimos este metodo esta deprecated !!')
+                            }
+                        }
+
+                    });
+                    
+                }),
+                'ready':function(){
+                    
+                    // Invocamos la clase que queremos utilizar
+                    
+                    const Thanos=require('./Thanos')
+
+                    var thanos=new Thanos();
+                    thanos.eliminarMundo();
+                }
+            })
+    }
+
+```
+build()
+-----
+`@param` {String} name Nombre de la anotación que queremos crear
+
+`@param` {boolean} autoResolve Determina si las anotaciones son auto resueltas en el momento de la carga de la clase
+
+`@return` {Object} Objeto que contiene el método `on`
+
+Desde la versión 2.1.5 está disponible la función `build()` en el AnnotationFramework, permite la definición de anotaciones personalizadas de una manera sencilla sin pasar por la implementación propuesta anteriormente.
+
+El ejemplo anterior ahora podemos re-definirlo y modificar el comportamiento de la función objetivo.
+
+``` javascript
+
+class Thanos{
+
+    constructor(){
+
+    }
+
+    /**
+     * @Deprecated
+     */
+    eliminarMundo(){
+        console.log("Utilizare las gemas del universo")
+    }
+}
+module.exports=Thanos;
+```
+``` javascript
+configure(R, Events, AnnotationFramework, Annotations) {
+	   
+        // Construimos una Anotacion con nombre Deprecated, escuchamos el evento
+        // de lectura de los metodos y modificamos el prototipo de 
+        // la clase para ese metodo
+        AnnotationFramework
+			.build('Deprecated', true)
+			.on('method', function (type, annotation, classDefinition) {
+
+				if (classDefinition.prototype[annotation.target]) {
+					classDefinition.prototype[annotation.target] = function () {
+						console.log('Lo sentimos este metodo esta deprecated !!')
+					}
+				}
+
+			})
+
+        Events
+            .register({
+                'ready':function(){
+                    
+                    // Invocamos la clase que queremos utilizar
+                    
+                    const Thanos=require('./Thanos')
+
+                    var thanos=new Thanos();
+                    thanos.eliminarMundo();
+                }
+            })
+    }
+
+```
+### on()
+`@param` {String} event, Nombre del evento de lectura al que queremos suscribirnos, los valores posible son `method`, `definition`, `property`, `constructor` y `file`;
+
+`@param` {Function} fn, Función a ejecutarse cuando se reciba el evento
+
+El método on permite la suscripción a los diferentes eventos de lectura de la anotación creada, la descripción de los parámetros enviados por cada evento se lista a continuación.
+
+### Event.method
+`@param` {String} type, Tipo de evento lanzado en este caso method;
+
+`@param` {Annotation} annotation, Instancia de la anotación leída que contiene la función objetivo (annotation.target) y los parámetros de la anotación.
+
+`@param` {Mixed} classDefinition, Clase cargada por el AutoResolver, este parámetro solo es enviado si en el método `build` la anotación fue creada con autoResolve igual a true.
+
+### Event.definition
+`@param` {String} type, Tipo de evento lanzado en este caso definition;
+
+`@param` {Annotation} annotation, Instancia de la anotación leída que contiene la función objetivo (annotation.target) y los parámetros de la anotación.
+
+`@param` {Mixed} classDefinition, Clase cargada por el AutoResolver, este parámetro solo es enviado si en el método `build` la anotación fue creada con autoResolve igual a true.
+
+### Event.property
+`@param` {String} type, Tipo de evento lanzado en este caso property;
+
+`@param` {Annotation} annotation, Instancia de la anotación leída que contiene la función objetivo (annotation.target) y los parámetros de la anotación.
+
+`@param` {Mixed} classDefinition, Clase cargada por el AutoResolver, este parámetro solo es enviado si en el método `build` la anotación fue creada con autoResolve igual a true.
+
+
+### Event.constructor
+`@param` {String} type, Tipo de evento lanzado en este caso constructor;
+
+`@param` {Annotation} annotation, Instancia de la anotación leída que contiene la función objetivo (annotation.target) y los parámetros de la anotación.
+
+`@param` {Mixed} classDefinition, Clase cargada por el AutoResolver, este parámetro solo es enviado si en el método `build` la anotación fue creada con autoResolve igual a true.
+
+
+### Event.file
+`@param` {Object} meta, Objeto que contiene todas las anotaciones leídas para la clase auto resuelta;
+
+`@param` {Reader} reader, Reader aprobado para la lectura de la anotación.
+
+`@param` {String} file, Url absoluta a la clase auto resuelta.
+
+`@param` {String} classDefinition, Clase cargada por el AutoResolver.
+
+Este evento solo es lanzado si en el método `build` la anotación fue creada con autoResolve igual a true
+
+Anotaciones
+-----
+Raptor.js proporciona un conjunto de anotaciones por defecto que pueden ser utilizadas para definir comportamientos adicionales en clases y métodos.
+
+### @Route
+`@param` {String} value, Ruta a definir para el método o la clase según este ubicada la anotación
+
+`@param` {String} method, Método de escucha para esta ruta pueden ser `post`, `put`, `delete`, `get` y `all`, si no se especifica el framework utiliza el método `all`.
+
+`@param` {Array} before, En este array se define las funciones que deseamos ejecutar antes que el método objetivo de la anotación.
+
+`@param` {Array} after, En este array se define las funciones que deseamos ejecutar después del método objetivo de la anotación.
+
+Automaticamente convierte el método objetivo de la anotación en un middleware de express que será pasado al enrutador y proporciona además los mecanismos para permitir la inyección de dependencias en el propio middleware.
+
+Esta anotación permite la definición de una ruta en el marco de aplicación web Express, es el equivalente a crear con el enrutador de express directamente la ruta a través de express.all("/ruta"), express.get("/ruta") etc.
+
+La anotación `@Route` solamente esta disponible en las clases controladoras ubicadas en el directorio `Controllers` de cada componente.
+
+``` javascript
+/**
+ * @Route("/list")
+ */
+listAction(req, res, next){
+    ...
+}
+
+/**
+ * @Route("/create", method="post")
+ */
+createAction(req, res, next){
+    ...
+}
+
+/**
+ * @Route("/edit", method="put", before=[this.beforeAction])
+ */
+editAction(req, res, next){
+    ...
+}
+
+/**
+ * @Route("/delete", method="delete", after=[this.afterAction])
+ */
+deleteAction(req, res, next){
+    ...
+    next()
+}
+
+beforeAction(req, res, next){
+    ...
+}
+
+afterAction(req, res, next){
+    ...
+}
+```
+
+Si la anotación es definida para la clase entonces se convierte en prefijo de ruta para las anotaciones `@Route` contenidas dentro de la clase.
+
+``` javascript
+/**
+ * @Route("/user")
+ * @Controller
+ */
+class User{
+
+    /**
+     * @Route("/list")
+     */
+    listAction(req, res, next){
+        ...
+    }
+
+    /**
+     * @Route("/create", method="post")
+     */
+    createAction(req, res, next){
+        ...
+    }
+
+    /**
+     * @Route("/edit", method="put")
+     */
+    editAction(req, res, next){
+        ...
+    }
+
+    /**
+     * @Route("/delete", method="delete")
+     */
+    deleteAction(req, res, next){
+        ...
+        
+    }
+
+}
+module.exports=User;
+```
+De forma especial podemos también declarar un prefijo de ruta para el componente en la clase principal de cada componente en el archivo index.js
+
+
+### @Controller
+La anotación Controller marca una clase contenida en el directorio Controllers como controlador, sin esta marca la anotación @Route no tendrá efecto tampoco.
+
+``` javascript
+/**
+ * @Route("/user")
+ * @Controller
+ */
+class User{
+```
+
+### @Inyectable
+`@deprecated` Será removida en próximas versiones en favor de @Injectable
+
+La anotación Inyectable es una implementación de prueba, permite marcar cualquier método de cualquier clase ES6 para realizar inyección de dependencias desde el contenedor IoC. Gracias a la auto-resolución de clases podemos utilizar esta anotación e inyectar parámetros en el método objetivo de la anotación.
+
+``` javascript
+
+class Thanos{
+
+    /**
+     * @Inyectable
+     */
+    eliminarMundo(Options, Events){
+        Events.register({
+            ...
+        })
+    }
+}
+
+var th=new Thanos();
+th.eliminarMundo();
+
+```
+
+### @Injectable
+La anotación Injectable es la implementación estable de Inyectable que se encontraba en modo prueba,permite marcar cualquier método de cualquier clase ES6 para realizar inyección de dependencias desde el contenedor IoC. Gracias a la auto-resolución de clases podemos utilizar esta anotación e inyectar parámetros en el método objetivo de la anotación.
+
+Fue incluida en la versión 2.1.5
+
+``` javascript
+
+class Thanos{
+
+    /**
+     * @Injectable
+     */
+    eliminarMundo(Options, Events){
+        Events.register({
+            ...
+        })
+    }
+}
+
+var th=new Thanos();
+th.eliminarMundo();
+
+```
+
+### @Event
+`@param` {String} nombre del evento a invocar
+
+La anotación Event fue incluida en el core en la versión 2.1.5 y ahora ofrece una alternativa más elegante de invocar funciones de acuerdo a los eventos, incluso con la combinación con otra anotación como Inyectable.
+
+``` javascript
+
+class Thanos{
+
+    /**
+     * @Event("ready")
+     * @Inyectable
+     */
+    start(Options){
+        console.log("Nueva invocación -> Raptor.js ha iniciado en modo:",Options.mode)
+    }
+
+    configure(R, Events){
+        Events.register({
+            'ready':$i.later(function(Options){
+                console.log("Invocación anterior -> Raptor.js ha iniciado en modo:",Options.mode)
+            })
+        })
+    }
+}
+```
+### @Cors
+
+La anotación Cors es usada de conjunto con una anotación @Route activa para especificar que esa ruta puede ser accedida desde dominios cruzados.
+
+``` javascript
+
+    /**
+     * @Route("/holaruta")
+     * @Cors
+     */
+    indexAction(req, res, next){
+        ...
+    }
+
+```
+
+### @Csrf
+La anotación Csrf es usada de conjunto con una anotación @Route activa para especificar que esa ruta debe ser filtrada del chequeo CSRF ya que Raptor.js para las peticiones de tipo post, put y delete realiza la validación del token csrf por defecto.
+
+``` javascript
+
+    /**
+     * @Route("/holaruta",method="post")
+     * @Csrf
+     */
+    indexAction(req, res, next){
+        ...
+    }
+
+```
+
+### @SessionFilter
+La anotación SessionFilter es usada de conjunto con una anotación @Route activa para especificar que esa ruta debe ser filtrada de las creaciones de sesiones por el framework.
+
+``` javascript
+
+    /**
+     * @Route("/holaruta")
+     * @SessionFilter
+     */
+    indexAction(req, res, next){
+        ...
+    }
+
+```
 
 Capítulo 13 – Componentes Raptor.js 
 ===
@@ -1590,6 +2167,342 @@ Este componente incluye además para el modo de desarrollo un perfilador minific
 <img style="width: 100%" src="./img/panel-perfil1.png">
 
 <img style="width: 100%" src="./img/panel-perfil2.png">
+
+ng-portal
+-----
+El componente ng-portal se encuentra activo por defecto una vez creado un proyecto Raptor.js, sirve como plantilla predefinida para crear un portal con AngularJS donde podemos añadir las funcionalidades de nuestra aplicación. Un ejemplo de implementación es el propio raptor-panel que utiliza a ng-portal para crear su interfaz.
+
+Con ngPortal puedes crear una interfaz para tu aplicación en cuestión de minutos, entre los recursos que proporciona el portal ya se encuentra AngularJS y sus componentes principales, AngularMaterial, Bootstrap 4. Solo debemos enfocarnos en configurar y editar visualmente el portal que también brinda recursos de integración con troodon(Componente de seguridad) para proteger nuestra aplicación.
+
+### ngPortal
+Las clase ngPortal permite crear una instancia de un nuevo portal en una url, que podrá ser configurado con los viewPlugins definidos. Esta clase se encuentra disponible en el contenedor de dependencias IoC y puede ser inyectada en cualquier metodo haciendo uso del inyector de dependencias DI.
+
+``` javascript
+    //Creamos y configuramos un nuevo portal
+    var portal=new ngPortal("miportal");
+    portal.config(function(){
+        this.viewPlugin('name','Nombre de la aplicación');
+    })
+```
+
+### ngPortalRegistry
+El ngPortalRegistry es un registro global de todos los portales creados en nuestro proyecto y cuando creamos una nueva instancia configurada de un ngPortal debemos registrarlo en este registro para que el portal tenga efecto en nuestra aplicación.
+
+``` javascript
+    //Creamos y configuramos un nuevo portal
+    var portal=new ngPortal("miportal");
+    portal.config(function(){
+        this.viewPlugin('name','Nombre de la aplicación');
+    })
+    //registro del nuevo portal
+    ngPortalRegistry.set(portal);
+```
+
+
+### Ejemplo
+Para la creación del portal debemos escuchar el evento de adición al contenedor de dependencias(IoC) de la clase ngPortal, ya que no podemos invocar al inyector de dependencias con una clase que todavía no ha sido añadida al contenedor.
+
+Podemos suscribirmos al evento ioc:ngPortal.ready en cualquiera de las 2 formas disponible, la primera a través de la anotación `@Event`. Notar que también marcamos al método como inyectable con la anotación @Injectable para hacer la resolución de dependencias.
+
+``` javascript
+class MiComponente{
+    
+    /**
+     * @Event("ioc:ngPortal.ready")
+     * @Injectable
+     */
+    crearPortal(ngPortal, ngPortalRegistry){
+        //Creamos y configuramos un nuevo portal
+        var portal=new ngPortal("miportal");
+        portal.config(function(){
+            this.viewPlugin('name','Nombre de la aplicación');
+        })
+        //registro del nuevo portal
+        ngPortalRegistry.set(portal);
+    }
+
+}
+```
+
+En la forma natural de suscripcion de eventos a través del objeto Events en el configure del componente. 
+``` javascript
+class MiComponente{
+    
+   
+    configure(R, Events){
+        Events.register({
+            'ioc:ngPortal.ready':$i.later(function(ngPortal, ngPortalRegistry){
+                //Creamos y configuramos un nuevo portal
+                var portal=new ngPortal("miportal");
+                portal.config(function(){
+                    this.viewPlugin('name','Nombre de la aplicación');
+                })
+                //registro del nuevo portal
+                ngPortalRegistry.set(portal);
+            })
+        })
+    }
+}
+```
+
+### Puntos calientes
+Los ViewPlugins es una de las funciones propuestas en el framework Raptor PHP 2 y que ahora son implementados para Raptor.js, permite la inyección de contenido en los hotpots declarados en el sistema para determinados patrones de ruta.
+
+El entorno tiene 3 puntos principales de inyección de contenido, donde podrán definirse bloques personalizados con el contenido que deseamos logrando personalizar nuestro entorno para el objetivo deseado. 
+
+`Punto 1`
+
+Inserta contenido dentro del menu de opciones.
+
+Nombre hotpot: `sidebar`
+
+`Punto 2`
+
+Inserta contenido dentro del panel superior, la inserción es realizada en el menu agrupado a la derecha.
+
+Nombre hotpot: `navbar`
+
+`Punto 3`
+
+Inserta contenido dentro del cuerpo, la inserción es realizada fuera del area de la funcionalidad por lo que será visible en todas las funcionalidades cargadas en el area.
+
+Nombre hotpot: `content`
+
+`Punto 4 (cabecera)`
+
+Inserta contenido dentro del head de la página, ideal para insertar estilos y javascript personalizados que queremos ejecutar antes de la carga de la página.
+
+Nombre hotpot: `header`
+
+`Punto 5 (script)`
+
+Inserta contenido dentro de la sección de declaración javascript al final de la página, ideal para insertar otras bibliotecas javacript que deseemos o simplemente un script adicional.
+
+Nombre hotpot: `script`
+
+`Punto 6 (Pantalla de inicio)`
+
+Inserta contenido dentro del area de la página de inicio, este hotpot reemplaza la guía inicial por la página de inicio de su opción.
+
+Nombre hotpot: `start`
+
+`Punto 7 (Icono de página)`
+
+Reemplaza el icono por defecto del entorno, ustded deberá especificar solamente la url del icono.
+
+Nombre hotpot: `icon`
+
+`Punto 8 (Nombre de página)`
+
+Reemplaza el nombre por defecto del entorno que aparece al lado del icono.
+
+Nombre hotpot: `name`
+
+`Punto 9 (Zona de script perfil de usuario)`
+
+Inserta contenido dentro de la sección de declaración javascript en la página del perfil de usuario.
+
+Nombre hotpot: `profile_script`
+
+`Punto 10 (Zona header del perfil de usuario)`
+
+Inserta contenido dentro del head de la página, ideal para insertar estilos y javascript personalizados que queremos ejecutar antes de la carga de la página.
+
+`@Deprecated` En desuso, no tiene efecto en esta versión
+
+Nombre hotpot: `profile_header`
+
+`Punto 12`
+
+Establece la ruta base de los iconos del menu.
+
+Nombre hotpot: `sidebar_iconbase`
+
+``` javascript
+class MiComponente{
+    
+    /**
+     * @Event("ioc:ngPortal.ready")
+     * @Injectable
+     */
+    crearPortal(ngPortal, ngPortalRegistry){
+        //Creamos y configuramos un nuevo portal
+        var portal=new ngPortal("miportal");
+        portal.config(function(){
+            // Configuramos los puntos calientes para personalizar nuestro portal
+            this
+                .viewPlugin('start',this.template('MiComponenteNode:description.ejs'))
+                .viewPlugin('name','Raptor.js')
+                .viewPlugin('icon','/public/logo.png')
+                .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+                .viewPlugin('sidebar',this.template('MiComponenteNode:sidebar.ejs'))
+                // Desabilita la gestion del perfil de usuario
+                .disableProfile()
+                // Desabilita la carga de privilegios desde el modulo TroodonNode
+                .disableSecurityMenu()
+        
+        })
+        // Indica al portal que debera ser protegido por el modulo de seguridad
+        .auth('MiComponenteNode:auth.ejs')
+        //registro del nuevo portal
+        ngPortalRegistry.set(portal);
+    }
+
+}
+```
+
+### Renderizando fragmentos
+Las funcionalidades que usted desarrolla aparecerán en el area de contenido, pueden ser visualizadas de 2 formas, `embebidas` o `enmarcadas`.
+
+Funcionalidades embebidas:
+
+Este modo de renderizado significa que el contenido será inyectado dentro del área de contenido y estará en el mismo ámbito de variable que el portal. Las rutas de este tipo tendrán prefijo `!/e/` en el sistema de rutas de angular.
+
+Funcionalidades enmarcadas:
+
+Este modo de renderizado significa que el contenido será enmarcado en un iframe dentro del área de contenido, es utilizado sobre todo en tecnologías como Extjs y funciones que por alguna razón tienen poca combatibilidad con el ambiente. Las rutas de este tipo tendrán prefijo `!/f/` en el sistema de rutas de angular.
+
+Si usted desea cargar una funcionalidad con ruta `/miruta/ejemplo` en el portal, solo deberá construir la ruta con el prefijo establecido para cada uno de los modos, para modo embebido `!/e/miruta/ejemplo` y para modo enmarcado `!/f/miruta/ejemplo`.
+
+Ejemplo:`<a href="!/e/miruta/ejemplo" >`Cargar mi funcionalidad</a>
+
+Seteando el modo en un portal protegido por seguridad:
+
+Por defecto las funcionalidades serán renderizadas en modo enmarcado excepto que se especifique explicitamente lo contrario. Para especificar el modo embebido, la funcionalidad registrada en el módulo de seguridad deberá contener la clase `ngPortal-embedded` o simplemente `embed`. Cuando el portal se encuentra protegido, en el panel lateral aparecerán todas las funcionalidades que el usuario tiene permiso.
+
+Para protejer el portal a través de seguridad se debe llamar la función `auth` en el configurador del portal y también es posible redefinir la gestión de seguridad reimplementando los procesos de autenticación, autorización y aditoría así como los métodos de logout y verificación de autenticación. 
+
+
+``` javascript
+class MiComponente{
+    
+    /**
+     * @Event("ioc:ngPortal.ready")
+     * @Injectable
+     */
+    crearPortal(ngPortal, ngPortalRegistry){
+        //Creamos y configuramos un nuevo portal
+        var portal=new ngPortal("miportal");
+        portal.config(function(){
+            // Configuramos los puntos calientes para personalizar nuestro portal
+            this
+                
+                .viewPlugin('name','Raptor.js')
+                
+        })
+        // Indica al portal que debera ser protegido por el modulo de seguridad
+        .auth('MiComponenteNode:auth.ejs',function(autenticator){
+            autenticator
+                .setCondition(function(req,res,next){
+                    
+                    if(!req.session.mi_panel){
+                        return true;
+                    }else
+                        return false;
+                })
+                .setAuthentication(function(req,username,password,done){
+                    
+                    if(username==R.options.panel.username && password==R.options.panel.password){
+                        req.session.mi_panel={
+                            username: username
+                        }
+                        
+                    }else{
+                        req.flash('panel_login_error','El usuario o la contraseña son inválidos')
+                    }
+                    req.session.save(function(){
+                        req.res.redirect(req.url)
+                    })	
+                })
+                .setAuthorization(function(req,res,next){
+                    next()
+                })
+                .logout(function(req,res,next){
+                    delete req.session.mi_panel;
+                    req.session.save(function(){
+                        res.redirect('/micomponente/home')
+                    })
+                })
+        })
+        //registro del nuevo portal
+        ngPortalRegistry.set(portal);
+    }
+
+}
+```
+### Personalizando el ambiente
+El ambiente es personalizado a través de hojas de estilo, debemos de utilizar el hotpot destinado para inyectar contenido dentro de la cabecera del entorno y comenzar a redefinir el estilo del mismo. El estilo aplicado en el portal, tendrá efecto en todas las funcionalidades renderizadas en modo embebido si se desea, ya que en este modo las funcionalidades son inyectadas directamente en el area de contenido y pertenecen al scope del entorno.
+
+Para esto solo es necesario un par de conocimientos sobre CSS y la redefinición de las principales clases de Bootstrap que utiliza el entorno.
+``` css
+//Creamos nuestro archivo ( custom-css.css ) con la personalización del entorno
+//este archivo lo definimos en Resources en el bundle que queramos
+ 
+//Redefinimos la barra de cabecera de la siguiente forma(algo simple)
+.ngPortal-nav{
+    background: #999999
+}
+ 
+//Personalizacion del sidebar
+.md-sidenav-left md-content{
+    background-color: #464c53;
+}
+.md-sidenav-left .nav-link{
+    color: white !important;
+}
+.md-sidenav-left a b{
+    color: #bec0c1 !important;
+}
+ 
+//Personalizacion del indicador de carga de funcionalidades
+//Color de la barra de carga
+.portal-loading md-progress-linear .md-container{
+    background-color: #bb818171 !important
+}
+.portal-loading md-progress-linear .md-bar{
+    background-color: #911818 !important
+}
+//Color del fondo del mensaje
+.portal-loading{
+    background: rgba(0,0,0,.9);
+}
+//Color del texto del mensaje
+.portal-loading .portal-loading-text{
+    color:white
+}
+```
+
+Creamos una plantilla haciendo referencia al css creado anteriormente
+
+``` html
+<link href="/public/example/MiComponenteNode/custom-css.css" rel="stylesheet">
+```
+
+Luego solo especificamos utilizando el hotpot `header` que nos coloque la plantilla `header.ejs` en la cabecera del portal.
+
+``` javascript
+class MiComponente{
+    
+    /**
+     * @Event("ioc:ngPortal.ready")
+     * @Injectable
+     */
+    crearPortal(ngPortal, ngPortalRegistry){
+        //Creamos y configuramos un nuevo portal
+        var portal=new ngPortal("miportal");
+        portal.config(function(){
+            // Configuramos los puntos calientes para personalizar nuestro portal
+            this
+                
+                .viewPlugin('header',this.template('MiComponenteNode:header.ejs'))
+                
+        })
+        
+        ngPortalRegistry.set(portal);
+    }
+
+}
+```
 
 troodon
 -----
@@ -1712,6 +2625,49 @@ Una vez que se decide pasar a modo de producción usted puede utilizar el import
 La anotación @Privilege deberá ser ubicada en una clase o action donde este presente la anotación @Route, en el valor de la anotación se establecerá el nombre con el que aparecerá en el gestor de privilegios, si usted desea crear agrupadores podrá indicarlo a través del indicador `->` donde en la parte izquierda del indicador corresponderá a los agrupadores(contenedor) y en la parte derecha del indicador el nombre del privilegio con el que aparecerá en el menú.
 
 El atributo `class` corresponde al campo class name o nombre de clase del privilegio. En el ejemplo anterior se creará un privilegio con ruta `/miruta/example`, nombre de la funcionalidad `Ejemplo` dentro de un contenedor nombrado `Agrupador del menu`, además el nombre de clase se encuentra vacío.
+
+### Autenticación api JSON Web Token
+El componente de seguridad desde la versión 2.0.8 soporta la autenticación vía JSON WEB TOKEN (JWT), el token sirve como medio de autenticación ante todas las rutas protegidas del sistema. 
+
+El token es obtenido en la ruta `/api/troodon/login` enviando una petición por el método `POST` con los parámetros `username` y `password`. La respuesta de la ruta será un objeto json con la siguiente forma.
+
+``` javascript
+{
+    "accessToken":"HsOhh84hid8jkIjd.Kosos83kdkdspjdslls8JkdiJeiYj.i83jmd3jjoowk83jh"
+}
+```
+En caso de que las credenciales `username` y `password` sean incorrectas el sistema enviará un código de respuesta `401`.
+
+En el cliente el token puede ser almacenado en cualquiera de los recursos disponibles como el sessionStore o similar.
+``` javascript
+var token;
+$.post('/api/troodon/login',{
+    username:'admin',
+    password: 'admin'
+})
+.done(function(response){
+    token=response.accessToken;
+    //Almacenar el token
+})
+```
+Cada petición realizada a las rutas protegidas deberá contener en las cabeceras el JWT para que Raptor.js evalúe la credencial y autentique la petición. 
+
+En el Header de la petición se especificará la cabecera `Authorization` de tipo Bearer y seguidamente el token obtenido previamente.
+
+``` javascript
+
+$.ajax({
+    type:'GET',
+    url:'/ruta/protegida',
+    headers:{
+        "Authorization":"Bearer "+token
+    },
+    success:function(data){
+        
+    }
+})
+```
+
 
 ### Importando privilegios
 Para pasar a modo producción usted primeramente tendrá que importar los privilegios dinámicos hacia el esquema real de base de datos. Esto puede realizarse de forma muy sencilla en 2 formas.

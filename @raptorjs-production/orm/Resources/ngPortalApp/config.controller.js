@@ -7,6 +7,33 @@ angular.module('ngPortalApp')
 
     .controller("config", function ($scope, $http, $mdToast) {
         $('[data-toggle="tooltip"]').tooltip();
+
+        $scope.databases={
+            'postgres':{
+                name:"postgres",
+                port:5432
+            },
+            'mysql':{
+                name: "mysql",
+                port: 3306
+            },
+            'sqlite':{
+                name:"sqlite",
+                port:"",
+            },
+            'mssql':{
+                name:"mssql",
+                port:1433
+            },
+            'mariadb':{
+                name:"mariadb",
+                port:3306
+            }};
+        
+        $scope.onChange=function(){
+            $scope.config.portDB=$scope.databases[$scope.config.driver].port;
+            
+        }
         
         $scope.submitForm = function () {
             

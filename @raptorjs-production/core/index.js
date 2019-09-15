@@ -4,8 +4,10 @@ const fse = require('fs-extra')
 const path = require('path')
 const cors = require('cors')
 
-if(global.$i)
+if (global.$i) {
 	$i('CsrfFilter', [])
+	
+}
 
 /**
  * Raptor.js - Node framework
@@ -15,7 +17,7 @@ if(global.$i)
  */
 class CoreNode {
 
-	static getClass(){
+	static getClass() {
 		return require('@raptorjs/core/Source/Raptor');
 	}
 
@@ -43,17 +45,15 @@ class CoreNode {
 	 *
 	 */
 	configure(express, Events, AnnotationFramework, AnnotationReaderCache, SessionFilter, CsrfFilter) {
-		
+
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Source', 'Annotation', 'Route'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'SessionFilter'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Csrf'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Cors'))
-		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Inyectable'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Controller'))
 
-
 		Events.register({
-			
+
 			/**
 			 * Lectura de anotaciones SessionFilter en clases
 			 */
@@ -73,7 +73,7 @@ class CoreNode {
 			'annotation:read.method.SessionFilter': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
-				
+
 				if (route) {
 					var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath.split('Controller')[0], 'index.js'));
 
@@ -163,19 +163,19 @@ class CoreNode {
 			 * Evento para leer las Anotaciones en index.js
 			 * 
 			 */
-			'after:configure': function(){
+			'after:configure': function () {
 				for (const key in R.bundles) {
-					
-					let bundle=R.bundles[key];
+
+					let bundle = R.bundles[key];
 					$injector.invoke(function (Annotations, AnnotationReaderCache) {
-					
-						var reader = new Annotations.Reader(AnnotationFramework.registry,bundle.instance);
+
+						var reader = new Annotations.Reader(AnnotationFramework.registry, bundle.instance);
 						reader.parse(path.join(bundle.absolutePath, 'index.js'));
-						
+
 					})
 				}
-				
-				
+
+
 			},
 
 			/**
@@ -186,20 +186,20 @@ class CoreNode {
 				var reader = new Annotations.Reader(AnnotationFramework.registry, instance);
 				reader.parse(controllerPath);
 				var comp = AnnotationReaderCache.getDefinition('Route', path.join(bundle.absolutePath, 'index.js'));
-				
+
 				var routes = {}
 
 				var prefix = comp ? comp.value : '';
-				
+
 				var own = AnnotationReaderCache.getDefinition('Route', controllerPath)
 				var prefixController = own ? own.value : '';
 				prefix += prefixController;
 				var scope = instance;
-				
-				if(instance instanceof R.Controller){
 
-				}else{
-					
+				if (instance instanceof R.Controller) {
+
+				} else {
+
 					return;
 				}
 				AnnotationReaderCache.getMethods('Route', controllerPath)
@@ -224,7 +224,7 @@ class CoreNode {
 							comp.after = comp.after ? comp.after : []
 							annotation.after = comp.after.concat(annotation.after)
 						}
-						
+
 						if (annotation.method)
 							routes[prefix + annotation.value] = {
 								method: annotation.method,
@@ -239,10 +239,10 @@ class CoreNode {
 								before: annotation.before,
 								after: annotation.after
 							}
-						
+
 					})
 				if (Object.keys(routes).length > 0) {
-					
+
 					instance.routes(routes);
 
 					R.emit('routes:' + bundle.name + '.' + instance.name, instance, controllerPath, bundle)
@@ -324,13 +324,13 @@ class CoreNode {
 				}
 
 			}
-			var bundles={}
+			var bundles = {}
 			for (const key in R.bundles) {
-				bundles[key]='/public/'+R.bundles[key].vendor+'/'+R.bundles[key].name;
+				bundles[key] = '/public/' + R.bundles[key].vendor + '/' + R.bundles[key].name;
 			}
-			req.viewPlugin.set('raptor_client',{
-				name:'public',
-				callback: R.template('core:functions/public.ejs',{
+			req.viewPlugin.set('raptor_client', {
+				name: 'public',
+				callback: R.template('core:functions/public.ejs', {
 					bundles: JSON.stringify(bundles)
 				})
 			})

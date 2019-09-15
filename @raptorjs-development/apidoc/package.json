@@ -1,6 +1,6 @@
 {
   "name": "@raptorjs/apidoc",
-  "version": "2.1.3",
+  "version": "2.1.5",
   "description": "Documentación oficial de Raptor.js ",
   "main": "index.js",
   "scripts": {

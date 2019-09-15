@@ -127,41 +127,6 @@ module.exports = {
 
 	bundles: {},
 	Promise: Promise,
-	/**
-	 * @Doc("Los hooks están en desuso desde esta serie 2",
-	 * author="William Amed",
-	 * type="property",
-	 * deprecated=true)
-	 * @deprecated Se removera desde la version 2.0.0
-	 */
-	hooks: {
-		middleware: function (point) {
-			deprecate("function R.hooks.middleware")
-			if (point == 'before') {
-				if (!this._beforeMiddleware)
-					this._beforeMiddleware = Promise.defer()
-				return this._beforeMiddleware;
-			}
-			if (point == 'after') {
-				if (!this._afterMiddleware)
-					this._afterMiddleware = Promise.defer()
-				return this._afterMiddleware;
-			}
-		},
-		config: function (point) {
-			deprecate("function R.hooks.config")
-			if (point == 'before') {
-				if (!this._beforeConfig)
-					this._beforeConfig = Promise.defer()
-				return this._beforeConfig;
-			}
-			if (point == 'after') {
-				if (!this._afterConfig)
-					this._afterConfig = Promise.defer()
-				return this._afterConfig;
-			}
-		}
-	},
 
 	addPublish: function (name, relative) {
 		if (this.options) {
@@ -252,22 +217,7 @@ module.exports = {
 
 	},
 
-	/**
-	 * Ejecuta el callback pasado por parametro en
-	 * en el scope que se le pasa como segundo argumento
-	 * @deprecated a remover en versiones superiores
-	 */
-	proxy: function (callback, scope) {
-		deprecate("function R.proxy")
-		return function (req, res) {
-			var resp = callback.apply(scope, arguments);
-			if (typeof resp == 'string')
-				res.end(resp);
 
-			if (typeof resp !== 'undefined')
-				res.end();
-		}
-	},
 
 	/**
 	* Puntos calientes de insercionde contenido
@@ -275,47 +225,7 @@ module.exports = {
 	*/
 	viewHotSpot: {},
 
-	/**
-	* Establece un contenido para un nombre de HotSpot
-	* @param string name Nombre del HotSpot
-	* @param string content Contenido a inyectar en el HotSpot
-	* @deprecated a remover en versiones superiores, usar $injector
-	*/
-	setViewPlugin: function (name, content) {
-		deprecate("function R.setViewPlugin")
-		if (this.viewHotSpot[name]) {
-			this.viewHotSpot[name].push(content);
-		} else {
-			this.viewHotSpot[name] = new Array(content);
-		}
-	},
 
-	/**
-	 * @deprecated a remover en versiones superiores
-	 */
-	getViewPlugin: function (name) {
-		deprecate("function R.getViewPlugin")
-		if (this.viewHotSpot[name]) {
-			return this.viewHotSpot[name];
-		} else {
-			return [];
-		}
-	},
-	/**
-	 * @deprecated a remover en versiones superiores
-	 */
-	cleanViewPlugin: function (name) {
-		deprecate("function R.cleanViewPlugin")
-		if (this.viewHotSpot[name])
-			this.viewHotSpot[name] = [];
-	},
-	/**
-	 * @deprecated a remover en versiones superiores
-	 */
-	cleanAllViewPlugin: function () {
-		deprecate("function R.cleanAllViewPlugin")
-		this.viewHotSpot = [];
-	},
 	/**	
 	 * Entrada principal del framework
 	 * @param {string} basepath ruta base absoluta del proyecto Raptor.js
@@ -670,7 +580,7 @@ module.exports = {
 		this.emit('run.prepare')
 		this.i18n = this.i18nClass(__i18nDefinition)
 		this.emit('after:prepare')
-		
+
 		this.emit('config:error.middleware')
 		/**
 		 * Agregar middleware gestion de errores de aplicacion
@@ -787,12 +697,9 @@ module.exports = {
 			if (this._io) {
 				this.io = this._io(server);
 				socketinfo = ', \x1b[33;1msocket.io\x1b[22;39m también está escuchando';
+				$i('io', this.io);
 			} else {
-				/**if(this.options.mode=="development"){
-					this._io = require('socket.io')
-					this.io = this._io(server);
-					socketinfo = ', \x1b[33;1msocket.io\x1b[22;39m fue activado adicionalmente en modo desarrollo';
-				}*/
+
 			}
 			var status = true;
 			server.listen(this.app.get('port'), function () {
@@ -1116,29 +1023,6 @@ module.exports = {
 		}
 	},
 
-	/**
-	 * Raptor.js - Node framework
-	 * @deprecated a remover en proximas versiones
-	 *
-	 * Lee los componentes para inicializarlos
-	 * 
-	 */
-	prepareNodeComponents: function () {
-		deprecate("function R.prepareNodeComponents")
-		var directives = lodash.extend(this.defaultPrepareComponentsOptions, this.options.prepareComponents)
-
-		for (var bundle in this.bundles) {
-
-			for (var directive in directives) {
-
-				if (typeof directives[directive] == 'function') {
-
-					directives[directive].call(this, this, this.bundles[bundle])
-				}
-			}
-		}
-		//console.info(this.bundles)
-	},
 
 	/**
 	 * Prepara un componente segun las directivas por defecto
@@ -1161,28 +1045,6 @@ module.exports = {
 		}
 	},
 
-	/**
-	 * @deprecated marcado para remocion
-	 */
-	runComponentsMiddlewares: function () {
-		deprecate("function R.runComponentsMiddlewares")
-		var me = this;
-		this.hooks.middleware('before').resolve(this)
-		me.emit('before:middleware')
-		for (var bundle in me.bundles) {
-			var main = new me.bundles[bundle].main()
-			if (main.middleware) {
-				me.emit('before:' + bundle + '.middleware', me.bundles[bundle])
-				me.bundles[bundle].hooks.middleware('before').resolve(me)
-				$injector.process(main.middleware, main)
-			}
-			me.emit('after:' + bundle + '.middleware', me.bundles[bundle])
-			me.bundles[bundle].hooks.middleware('after').resolve(me)
-		}
-
-		this.hooks.middleware('after').resolve(this)
-		me.emit('after:middleware')
-	},
 
 	/**
 	 * Raptor.js - Node framework
@@ -1233,7 +1095,7 @@ module.exports = {
 								if (typeof controller == 'function') {
 									var claseES6 = new controller();
 									if (claseES6 instanceof R.Controller) {
-										
+
 										claseES6.init(R, prefix, mainInstance, R.mainNodeBundle(mainInstance, R, bundle));
 
 										R.emit('init:' + bundle.name + '.' + controller.name + '', claseES6, path.join(pathController, file), bundle)
@@ -1253,7 +1115,7 @@ module.exports = {
 										}
 									}
 								}
-							}else{
+							} else {
 								search(path.join(pathController, file));
 							}
 
@@ -1595,14 +1457,6 @@ module.exports = {
 
 	},
 
-	/**
-	 * Utilidad para esperar por una respuesta sincrona
-	 * @deprecated Propuesto a remocion en favor de asyc/wait
-	 */
-	waitUntil: function (cond) {
-		deprecate("function R.waitUntil")
-		while (cond) { }
-	},
 
 	/**
 	 * Devuelve la definicion del SecurityRegistry para adicionarlo al inyector
@@ -1639,49 +1493,7 @@ module.exports = {
 
 	},
 
-	/**
-	 * @deprecated propuesto a remocion, en desuso
-	 */
-	aop: {
-		before: function (obj, method, advice) {
-			deprecate("function R.aop.before")
-			var before = obj[method];
-			var orig = [];
-			orig.push(function () {
-				return before.apply(obj, arguments)
-			})
-			obj[method] = function () {
-				return advice.apply(obj, orig.concat(arguments))
-			}
-		}
-	},
 
-
-	/**
-	 * @deprecated Cuando se hizo Dios y yo sabiamos que hacia, ahora solo dios los sabe
-	 */
-	stackUtil: function (_stack, callback, scope) {
-		deprecate("function R.stackUtil")
-		var pos = 0;
-		var self = this;
-		var stack = _stack ? _stack : [];
-		return {
-
-			begin: function () {
-				this.nextPos(pos);
-			},
-			nextPos: function (position) {
-				if (position < stack.length) {
-					if (scope)
-						self = scope
-					if (typeof callback == "function")
-						callback.apply(self, [stack[position]]);
-					this.nextPos(position + 1)
-				}
-
-			}
-		}
-	},
 
 	/**
 	 * Ejecuta las directivas de migracion de un componente
@@ -2049,14 +1861,14 @@ module.exports = {
 					})
 				}
 			}
-
+			var readerRef = this;
 			this.definitionAnnotations.forEach((annotation) => {
 				let fn = function () {
 					$i('AnnotationReaderCache')._register(annotation, 'definition', function () {
 
 						aChain.then(function () {
 							R.emit('annotation:read', 'definition', annotation)
-							R.emit('annotation:read.definition.' + annotation.annotation, 'definition', annotation)
+							R.emit('annotation:read.definition.' + annotation.annotation, 'definition', annotation, readerRef.resolvedFile)
 						})
 					});
 				}
@@ -2078,7 +1890,7 @@ module.exports = {
 					$i('AnnotationReaderCache')._register(annotation, 'method', function () {
 						aChain.then(function () {
 							R.emit('annotation:read', 'method', annotation)
-							R.emit('annotation:read.method.' + annotation.annotation, 'method', annotation)
+							R.emit('annotation:read.method.' + annotation.annotation, 'method', annotation, readerRef.resolvedFile)
 						})
 
 					});
@@ -2098,7 +1910,7 @@ module.exports = {
 					$i('AnnotationReaderCache')._register(annotation, 'constructor', function () {
 						aChain.then(function () {
 							R.emit('annotation:read', 'constructor', annotation)
-							R.emit('annotation:read.constructor.' + annotation.annotation, 'constructor', annotation)
+							R.emit('annotation:read.constructor.' + annotation.annotation, 'constructor', annotation, readerRef.resolvedFile)
 						})
 
 					});
@@ -2118,7 +1930,7 @@ module.exports = {
 					$i('AnnotationReaderCache')._register(annotation, 'property', function () {
 						aChain.then(function () {
 							R.emit('annotation:read', 'property', annotation)
-							R.emit('annotation:read.property.' + annotation.annotation, 'property', annotation)
+							R.emit('annotation:read.property.' + annotation.annotation, 'property', annotation, readerRef.resolvedFile)
 						})
 
 					});
@@ -2148,6 +1960,55 @@ module.exports = {
 		this.annotationFramework.Annotations = annotations
 		$injector('AnnotationFramework', this.annotationFramework);
 		this.annotationFramework.autoResolve = [];
+		this.annotationFramework.Builder = {}
+
+		this.annotationFramework.build = function (name, auto) {
+
+			this.registry.annotations[name] = class Default extends annotations.Annotation {
+
+				/**
+				 * The possible targets
+				 *
+				 * (Annotation.DEFINITION, Annotation.METHOD)
+				 *
+				 * @type {Array}
+				 */
+				static get targets() { return [annotations.Annotation.METHOD, annotations.Annotation.DEFINITION, annotations.Annotation.PROPERTY, annotations.Annotation.CONSTRUCTOR] }
+
+				static get annotation() {
+					return name;
+				}
+
+				init(data) {
+					this.annotation = name
+				}
+			};
+			this.registry.annotations[name].prototype.name = name;
+			if (auto)
+				this.autoResolve.push(name);
+
+			this.Builder[name] = {
+				annotation: name,
+				annotationClass: this.registry.annotations[name],
+				on: function (event, fn) {
+					R.on('annotation:read.' + event + '.' + name, fn);
+					if (event == 'file') {
+						if (auto)
+							R.on('AutoResolveAnnotation', function (reader, file, resolved) {
+								var methods = $i('AnnotationReaderCache').getMethods(name, file);
+								var definition = $i('AnnotationReaderCache').getDefinition(name, file);
+								if ((methods && methods.length > 0) || definition)
+									fn({
+										methods: methods,
+										definition: definition
+									}, reader, file, resolved)
+							})
+					}
+					return this;
+				}
+			}
+			return this.Builder[name];
+		};
 
 		(function (resol, AnnotationFramework) {
 			var Module = require('module');
@@ -2161,10 +2022,11 @@ module.exports = {
 				var resolveAnnotation = function (file, resolved) {
 					var reader = new annotations.Reader(AnnotationFramework.registry);
 					reader.setTargets(['Inyectable', 'Controller'].concat(AnnotationFramework.autoResolve))
+					reader.resolvedFile = resolved;
 					reader.parse(file);
 					var inyectable = $i('AnnotationReaderCache').getMethods('Inyectable', file);
 					var controller = $i('AnnotationReaderCache').getDefinition('Controller', file);
-					R.emit('AutoResolveAnnotation', reader, file);
+					R.emit('AutoResolveAnnotation', reader, file, resolved);
 					if (typeof data == 'function' && controller) {
 						const util = require('util');
 
@@ -2176,7 +2038,10 @@ module.exports = {
 						if (inyectable.length) {
 							inyectable.forEach(element => {
 								if (resolved.prototype[element.target]) {
-									resolved.prototype[element.target] = $i.invokeLater(resolved.prototype[element.target], resolved)
+									var fn = resolved.prototype[element.target];
+									resolved.prototype[element.target] = function () {
+										return $i.invoke(fn, this, arguments);
+									};
 								}
 
 							});
@@ -2208,7 +2073,34 @@ module.exports = {
 			}
 		})(require('module').Module._load, this.annotationFramework);
 
+		const AnnotationFramework = $i('AnnotationFramework')
+		//Legacy
 
+		AnnotationFramework.registry.registerAnnotation(path.join(__dirname,'..', 'Annotations', 'Inyectable'))
+
+		//New since 2.1.5
+		AnnotationFramework
+			.build('Event', true)
+			.on('method', function (type, annotation, data) {
+				
+				if (data)
+					R.on(annotation.value, function () {
+
+						data.prototype[annotation.target].apply(this, arguments)
+					})
+
+			})
+		
+		AnnotationFramework
+			.build('Injectable', true)
+			.on('method', function (type, annotation, data) {
+				if (data.prototype[annotation.target]) {
+					var fn = data.prototype[annotation.target];
+					data.prototype[annotation.target] = function () {
+						return $i.invoke(fn, this, arguments);
+					};
+				}
+			})
 	},
 
 	/**
