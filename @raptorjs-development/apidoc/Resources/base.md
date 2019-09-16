@@ -2688,6 +2688,134 @@ En el generador de artefactos disponible en el panel de control encontrarás en 
 
 <img style="width: 100%" src="./img/troodon-import2.png">
 
+### Servicio de datos
+El componente Troodon incluye en el contenedor de dependencias(IoC) un servicio de datos con el nombre `TroodonDataService` encargado de proveer algunos datos relacionados con el componente de seguridad, con la evolución del componente se irán agregando otros servicios.
+
+Las funciones disponibles desde la versión 2.1.5 se listan a continuación:
+
+`getPrivilegesTree()`
+
+`@param` {Array} roles, un array con los id de los roles
+
+`@return` {Promise} Promesa con los privilegios según los roles especificados
+
+Devuelve una Promesa con todos los privilegios según los id de los roles especificados, esta función hace una mezcla de todos los privilegios detectando el modo en que se encuentra el sistema, si se encuentra en desarrollo devuelve los privilegios dinámicos creados, si se encuentra en producción devuelve los privilegios registrados o importados en la gestión de privilegios.
+
+``` javascript
+    /**
+     * @Route("/someroute")
+     */
+    getUserPrivilege(req, res, next, TroodonDataService){
+        TroodonDataService
+            // En el req.user.idRol se encuentra un array
+            // con los roles del usuario autenticado
+            .getPrivilegesTree(req.user.idRol)
+            .then(function(privileges){
+                res.json(privileges)
+            })
+            .catch(function(err){
+                next(err)
+            })
+    }
+
+    /**
+     * @Injectable
+     */
+    getUserPrivilegeInOtherMethod(TroodonDataService){
+        TroodonDataService
+            // Pasar un array de id de roles
+            .getPrivilegesTree([1,5])
+            .then(function(privileges){
+                //Hacer algo con los privilegios
+            })
+            .catch(function(err){
+                
+            })
+    }
+```
+
+`getStructureChildren()`
+
+`@param` {Integer} id, El id de la esctructura padre
+
+`@return` {Promise} Promesa con los hijos de la estructura especificada
+
+Devuelve una Promesa con todos los hijos según el id de la estructura especificada, esta función hace una busqueda recursiva del árbol de estructuras desde el id especificado hasta el último hijo del árbol.
+
+``` javascript
+    /**
+     * @Route("/someroute")
+     */
+    getAllTree(req, res, next, TroodonDataService){
+        TroodonDataService
+            // En el req.user.idStructure se encuentra el id
+            // de estructura del usuario autenticado
+            .getStructureChildren(req.user.idStructure)
+            .then(function(tree){
+                res.json(tree)
+            })
+            .catch(function(err){
+                next(err)
+            })
+    }
+
+    /**
+     * @Injectable
+     */
+    getTreeInOtherMethod(TroodonDataService){
+        TroodonDataService
+            // Pasar id de estructura, 0 para la base del árbol
+            .getPrivilegesTree(0)
+            .then(function(tree){
+                //Hacer algo con el árbol
+            })
+            .catch(function(err){
+                
+            })
+    }
+```
+
+`getRolChildren()`
+
+`@param` {Integer} id, El id del rol padre
+
+`@return` {Promise} Promesa con los hijos del rol especificado
+
+Devuelve una Promesa con todos los hijos según el id de rol especificado, esta función hace una busqueda recursiva del árbol de roles desde el id especificado hasta el último hijo del árbol.
+
+``` javascript
+    /**
+     * @Route("/someroute")
+     */
+    getAllTree(req, res, next, TroodonDataService){
+        TroodonDataService
+            // En el req.user.idRol se encuentra un array
+            // con los roles del usuario autenticado, pasamos
+            // solo el primero
+            .getRolChildren(req.user.idRol[0])
+            .then(function(tree){
+                res.json(tree)
+            })
+            .catch(function(err){
+                next(err)
+            })
+    }
+
+    /**
+     * @Injectable
+     */
+    getTreeInOtherMethod(TroodonDataService){
+        TroodonDataService
+            // Pasar id de rol
+            .getRolChildren(4)
+            .then(function(tree){
+                //Hacer algo con el árbol
+            })
+            .catch(function(err){
+                
+            })
+    }
+```
 
 bio
 -----

@@ -15,5 +15,27 @@ class TroodonDataService {
         }
 
     }
+
+    /**
+     * @Injectable
+     */
+    getStructureChildren(id, troodon_security_estructure){
+        return new Promise(function(res,rej){
+            troodon_security_estructure.getChilds(id,function(children){
+                res(children);
+            })
+        })
+    }
+
+    /**
+     * @Injectable
+     */
+    getRolChildren(id, troodon_security_rol){
+        return new Promise(function(res,rej){
+            troodon_security_rol.getChilds(id,function(children){
+                res(children);
+            })
+        })
+    }
 }
 module.exports = TroodonDataService;

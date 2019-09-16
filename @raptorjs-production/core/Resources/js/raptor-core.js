@@ -264,7 +264,7 @@ if(window.Ext){
 
                     var im = Ext.DomHelper.append(f, {
                         tag: 'span',
-                        html: '<span class="icon-info" style="width:20px;height:20px; float:left;margin:2px;"><img height="15" src="/public/Raptor/img/node-min.png" ></span><b>'+titleb+'</b>',
+                        html: '<span class="icon-info" style="width:20px;height:20px; float:left;margin:2px;"></span><b>'+titleb+'</b>',
                         cls: 'x-window-dlg',
                         style:{
                             background:'rgba(0,0,0,0.2)',

@@ -65,7 +65,8 @@ class TroodonNode {
 				'config:error.middleware': function () {
 					express.use(function (err, req, res, next) {
 						req.logger.error(err.toString())
-						if (/^\/troodon\/*/.test(req.url)) {
+						
+						if (/\/troodon\/*/.test(req.url)) {
 							if (err.code && err.code == "TroodonError") {
 								res.show(err.message, 3)
 							} else {

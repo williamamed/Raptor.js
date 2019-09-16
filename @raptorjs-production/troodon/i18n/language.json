@@ -315,5 +315,17 @@
 	"category_header":{
 		"es":"Categorías de estructuras",
 		"en":"Structures categories"
+	},
+	"structure_not_removed_child":{
+		"es":"La estructura no pudo ser eliminada porque contiene hijos",
+		"en":"The structure cannot be removed becouse have childs"
+	},
+	"structure_not_removed_users":{
+		"es":"La estructura no pudo ser eliminada porque contiene usuarios asignados",
+		"en":"The structure cannot be removed becouse have asigned users"
+	},
+	"rol_not_removed_child":{
+		"es":"El rol no pudo ser eliminado porque contiene hijos",
+		"en":"The rol cannot be removed becouse have childs"
 	}
 }
