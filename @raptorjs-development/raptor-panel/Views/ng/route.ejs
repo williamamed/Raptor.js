@@ -1,0 +1,128 @@
+<div class="text-center" style="margin-top: 10px">
+    <h1>Rutas</h1>
+    <p class="text-muted">Rutas definidas en el proyecto actual</p>
+
+</div>
+
+<div class="container-fluid" ng-controller="RouteController" ng-cloak>
+    <div title="" class="raptorjs-node-debug-trigger">
+        <div class="raptorjs-node-debug-popup raptor-route-panel" data-title="Rutas">
+            <style>
+                ul.raptor-routes-list {
+                    margin-bottom: 14px;
+                    padding-left: 2px;
+                    list-style: none;
+                }
+
+                .raptor-routes-list li {
+                    width: 100%;
+                    margin: 0 0 7px 0;
+                }
+
+                .raptor-routes-list li a {
+                    display: block;
+                    margin: 0 0 7px 0;
+                    color: white;
+                    padding: 2px 0 0 5px;
+                    text-decoration: none;
+                }
+
+
+                .raptor-routes-list .orange {
+                    border-left: 5px solid #F5876E;
+                }
+
+                .raptor-routes-list .blue {
+                    border-left: 5px solid #61A8DC;
+                }
+
+                .raptor-routes-list .green {
+                    border-left: 5px solid #8EBD40;
+                }
+
+                .raptor-routes-list .purple {
+                    border-left: 5px solid #988CC3;
+                }
+
+                .raptor-routes-list .gold {
+                    border-left: 5px solid #D8C86E;
+                }
+            </style>
+
+            <input type="text" style="margin-bottom:10px" placeholder="filtrar rutas" class="form-control raptor-search-routes-panel">
+            <hr>
+
+            <div class="col-12">
+                <% if(routesDef){ %>
+                    <ul class="raptor-routes-list">
+                        <% var colors=['orange','blue','green','purple','gold'], current=0,counter=0; %>
+                            <% for(var i in routesDef) { %>
+                                <li class="<%- colors[current] %>">
+                                    <a href="http://localhost:<%- port %><%- i %>" target="_blank">
+                                        <%- i %> 
+                                        <% for(var j in routesDef[i]) { %>
+                                            <% if(Object.keys(routesDef[i][j]).length==methods){ %>
+                                                <span class="badge badge-danger">all</span>
+                                            <%}else{%>
+                                                <% for(var m in routesDef[i][j]) { %>
+                                                    <span class="badge badge-info"><%-m%></span>
+                                                <%}%>
+                                            <%}%>
+                                        <%}%>
+                                    </a>
+                                </li>
+                                <% counter++ %>
+                                    <% current=counter%5 %>
+
+                                        <% } %>
+                    </ul>
+                    <% }else{ %>
+                        <h5 class="text-center">Sin datos de ruta</h5>
+                        <p class="text-center">Seguramente esto se debe a que no existe ningún proyecto conectado al panel de control</p>
+                        <% } %>
+            </div>
+
+
+            <script>
+                (function () {
+                    var inter = setInterval(function () {
+                        if (window.$) {
+                            clearInterval(inter);
+                            $(".raptor-search-routes-panel").on("keyup", function (ev) {
+                                var texto = $(this).val();
+                                filtro(texto);
+                            });
+
+                            function filtro(texto) {
+                                var lista = $(".raptor-routes-list li").hide()
+                                    .filter(function () {
+                                        var item = $(this).text();
+                                        var padrao = new RegExp(texto, "i");
+
+                                        return padrao.test(item);
+                                    }).closest("li").show();
+                            }
+                        }
+                    }, 500)
+                })()
+            </script>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+
+    app.controller("RouteController", function ($scope, $http, $location, $routeParams, $templateCache, $mdToast) {
+        $scope.config = {}
+
+
+
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+
+
+</script>

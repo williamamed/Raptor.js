@@ -14,9 +14,9 @@
   "bundleDependencies": false,
   "dependencies": {
     "@raptorjs/apidoc": "^2.1.0",
-    "@raptorjs/extjs-designer": "^1.0.1",
-    "@raptorjs/raptor-panel": "^1.0.3",
-    "@raptorjs/templates-gen": "^1.0.2",
+    "@raptorjs/extjs-designer": "^2.0.1",
+    "@raptorjs/raptor-panel": "^2.0.3",
+    "@raptorjs/templates-gen": "^2.0.2",
     "adm-zip": "^0.4.13",
     "check-dependencies": "^1.1.0",
     "commander": "^3.0.0",
@@ -46,5 +46,5 @@
     "url": "git+https://github.com/williamamed/Raptor.js.git"
   },
   "scripts": {},
-  "version": "2.1.5"
+  "version": "2.2.1"
 }

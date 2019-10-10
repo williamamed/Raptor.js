@@ -22,27 +22,25 @@ Ext.define('GestPrivilege.controller.Actions', {
     ],
     init: function() {
         this.control({
-            'actionlist button[action=insertAction]': {
+            'actionwindow actionlist button[action=insertAction]': {
                 click: this.onAdd
             },
            
-            'actionlist button[action=editAction]': {
+            'actionwindow actionlist button[action=editAction]': {
                 click: this.onEdit
             },
-            'actionlist button[action=deleteAction]': {
+            'actionwindow actionlist button[action=deleteAction]': {
                 click: this.onDelete
             },
             
             'actionformwindow button[action=save]': {
                 click: this.add
             },
-            'actionlist': {
+            
+            'actionwindow actionlist':{
+                render:this.onRender,
                 beforeselect: this.onListSelect,
                 beforedeselect: this.onListDeSelect
-                
-            },
-            'actionlist':{
-                render:this.onRender
             }
         });
       
@@ -52,6 +50,7 @@ Ext.define('GestPrivilege.controller.Actions', {
         Raptor.controlActions(cmp);
     },
     onListSelect: function() {
+        
         if(this.getButtonEdit())
         this.getButtonEdit().enable();
          if(this.getButtonDelete())

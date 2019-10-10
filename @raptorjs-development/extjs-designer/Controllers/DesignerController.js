@@ -158,13 +158,14 @@ class ExtjsDesigner extends R.Controller {
 	/**
      * @Route("/filesystem")
      */
-	fileAction(req, res, next) {
+	fileAction(req, res, next, ProjectManager) {
 		if (req.query.node == 'root') {
 			var hijos = []
-			for (const key in R.bundles) {
+			for (const key in ProjectManager.components) {
+				
 				hijos.push({
-					name: R.bundles[key].name,
-					id: path.join(R.bundles[key].absolutePath, 'Resources'),
+					name: ProjectManager.components[key].name,
+					id: path.join(ProjectManager.components[key].absolutePath, 'Resources'),
 					expanded: false
 				})
 			}
@@ -227,7 +228,7 @@ class ExtjsDesigner extends R.Controller {
 							}
 							obj.isView = true;
 							obj.confUI = sandbox.Ext.ui;
-							obj.icon = "/public/rmodules/" + R.bundles["extjs-designer"].vendor + "/extjs-designer/resources/img/class-m.png"
+							obj.icon = "/public/" + R.bundles["extjs-designer"].vendor + "/extjs-designer/resources/img/class-m.png"
 						}
 					}
 					if (isFile && path.extname(file) == '.json') {
@@ -243,7 +244,7 @@ class ExtjsDesigner extends R.Controller {
 							obj.meta = meta;
 
 							obj.isView = true;
-							obj.icon = "/public/rmodules/" + R.bundles["extjs-designer"].vendor + "/extjs-designer/resources/img/class-m.png"
+							obj.icon = "/public/" + R.bundles["extjs-designer"].vendor + "/extjs-designer/resources/img/class-m.png"
 						}
 					}
 					files.push(obj)

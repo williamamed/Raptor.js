@@ -44,15 +44,15 @@ class ResourcesV2 extends R.Controller {
 	/**
      * @Route("/generate")
      */
-	generateAction(req, res, next,Options) {
+	generateAction(req, res, next,Options, ProjectManager) {
 		if (req.body.components) {
 			var comp = req.body.components;
 
 			for (let i = 0; i < comp.length; i++) {
-				if (comp[i].type == "comp" && this.R.bundles[comp[i].original.namespace]) {
+				if (comp[i].type == "comp" && ProjectManager.components[comp[i].original.namespace]) {
 					
-					let bundle = this.R.bundles[comp[i].original.namespace]
-					R.copyResources(bundle.name, function () {
+					let bundle = ProjectManager.components[comp[i].original.namespace]
+					R.copyResources(bundle, function () {
 						R.Compressor.markers.execute(path.join(R.basePath, 'public', bundle.vendor, bundle.name))
 						if (bundle.compressor) {
 							var compressor = new bundle.compressor(R, bundle.name);
@@ -79,8 +79,11 @@ class ResourcesV2 extends R.Controller {
 					
 				}
 			}
+			res.show('Los recursos del módulo fueron publicados correctamente.');
+		}else{
+			res.show('Seleccione los componentes que desea publicar.');
 		}
-		res.show('Los recursos del módulo fueron publicados correctamente.');
+		
 	}
 
 	/**
@@ -89,12 +92,12 @@ class ResourcesV2 extends R.Controller {
 	 * @param {*} res 
 	 * @param {*} next 
 	 */
-	clearAction(req, res, next) {
+	clearAction(req, res, next, ProjectManager) {
 		if (req.body.components) {
 			var comp = req.body.components;
 			for (let i = 0; i < comp.length; i++) {
-				if (comp[i].type == "comp" && this.R.bundles[comp[i].text]) {
-					let bundle = this.R.bundles[comp[i].text]
+				if (comp[i].type == "comp" && ProjectManager.components[comp[i].text]) {
+					let bundle = ProjectManager.components[comp[i].text]
 					if (fse.existsSync(this.R.basePath + '/public/' + bundle.vendor + '/' + bundle.name))
 						fse.remove(this.R.basePath + '/public/' + bundle.vendor + '/' + bundle.name, function () {
 

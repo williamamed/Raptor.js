@@ -1,6 +1,6 @@
 {
   "name": "@raptorjs/extjs-designer",
-  "version": "1.0.1",
+  "version": "2.0.1",
   "description": "Diseñador de interfaces para extjs4",
   "main": "index.js",
   "scripts": {

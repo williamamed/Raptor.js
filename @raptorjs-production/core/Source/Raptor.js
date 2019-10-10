@@ -424,7 +424,9 @@ module.exports = {
 				try {
 					let part = require.resolve(tag);
 					let real = part.split(path.normalize(tag))[0];
-					let tagFixed = tag.split('\\')
+					//Adicionado desde la version 2.1.6, issue. Linux not Load resources
+					//let tagFixed = tag.split('\\')
+					let tagFixed = path.normalize(tag).split(path.sep);
 					let resulting = [tagFixed.pop()]
 					let last = tagFixed.pop()
 					if (last)
@@ -760,19 +762,19 @@ module.exports = {
 		fs
 			.readdirSync(rutaSrc)
 			.forEach(function (file) {
+				if (fs.statSync(path.join(rutaSrc, file)).isDirectory())
+					fs
+						.readdirSync(path.join(rutaSrc, file))
+						.filter(function (fileNode) {
+							var sub = fileNode.substring(fileNode.length - 4);
 
-				fs
-					.readdirSync(path.join(rutaSrc, file))
-					.filter(function (fileNode) {
-						var sub = fileNode.substring(fileNode.length - 4);
+							return (fileNode.indexOf('.') !== 0) && (fileNode !== 'index.js') && (fs.existsSync(path.join(rutaSrc, file, fileNode, 'manifest.json')))
+						})
+						.forEach(function (comp) {
 
-						return (fileNode.indexOf('.') !== 0) && (fileNode !== 'index.js') && (fs.existsSync(path.join(rutaSrc, file, fileNode, 'manifest.json')))
-					})
-					.forEach(function (comp) {
+							me.registerComponent(comp, file)
 
-						me.registerComponent(comp, file)
-
-					})
+						})
 
 			})
 
@@ -966,18 +968,20 @@ module.exports = {
 	validateComponent: function (bundle) {
 		var me = this;
 		if (!me.bundles[bundle].init) {
-			var fullfill = true
+			var fullfill = true;
+			var notWrant= []
 			for (var depend in me.bundles[bundle].manifest.require ? me.bundles[bundle].manifest.require : {}) {
 				var requestDepend = me.bundles[bundle].manifest.require[depend];
 
 				if (!(me.bundles[depend] && me.bundles[depend].manifest.state && semver.satisfies(me.bundles[depend].manifest.version, requestDepend))) {
-					fullfill = false
+					fullfill = false;
+					notWrant.push(depend)
 				}
 
 			}
 			if (!fullfill || me.bundles[bundle].manifest.state != true) {
 				if (me.bundles[bundle].manifest.state == true && !fullfill) {
-					console.log(format.get("El componente " + me.bundles[bundle].name + " no fue activado por dependencias incompletas (require " + Object.keys(me.bundles[bundle].manifest.require).join(', ') + ")", format.RED))
+					console.log(format.get("El componente " + me.bundles[bundle].name + " no fue activado por dependencias incompletas (require " + notWrant.join(', ') + ")", format.RED))
 				}
 				delete me.bundles[bundle];
 				return;
@@ -1714,6 +1718,7 @@ module.exports = {
 					this._cache[file][annotation] = {}
 				if (!this._cache[file][annotation][type])
 					this._cache[file][annotation][type] = {}
+
 				if (!this._cache[file][annotation][type][target]) {
 					this._cache[file][annotation][type][target] = annota;
 					if (callback)
@@ -1839,8 +1844,9 @@ module.exports = {
 		annotations.Reader.prototype.setTargets = function (targets) {
 			this.targets = targets;
 		}
+		var parseES6 = require('./Annotation/parseres6');
 
-		annotations.Reader.prototype.parse = function () {
+		annotations.Reader.prototype.parse = function (filePath, mode) {
 			(function (toString) {
 				Buffer.prototype.__tString = toString
 				Buffer.prototype.toString = function () {
@@ -1848,7 +1854,10 @@ module.exports = {
 				};
 			})(Buffer.prototype.toString);
 
-			parse.apply(this, arguments);
+			this.parser = new parseES6();
+			this.currentMode = 'raptorES6';
+
+			parse.apply(this, [filePath, 'raptorES6']);
 			var resolve;
 			var aChain = {
 				_stack: [],
@@ -1906,8 +1915,11 @@ module.exports = {
 			});
 
 			this.constructorAnnotations.forEach((annotation) => {
+
 				let fn = function () {
+
 					$i('AnnotationReaderCache')._register(annotation, 'constructor', function () {
+						
 						aChain.then(function () {
 							R.emit('annotation:read', 'constructor', annotation)
 							R.emit('annotation:read.constructor.' + annotation.annotation, 'constructor', annotation, readerRef.resolvedFile)
@@ -1987,6 +1999,8 @@ module.exports = {
 			if (auto)
 				this.autoResolve.push(name);
 
+			var me = this;
+
 			this.Builder[name] = {
 				annotation: name,
 				annotationClass: this.registry.annotations[name],
@@ -2005,6 +2019,10 @@ module.exports = {
 							})
 					}
 					return this;
+				},
+				depend: function (depOn) {
+
+					return this;
 				}
 			}
 			return this.Builder[name];
@@ -2012,21 +2030,24 @@ module.exports = {
 
 		(function (resol, AnnotationFramework) {
 			var Module = require('module');
-
+			//Adicionado desde la version 2.1.6, issue. Error lodash
+			var corePaths = module.paths;
 			require('module').Module._load = function (a, b) {
+				//Adicionado desde la version 2.1.6, issue. Error lodash
+				b.paths = b.paths.concat(corePaths);
 				var filename = Module._resolveFilename.apply(this, arguments);
 				var loadOne = require.cache[filename] ? true : false;
 				var data = resol.apply(this, arguments);
 
 
 				var resolveAnnotation = function (file, resolved) {
-					var reader = new annotations.Reader(AnnotationFramework.registry);
+					var reader = new annotations.Reader(AnnotationFramework.registry, data.prototype);
 					reader.setTargets(['Inyectable', 'Controller'].concat(AnnotationFramework.autoResolve))
 					reader.resolvedFile = resolved;
 					reader.parse(file);
 					var inyectable = $i('AnnotationReaderCache').getMethods('Inyectable', file);
 					var controller = $i('AnnotationReaderCache').getDefinition('Controller', file);
-					R.emit('AutoResolveAnnotation', reader, file, resolved);
+
 					if (typeof data == 'function' && controller) {
 						const util = require('util');
 
@@ -2035,8 +2056,11 @@ module.exports = {
 					}
 
 					if (typeof resolved == 'function' && inyectable) {
+
 						if (inyectable.length) {
+
 							inyectable.forEach(element => {
+
 								if (resolved.prototype[element.target]) {
 									var fn = resolved.prototype[element.target];
 									resolved.prototype[element.target] = function () {
@@ -2048,6 +2072,8 @@ module.exports = {
 						}
 
 					}
+
+					R.emit('AutoResolveAnnotation', reader, file, resolved);
 
 				}
 
@@ -2076,30 +2102,46 @@ module.exports = {
 		const AnnotationFramework = $i('AnnotationFramework')
 		//Legacy
 
-		AnnotationFramework.registry.registerAnnotation(path.join(__dirname,'..', 'Annotations', 'Inyectable'))
+		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, '..', 'Annotations', 'Inyectable'))
 
 		//New since 2.1.5
 		AnnotationFramework
 			.build('Event', true)
 			.on('method', function (type, annotation, data) {
-				
-				if (data)
-					R.on(annotation.value, function () {
 
-						data.prototype[annotation.target].apply(this, arguments)
-					})
+				if (data) {
+					if (annotation.type && annotation.type == "once")
+						R.once(annotation.value, function () {
 
+							data.prototype[annotation.target].apply(this, arguments)
+						})
+					else
+						R.on(annotation.value, function () {
+
+							data.prototype[annotation.target].apply(this, arguments)
+						})
+				}
 			})
-		
+
 		AnnotationFramework
 			.build('Injectable', true)
 			.on('method', function (type, annotation, data) {
-				if (data.prototype[annotation.target]) {
-					var fn = data.prototype[annotation.target];
-					data.prototype[annotation.target] = function () {
-						return $i.invoke(fn, this, arguments);
-					};
-				}
+				//console.log($i('AnnotationReaderCache')._cache[annotation.filePath]['Injectable'],'-------')
+				if (data)
+					if (data.prototype && data.prototype[annotation.target]) {
+						var fn = data.prototype[annotation.target];
+						data.prototype[annotation.target] = function () {
+							return $i.invoke(fn, this, arguments);
+						};
+					} else {
+						//static method
+						if (data[annotation.target]) {
+							var fn = data[annotation.target];
+							data[annotation.target] = function () {
+								return $i.invoke(fn, this, arguments);
+							};
+						}
+					}
 			})
 	},
 
@@ -2200,6 +2242,18 @@ module.exports = {
 			if (fs.existsSync(path.join(self.basePath, 'cache', 'nodemon.lock')))
 				fse.removeSync(path.join(self.basePath, 'cache', 'nodemon.lock'));
 		}, 3000)
+	},
+
+	rewind: function (mountPoint) {
+		var part1 = R.app._router.stack.slice(0, mountPoint);
+		var part2 = R.app._router.stack.slice(mountPoint);
+		R.app._router.stack = part1;
+		return {
+			restore: function (fn) {
+				fn()
+				R.app._router.stack = R.app._router.stack.concat(part2);
+			}
+		}
 	}
 }
 

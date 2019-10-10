@@ -1,4 +1,4 @@
-Raptor.js
+Raptor.js v2.2.0
 =======
 <img style="" src="/public/@raptorjs/core/img/raptorjs-full.png" height="90">
 
@@ -29,17 +29,15 @@ Desde las fuentes:
 ``` batch
 > npm install ./raptor-cli.tgz -g
 ```
-Al instalar globalmente el paquete cli a través de flag -g tendremos accesibles en nuestro equipo el comando raptor-cli.
-
-En modo de desarrollo podremos conectar nuestro dispositivo y correr nuestra app
-a través del comando `raptor-droid run`. (Recuerde habilitar el modo de desarrollo en su dispositivo)
-
+Al instalar globalmente el paquete cli a través de flag -g tendremos accesibles en nuestro equipo el comando `rap`.
 
 ### Comandos
 
 Una vez instalado el cli podemos usar los comandos disponibles para crear y correr nuestro proyecto.
 
 `create <nombre>`: El comando create crea un nuevo proyecto en el directorio actual con la estructura de la arquitectura propuesta por raptor, adicionalmente crea el package.json e instala las dependencias básicas (node_modules) del proyecto. Desde la versión 2.1.0 fue removida la opción install-offline.
+
+Se incluye desde la versión 2.2.0 el soporte a instalación de conjunto con frameworks como Angular.
 
 ``` batch
 > rap create MyApp
@@ -69,26 +67,6 @@ Una vez instalado el cli podemos usar los comandos disponibles para crear y corr
 
 ``` batch
 > rap list
-```
-
-`dev [import | delete]`: Importa o elimina un componente del área de desarrollo (cli.development).
-
-``` batch
-> rap dev import C:\\Path\\uncomponente.zip
-
-> rap dev import http://raptorweb.cubava.cu/uncomponente.zip
-
-> rap dev delete uncomponente
-
-```
-
-`install <agrupador> <zipFile|URL> `: Instala el componente especificado en formato zip en el proyecto actual.
-
-``` batch
-> rap install Util C:\\Path\\uncomponente.zip
-
-> rap install Util http://raptorweb.cubava.cu/uncomponente.zip
-
 ```
 
 
@@ -121,23 +99,6 @@ Directivas en options.json.
 
 `mode`: Determina el modo en que correrá el proyecto, acepta 2 valores, development o production. Cuando el modo development se encuentre activo aparecerá en cada ventana el panel minificado con datos básico del request actual, además se activarán algunas opciones de traceo para un mejor proceso de desarrollo.
 
-`database`: Esta configuración controla el orm sequelize utilizado por Raptor, establece la configuración de conexión con la base de datos. Inicialmente el estado de la conexión por defecto es off, para activar la conexión con la base de datos se deberán configurar los parámetros necesarios para establecer la conexión.
-
-`database.state`: Estado de la conexión, acepta 2 valores on para activa,off para inactiva.
-
-`database.options`: Set de opciones esperadas en la configuración de sequelize, está descrita en la api oficial de sequelize.
-
-`database.options.port`: Puerto en el que escucha la base de datos.
-
-`database.options.dialect`: Driver para conectarse al motor de base de datos, sequelize soporta mysql, postgres, tedius y otros más.
-
-`database.options.host`: Dirección del motor de base de datos.
-
-`database.user`: Usuario con el que se va a conectar en la base de datos.
-
-`database.password`: Contraseña del usuario de conexión.
-
-`database.name`: Nombre de la base de datos a la que se desea conectar.
 
 `port`: Puerto en el que estará escuchando el servidor web, por defecto Raptor propone el 4440.
 
@@ -152,13 +113,6 @@ Directivas en options.json.
 `language.usePrefered`: Determina si Raptor deberá darle prioridad a la directiva enviada por el navegador de lenguaje de preferencia, espera como valor un booleano.
 
 `language.cookieName`: Nombre de la cookie de lenguaje.
-
-`panel`: Objeto de configuración que establece las directivas del panel de control visual de Raptor.
-
-`panel.secure`: Establece si el panel de control estará protegido por contraseña, espera un booleano. Generalmente esta configuración nunca es editada manualmente, es realizada a través del propio panel.
-panel.username: Este valor es obligatorio solo cuando panel.secure sea true, establece el nombre de usuario a utilizar en el panel de control.
-
-`panel.password`: Contraseña del usuario configurado para el panel de control.
 
 `secret`: Llave secreta generada, es utilizada en el framework como semilla para los procesos de cifrado y configuración de sesiones.
 
@@ -176,18 +130,6 @@ panel.username: Este valor es obligatorio solo cuando panel.secure sea true, est
 ``` json
 {
   "mode": "development",
-  "database": {
-    "state": "on",
-    "options": {
-      "port": 3306,
-      "dialect": "mysql",
-      "host": "127.0.0.1"
-    },
-    "api": true,
-    "password": "root",
-    "user": "root",
-    "name": "raptorjs"
-  },
   "port": 4440,
   "socketio": {
     "active": false
@@ -242,25 +184,10 @@ Adicionalmente también contará con un archivo (`package.json`) que describe al
 
 ```
 
-Ubicaciones compartidas (Nuevo)
+Ubicaciones compartidas
 -----
 A partir de la versión 2.0.7 el framework soporta las ubicaciones compartidas, tanto para ambientes de desarrollo como de producción. En principio la ubicación principal de un componente será el directorio src del propio proyecto en ejecución, además podrán ser configuradas otras locaciones donde se encontrarán componentes de uso común para otros proyectos.
 
-### Ubicaciones de desarrollo
-
-Como particularidad en modo de desarrollo se añaden otras 2 locaciones que siempre estarán disponibles cada vez que se ejecute el proyecto a través de raptor-cli. Estas locaciones de modo de desarrollo pueden ser encontradas en:
-
-`$USER_DOCUMENTS/raptor.cli.dev/cli.development`
-
-`$NPM_GLOBAL/node_modules/raptor-cli/node_modules/@raptorjs`
-
-Su función es contener componentes usados solamente en desarrollo y que representan utilitarios comunes que son utilizados en cada uno de los proyectos.
-
-<img style="width: 100%" src="/public/@raptorjs/apidoc/img/share.png" >
-
-En el diagrama anterior los componentes pueden ser identificados como los rectángulos verdes asociados a los proyectos o en el cli asociados a un agrupador cli.development.
-
-Los componentes de desarrollo estarán contenidos en un agrupador llamado cli.development tanto en la primera locación como en la segunda locación de desarrollo.
 
 ### Ubicaciones de uso común
 
@@ -285,20 +212,33 @@ Un componente está organizado de la siguiente forma:
  * prefijo de ruta todas las definiciones en el controlador
  * 
  * @Route("/example") 
+ * @Controller
  */
-class MiControlador extends R.Controller {
+class MiControlador {
 
     configure() {
 
     }
 
     /**
-     *  
-     *  @Route("/holaruta",method="all")
-     * 
+     * @Route("/uno",method="all")
      */
-    holaRuta(req, res, next) {
+    unoAction(req, res, next) {
         res.send('hola ruta')
+    }
+
+    /**
+     * @Get("/dos")
+     */
+    dosAction(req, res, next) {
+        res.send('hola ruta dos')
+    }
+
+    /**
+     * @Post("/tres")
+     */
+    tresAction(req, res, next) {
+        res.send('hola ruta tres')
     }
 
 }
@@ -340,7 +280,7 @@ module.exports={
     initRepo:function(){
         //algunas tareas al inicializar el modelo
         //Por ejemplo, establecer las relaciones con otros modelos.
-	  //Si se remapea el modelo de este repositorio por algún cambio
+	    //Si se remapea el modelo de este repositorio por algún cambio
         //en los campos de la tabla, este repositorio no se vería afectado
         //manteniendo las consultas personalizas programadas anteriormente
     },    
@@ -602,7 +542,7 @@ module.exports=exampleNode
 
 Capítulo 4 – Controladores
 ======
-Los controladores son clases definidas dentro del directorio Controllers, encargados de la descripción de la interacción entre la capa de presentación (Frontend) y la capa de negocio (Backend). Estas clases heredan de Controller y en ellas pueden ser definidos metadatos en forma de anotaciones que lo vinculan con el enrutador (@Route), pudiendo en ellas definirse respuestas a determinados patrones de ruta o sea peticiones hechas a través de un cliente http.
+Los controladores son clases definidas dentro del directorio Controllers, encargados de la descripción de la interacción entre la capa de presentación (Frontend) y la capa de negocio (Backend). Estas clases heredan de Controller y en ellas pueden ser definidos metadatos en forma de anotaciones (@Route) que lo vinculan con el enrutador, pudiendo en ellas definirse respuestas a determinados patrones de ruta o sea peticiones hechas a través de un cliente http.
 
 A partir de la versión 2.1.3 se comienza a utilizar la anotación @Controller para marcar la clase como controladora, sigue teniendo soporte legacy la herencia de R.Controller. Al existir la anotación @Controller en la definición de la clase el framework internamente preparará la herencia sobre la clase R.Controller.
 
@@ -622,9 +562,7 @@ class MiControlador {
     }
 
     /**
-     *  
-     *  @Route("/holaruta",method="all")
-     * 
+     * @Route("/holaruta")
      */
     holaRuta(req, res, next) {
         res.send('hola ruta')
@@ -728,7 +666,7 @@ class exampleNode {
 
     middleware(SecurityRegistry, Bio, ngPortalRegistry, router){
         //Se pueden inyectar acá todas las dependencias 
-  //registradas en el contenedor
+        //registradas en el contenedor
         router.post("/api/v2",function(){})
     }
 ```
@@ -740,7 +678,7 @@ En las acciones de los controladores también puede hacerse uso del inyector de 
      *  Pueden ser inyectadas las dependencias requeridas a continuación
      *  de req,res,next
      *  
-     *  @Route("/holaruta",method="all")
+     *  @Get("/holaruta")
      * 
      */
     holaRuta(req, res, next, SecurityRegistry, Op, sequelize, queryInterface) {
@@ -781,7 +719,7 @@ class Thanos{
 	}
 
     /**
-     * @Route("/gotoearth")
+     * @Get("/gotoearth")
      */
 	goToEarthAction(req,res,next){
 		this.destroyHumans();
@@ -822,22 +760,32 @@ Dependencias
 -----
 
 ### sequelize
-Instancia creada de la conexión activa con la base de datos configurada por Raptor, aunque esta es la conexión activa principal se pueden crear otras instancias y registrarlas en el contenedor de dependencias.
+Instancia creada de la conexión activa con la base de datos configurada por Raptor, aunque esta es la conexión activa principal se pueden crear otras instancias y registrarlas en el contenedor de dependencias. 
+
+Esta dependencia solo estará disponible cuando el componente `orm` este activado.
 
 ### queryInterface
 Referencia al queryInterface de la instancia principal de sequelize activa.
 
+Esta dependencia solo estará disponible cuando el componente `orm` este activado.
+
 ### Op
 Objeto que contiene los operadores utilizados en las consultas en sequelize, like, or, and, not etc.., en las últimas versiones del ORM es la forma recomendaba de establecer los operadores en las consultas.
 
+Esta dependencia solo estará disponible cuando el componente `orm` este activado.
+
 ### Annotations
 Contiene la definición de la clase Reader para leer anotaciones, está determinado por el paquete ecmas-annotations.
+
 ### AnnotationFramework
 Contiene el registro de anotaciones definidas que serán leídas y procesadas.
+
 ### R
 Instancia del core de Raptor.
+
 ### SecurityRegistry
 Objeto que contiene el registro de manejadores de seguridad definidos, los SecurityManager registrados implementan los procesos de autenticación, autorización y auditoria, el componente TroodonNode define su propio manejador en este contenedor.
+
 ### router 
 Referencia al enrutador de express
 ### express
@@ -852,10 +800,20 @@ Contiene la ruta de la plantilla de error a utilizar por Raptor.js, es posible r
 Objeto para el registro de escuchas de eventos en Raptor.js, es utilizado generalmente en el configurador de componentes escuchando determinados eventos generados por el sistema y por componentes instalados.
 ### Options
 Objeto que contiene la configuración establecida en el archivo options.json.
+### io
+Referencia a la instancia de socket.io creada.
+
+Esta dependencia solo estará disponible si socket.io se encuentra activo.
+
 ### Migration
 Objeto que contiene métodos utilitarios de las funcionalidades de migración, Ej. reIndex para reindexar las sequencias en esquemas postgres y Oracle.
+
+Esta dependencia solo estará disponible cuando el componente `orm` este activado.
+
 ### Umzug
 Gestor de migraciones.
+
+Esta dependencia solo estará disponible cuando el componente `orm` este activado.
 ### DefaultSession
 Contiene un valor booleano que define si se utilizara la sesión por defecto configurada por Raptor.js, es posible manipular este valor para definir un manejador de sesión nuevo.
 ### nombre-de-componente_nombre-de-modelo
@@ -865,10 +823,17 @@ Otras dependencias
 -----
 ### ngPortal
 Definición de la clase ngPortal del componente ngPortalNode, se utiliza para configurar un portal.
+
+Esta dependencia solo estará disponible cuando el componente `ng-portal` este activado.
 ### ngPortalRegistry
 Registro de instancias de portales creados con ngPortal.
+
+Esta dependencia solo estará disponible cuando el componente `ng-portal` este activado.
+
 ### Bio
 Objeto registrado por el componente biométrico para la protección con patrón de tecleo de determinadas rutas, a través del método protection devuelve un middleware que será utilizado para controlar el acceso en diferentes rutas.
+
+Esta dependencia solo estará disponible cuando el componente `bio` este activado.
 
 $injector API
 -----
@@ -890,7 +855,7 @@ $injector("myObject")
 ### invoke()
 `@param` {Function} funcion Función a invocar utilizando el inyector.
 
-@return null | mixed
+`@return` null | mixed
 
 Ejecuta en el momento la función especificada por parámetro, el DI tratará de inyectar las dependencias especificadas por parámetros en dicha función, devolverá el valor retornado por la función especificada por parámetro.
 ``` javascript
@@ -901,7 +866,7 @@ $injector.invoke(function(sequelize){
 ### invokeLater()
 `@param` {Function} funcion Función a invocar utilizando el inyector.
 
-@return Function
+`@return` Function
 
 Preprocesa la función pasada por parámetro en busca de dependencias definidas y la prepara para ejecución,este método retorna la función preparada.
 
@@ -1219,15 +1184,21 @@ Events.register({
 ### database:running 
 Evento lanzado cuando la conexión de base de datos principal (Sequelize) configurada por Raptor se conectó correctamente.
 
+Este evento es lanzado por el componente `orm`
+
 ### database:failed 
 Evento lanzado cuando ocurrió un error en la conexión de base de datos principal configurada por Raptor.
 ready Evento lanzado cuando core ha terminado la configuración y se encuentra listo , tenga en cuenta que es posible que el servidor http o la conexión con base de datos pudieran estar desactivadas.
+
+Este evento es lanzado por el componente `orm`
 
 ### ioc:[nombre-dependencia].ready
 Evento lanzado cuando el nombre de dependencia especificada ha sido añadida al inyector de dependencias y está listo para consumirse, recibe como parámetro la dependencia recién añadida.
 
 ### migration:ready 
 Evento lanzado cuando las migraciones están lista para su ejecución, solo le lanzará cuando exista una conexión exitosa con alguno de los motores de base de datos.
+
+Este evento es lanzado por el componente `orm`
 
 ### annotation:read.definition.[ClassName]
 Evento lanzado cuando las anotaciones de la clase ClassName fueron leídas, recibe como parámetro el tipo de anotación que se leyó (definition) y la definición de la anotación recién leída.
@@ -1630,7 +1601,7 @@ R.resolveLocal("exampleNode/Lib/MyClass.js")
 ### getSecurityManager()
 `@param` {string} name nombre del SecurityManager
 
-@return {SecurityManager}
+`@return` {SecurityManager}
 
 Devuelve una nueva instancia de un SecurityManager con el nombre especificado o returna el existente.
 
@@ -1639,7 +1610,7 @@ Devuelve una nueva instancia de un SecurityManager con el nombre especificado o 
 
 `@param` {object} data Parámetros a pasar a la plantilla
 
-@return {string}
+`@return` {string}
 
 Devuelve la plantilla ejs compilada perteneciente a un componente.
 
@@ -1649,6 +1620,23 @@ para no reiniciar el servicio en modo de desarrollo hasta que se desbloquee.
 
 ### unlockNodemon()
 Desbloquea nodemon en modo de desarrollo para que continúe su lógica.
+
+### rewind()
+`@param` {integer} Posición hasta donde se moverá el puntero en el stack de express
+
+`@return` {Object} Objeto para invocar la función restore que implementa la adición de un nuevo middleware
+
+Mueve el puntero del stack de express hasta la posición especificada e insertar los middlewares.
+
+``` javascript
+    R.rewind(15)
+    .restore(()=>{
+        //Insertar este middleware en la posición 15
+        R.app.use(function(req, res, next){
+            next()
+        })
+    })
+```
 
 Capítulo 12 – Annotation Framework 
 ===
@@ -1996,6 +1984,101 @@ module.exports=User;
 ```
 De forma especial podemos también declarar un prefijo de ruta para el componente en la clase principal de cada componente en el archivo index.js
 
+### @Get
+`@param` {String} value, Ruta o Subruta a definir para el método objetivo de esta anotación
+
+Implementa una especificación de la anotación `@Route` para el método `Get`.
+
+``` javascript
+/**
+ * @Route("/user")
+ * @Controller
+ */
+class User{
+
+    /**
+     * @Get("/list")
+     */
+    listAction(req, res, next){
+        ...
+    }
+
+
+}
+module.exports=User;
+```
+
+### @Post
+`@param` {String} value, Ruta o Subruta a definir para el método objetivo de esta anotación
+
+Implementa una especificación de la anotación `@Route` para el método `Post`.
+
+``` javascript
+/**
+ * @Route("/user")
+ * @Controller
+ */
+class User{
+
+    /**
+     * @Post("/create")
+     */
+    createAction(req, res, next){
+        ...
+    }
+
+
+}
+module.exports=User;
+```
+
+### @Put
+`@param` {String} value, Ruta o Subruta a definir para el método objetivo de esta anotación
+
+Implementa una especificación de la anotación `@Route` para el método `Put`.
+
+``` javascript
+/**
+ * @Route("/user")
+ * @Controller
+ */
+class User{
+
+    /**
+     * @Put("/edit/:id")
+     */
+    editAction(req, res, next){
+        ...
+    }
+
+
+}
+module.exports=User;
+```
+
+### @Delete
+`@param` {String} value, Ruta o Subruta a definir para el método objetivo de esta anotación
+
+Implementa una especificación de la anotación `@Route` para el método `Delete`.
+
+``` javascript
+/**
+ * @Route("/user")
+ * @Controller
+ */
+class User{
+
+    /**
+     * @Delete("/list")
+     */
+    deleteAction(req, res, next){
+        ...
+    }
+
+
+}
+module.exports=User;
+```
 
 ### @Controller
 La anotación Controller marca una clase contenida en el directorio Controllers como controlador, sin esta marca la anotación @Route no tendrá efecto tampoco.
@@ -2130,29 +2213,29 @@ La anotación SessionFilter es usada de conjunto con una anotación @Route activ
 
 Capítulo 13 – Componentes Raptor.js 
 ===
-Los componentes utilitarios de Raptor.js complementan el framework con funcionalidades encargadas de otorgar la abstracción necesaria en el proceso de desarrollo, la propuesta conceptual del proyecto Raptor para todas sus tecnologías incluyendo esta rama para Node.js incluye un panel de control de desarrollo (@raptorjsjs/raptor-panel), módulo de seguridad (@raptorjs/troodon), módulo de reconocimiento de usuario por patrón de tecleo o keystrokeDynamics (@raptorjs/bio) y un portal de usuario prediseñado (@raptor/ng-portal) utilizado además por @raptorjs/raptor-panel.
+Los componentes utilitarios de Raptor.js complementan el framework con funcionalidades encargadas de otorgar la abstracción necesaria en el proceso de desarrollo, la propuesta conceptual del proyecto Raptor para todas sus tecnologías incluyendo esta rama para Node.js incluye un panel de control de desarrollo (@raptorjs/raptor-panel), módulo de seguridad (@raptorjs/troodon), módulo de reconocimiento de usuario por patrón de tecleo o keystrokeDynamics (@raptorjs/bio) y un portal de usuario prediseñado (@raptor/ng-portal) utilizado además por @raptorjs/raptor-panel.
 
 Cada uno de estos componentes puede ser activado y utilizado según se requiera debido a las características de nuestra aplicación.
 
 raptor-panel(dev)
 -----
-El componente RaptorNode se encuentra activo por defecto una vez creado un proyecto Raptor.js, entre sus funciones implementa un portal de desarrollo accesible en la ruta /raptor. 
+El componente raptor-panel desde la versión 2.2.0 se separa del flujo de ejecución del proyecto que usted desarrolla, en las versiones anteriores el panel de control se integraba de conjunto en la ejecución del proyecto en modo de desarrollo por lo que podía ser invocado en la ruta `/raptor/home`. A partir de esta versión se separa y debe ser ejecutado a través del comando `rap panel` en caso de querer utilizarse, con este comando se levanta el panel de control en el puerto 4441 que se conecta automaticamente al proyecto en ejecución.
 
-Este componente desde la versión 2.0.7 se encuentra en una ubicación compartida de desarrollo, concretamente dentro del propio cli por lo que solo será accesible desde desarrollo y no desde producción. Estando en un ubicación compartida el componente es utilizado por todos los proyectos creados que se ejecutan con el cli a través del comando rap run.
+Esta separación tiene varias ventajas, una de ellas es que todas las herramientas de desarrollo del panel no se ven afectadas en caso de un error en el flujo de ejecución del proyecto en desarrollo. De forma general su funcionamiento sigue siendo el mismo, la única novedad es que en desarrollo ahora tenderemos nuestro proyecto corriendo en un puerto y si se desea utilizar las herramientas de desarrollo del panel de control pues entonces correrán en un puerto diferente en este caso el 4441.
 
-Una vez que accedemos al portal se encuentran funciones para interactuar con la configuración en el archivo `options.json`, crear  controladores dinámicamente de forma visual, publicar nuestros recursos web contenidos en el directorio Resources de cada componente.
+Con el panel de control podemos modificar de forma visual las principales configuraciones del archivo options.json, generar componentes, controladores, interactuar con implentaciones visuales de las herramientas de desarrollo de componentes instalados.
 
 Pantalla de inicio
 
 <img style="width: 100%" src="./img/panel.png">
 
 ### Configuración
-Son editadas algunas de las directivas más importantes, una vez configurado el servidor será reiniciado para ejecutar la configuración.
+Son editadas algunas de las directivas más importantes, una vez configurado el servidor será reiniciado el proyecto actual en el puerto 4440  para ejecutar la nuevo configuración.
 
 <img style="width: 100%" src="./img/panel-config.png">
 
 ### Generación de componentes
-Es un proceso intuitivo donde marcaremos en el árbol la posición en donde queremos generar el componente o el controlador.
+Es un proceso intuitivo donde indicaremos en el árbol la posición en donde queremos generar el componente o el controlador.
 
 <img style="width: 100%" src="./img/panel-comp.png">
 
@@ -2162,11 +2245,68 @@ Si deseamos publicar los recursos de nuestros componentes manualmente podemos ha
 <img style="width: 100%" src="./img/panel-publish.png">
 
 ### Perfilador
-Este componente incluye además para el modo de desarrollo un perfilador minificado que aparece en la parte inferior derecha en cada página renderizada por el framework, permitiéndonos ver de forma visual parámetros como la sesión, rutas reconocidas, tiempo de respuesta y el lenguaje activo.
+Este componente incluye además para el modo de desarrollo un perfilador minificado que aparece en la parte inferior derecha en cada página renderizada por el framework, permitiéndonos ver de forma visual parámetros como la sesión, tiempo de respuesta y el lenguaje activo.
+
+Desde la versión 2.2.0 fue modificado el perfilador, las rutas detectadas ahora pueden ser visualizadas dentro del propio panel de control en la opción Rutas.
 
 <img style="width: 100%" src="./img/panel-perfil1.png">
 
-<img style="width: 100%" src="./img/panel-perfil2.png">
+orm
+-----
+El componente orm encapsula la lógica de integración con Raptor.js del ORM Sequelize, uno de los paquetes más utilizados para la conexión con los motores relacionales de base de datos.
+
+Por defecto este componente aparece desactivado, en caso de querer utilizarlo podemos activarlo mediante el comando `rap enable orm`, una vez activado podemos acceder en el panel de control para configurar la conexión del orm a la base de datos de forma visual y generar modelos.
+
+También podemos establecer la configuración del orm de forma manual en el archivo options.json de nuestro proyecto con la siguiente configucación.
+
+### Configuración
+`database`: Esta configuración controla el orm sequelize utilizado por Raptor, establece la configuración de conexión con la base de datos. Inicialmente el estado de la conexión por defecto es off, para activar la conexión con la base de datos se deberán configurar los parámetros necesarios para establecer la conexión.
+
+`database.state`: Estado de la conexión, acepta 2 valores on para activa,off para inactiva.
+
+`database.options`: Set de opciones esperadas en la configuración de sequelize, está descrita en la api oficial de sequelize.
+
+`database.options.port`: Puerto en el que escucha la base de datos.
+
+`database.options.dialect`: Driver para conectarse al motor de base de datos, sequelize soporta mysql, postgres, tedius y otros más.
+
+`database.options.host`: Dirección del motor de base de datos.
+
+`database.user`: Usuario con el que se va a conectar en la base de datos.
+
+`database.password`: Contraseña del usuario de conexión.
+
+`database.name`: Nombre de la base de datos a la que se desea conectar.
+
+``` json
+{
+  "database": {
+    "state": "on",
+    "options": {
+      "port": 5433,
+      "dialect": "postgres",
+      "host": "127.0.0.1"
+    },
+    "api": true,
+    "password": "postgres",
+    "user": "postgres",
+    "name": "nombre de la base de datos"
+  },
+  "port": 4440,
+  "socketio": {
+    "active": true
+  },
+  "language": {
+    "default": "es",
+    "usePrefered": false,
+    "cookieName": "RaptorJSLang"
+  },
+  "secret": "Some secret",
+  "proyectName": "RaptorJS",
+  "maxEventListeners": "80"
+}
+
+```
 
 ng-portal
 -----

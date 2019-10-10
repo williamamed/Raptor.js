@@ -1,23 +1,26 @@
 'use strict';
-
+const path=require('path')
 /**
  * Raptor.js - Node framework
  * Controlador ES6
  * 
  * @Route("/raptor/component/model.v2")
+ * @Controller
  */
-class ModelV2 extends R.Controller {
+class ModelV2 {
 
 	configure() {
 
 	}
-
+	
     /**
      * @Route("")
      */
-	indexAction(req, res, next) {
-
-		res.render("orm:model.v2.ejs");
+	indexAction(req, res, next, ProjectManager) {
+		
+		res.render(path.join(__dirname,'..','Views',"/model.v2.ejs"),{
+			projectUrl: 'http://127.0.0.1:'+ProjectManager.port
+		});
 	}
 
 	/**

@@ -13,7 +13,7 @@ class Controller {
 
 	}
 
-	init(R, prefix, main, beforeTask) {
+	init(T, prefix, main, beforeTask) {
 		// always initialize all instance properties
 
 		this.prefix = '';
@@ -21,8 +21,14 @@ class Controller {
 		this.mainClass = main;
 		this.app = R.app;
 		this.R = R;
-		this.beforeTask = beforeTask;
+		if(beforeTask)
+			this.beforeTask = beforeTask;
+		else
+			this.beforeTask=function(req,res,next){next()}
 
+		if(this.getRoutesDefinition){
+			this.routes(this.getRoutesDefinition().routes)
+		}
 	}
 
 	route(method, path) {
@@ -58,7 +64,7 @@ class Controller {
 							}
 						}
 					}
-					stack.push(router[i].action)
+					stack.push(typeof router[i].action=='string'?this[router[i].action]:router[i].action)
 					if(router[i].after){
 						
 						for (let index = 0; index < router[i].after.length; index++) {
@@ -68,7 +74,7 @@ class Controller {
 						}
 					}
 					if (router[i]['method']) {
-						var meta=[router[i]['method'], i]
+						var meta=[router[i]['method'], router[i]['route']]
 						this.route.apply(this,meta.concat(stack))
 					} else {
 						var meta=['all', i]

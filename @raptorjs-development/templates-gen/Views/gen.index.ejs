@@ -1,18 +1,20 @@
 <link href="/public/@raptorjs/raptor-panel/css/function-style.css" rel="stylesheet">
 <style>
-    md-select-menu.md-default-theme md-content md-option, md-select-menu md-content md-option {
+    md-select-menu.md-default-theme md-content md-option,
+    md-select-menu md-content md-option {
         color: whitesmoke
     }
 </style>
-<div class="starter-template" >
+<div class="text-center">
     <h1>Artefactos</h1>
     <p class="text-muted">Acciones utilitarias para la creación de artefactos en el proyecto actual</p>
 </div>
 <hr>
-<div class="container-fluid" ng-controller="DeamonController">
+<div class="container-fluid" ng-controller="DeamonController" ng-init="ProjectManager={port:<%-ProjectManager.port%>}">
     <div class="row">
         <div class="col-md-4">
-            <label data-toggle="tooltip" data-placement="top" title="Elija el componente donde ejecutar la acción" class="control-label" for="driver">Componente</label>
+            <label data-toggle="tooltip" data-placement="top" title="Elija el componente donde ejecutar la acción" class="control-label"
+                for="driver">Componente</label>
             <div class="controls">
                 <select class="form-control" ng-model="extjs.component">
                     <option ng-repeat="component in components" ng-value="component" ng-if="component.external">{{component.name}} (external)</option>
@@ -161,7 +163,8 @@
                 $scope.selectedTech.name = result;
                 $http.post('/raptor/templates/create', $scope.selectedTech)
                     .then(function (response) {
-                        R.message(response.data.msg)
+
+                        R.message(response.data.msg ? response.data.msg : response.data.error)
                     })
                     .catch(function () {
                         R.message("Ups, lo sentimos ocurrió un error inesperado.")
@@ -184,19 +187,31 @@
         }
 
         $scope.createTemplate = function (key, meta, version) {
-            
+
             $scope.templateData = {
                 key: key
             };
-            $scope.fields = meta.fields
-            if ($scope.fields)
+            $scope.fields = meta.fields;
+
+
+
+            if ($scope.fields) {
+                $scope.fields.forEach(element => {
+                    if ((element.type == 'select' || element.type == 'multiselect') && element.url) {
+                        
+                        $http.get(element.url.replace(/{port}/g,$scope.ProjectManager.port))
+                            .then(function (result) {
+                                element.options = result.data;
+                            })
+                    }
+                });
                 $mdDialog.show({
                     contentElement: '#controller-dialog',
 
                     parent: angular.element(document.body),
                     clickOutsideToClose: false
                 })
-            else
+            } else
                 $scope.question()
         }
 
@@ -216,16 +231,18 @@
 
             $http.post('/raptor/templates/create', $scope.templateData)
                 .then(function (response) {
+
+                    var message = response.data.msg;
+                    if (response.data.params && response.data.params.message)
+                        message += response.data.params.message;
+
+                    if (response.data.msg)
+                        R.message(message)
+                    else
+                        R.message(response.data.error)
                     
-                    var message=response.data.msg;
-                    if(response.data.params && response.data.params.message)
-                        message+=response.data.params.message;
-                    
-                    
-                    R.message(message)
-                    
-                    if(response.data.params && response.data.params.href)
-                        window.open(response.data.params.href)
+                    if (response.data.params && (typeof response.data.params.message=='object'&&response.data.params.message.href))
+                        window.open(response.data.params.message.href)
                     $scope.cancel()
                 })
                 .catch(function (response) {

@@ -31,10 +31,9 @@ class ExtjsDesignerNode {
 	*
 	*/
 	configure(R,Events){
-		Events.register({
-			'artefacts:ready':function(){
-				R.bundles['templates-gen'].manifest.technologies['Extjs-4.2.0'].templates['designer']=require(path.join(__dirname,'Artefacts'))
-			}
+		R.once('artefacts:ready',function(){
+			
+			R.bundles['templates-gen'].manifest.technologies['Extjs-4.2.0'].templates['designer']=require(path.join(__dirname,'Artefacts'))
 		})
 	}
 }

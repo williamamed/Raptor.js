@@ -5,8 +5,8 @@ const fse = require('fs-extra')
 const format = require('./../format')
 
 module.exports = {
-	command: 'create <nombre> [install-offline]',
-	description: 'Crea un proyecto Raptor.js',
+	command: 'create <nombre>',
+	description: 'Crea un proyecto Raptor.js en el directorio actual',
 	action: function (nombre, argument, command) {
 		if (!nombre) {
 			console.log(" ")
@@ -93,8 +93,11 @@ module.exports = {
 		} else {
 			console.log("Actualizando package.json")
 			var originalPackage = require(path.join(currentDir, 'package.json'));
-
-			originalPackage.dependencies = template.dependencies;
+			for (const key in template.dependencies) {
+				const element = template.dependencies[key];
+				originalPackage.dependencies[key]=element;
+			}
+			//originalPackage.dependencies = template.dependencies;
 			fs.writeFileSync(path.join(currentDir, 'package.json'), JSON.stringify(originalPackage, null, 2));
 		}
 		format.log("Hecho!!", "yellow")

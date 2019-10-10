@@ -1,0 +1,89 @@
+'use strict';
+
+/**
+ * Raptor.js - v2
+ * Generado automaticamente
+ * 
+ * @Route("<%-baseRoute%>")
+ * @Controller
+ */
+class <%-className%>{
+
+	configure(){
+		
+	}
+    
+    <% if(templateName){ %>
+    /**
+     * @Get
+     */
+	indexAction(req,res,next){
+		
+		res.render("<%-templateName%>");
+	}
+    <%}%>
+
+	/**
+	 * @Get("/list")
+	 */
+	listAction(req,res,next,<%-modelo%>){
+		<%-modelo%>
+		.findAll()
+		.then(function(data){
+			res.json(data)
+		})
+		.catch(function(err){
+			next(err);
+		})
+	}
+
+	/**
+	 * @Post("/insert")
+	 */
+	insertAction(req,res,next,<%-modelo%>){
+		<%-modelo%>
+		.create(req.body)
+		.then(function(data){
+			res.json(data)
+		})
+		.catch(function(err){
+			next(err);
+		})
+	}
+
+	/**
+	 * @Put("/edit/:id")
+	 */
+	editAction(req,res,next,<%-modelo%>){
+		<%-modelo%>
+		.findByPk(req.params.id)
+		.then(function(row){
+			return row.update(req.body)
+		})
+		.then(function(data){
+			res.json(data)
+		})
+		.catch(function(err){
+			next(err);
+		})
+	}
+
+	/**
+	 * @Delete("/delete/:id")
+	 */
+	deleteAction(req,res,next,<%-modelo%>){
+		<%-modelo%>
+		.findByPk(req.params.id)
+		.then(function(row){
+			return row.destroy()
+		})
+		.then(function(data){
+			res.json(data)
+		})
+		.catch(function(err){
+			next(err);
+		})
+	}
+}
+
+module.exports=<%-className%>;

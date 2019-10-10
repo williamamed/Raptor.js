@@ -57,6 +57,10 @@ class TroodonNode {
 		var Service = require('./Lib/TroodonDataService')
 		$i('TroodonDataService', new Service());
 
+		var register=require('./Annotation/Register')
+		register.createTroodon();
+		register.createPrivilege();
+
 		Events
 			.register({
 				/**
@@ -245,7 +249,7 @@ class TroodonNode {
 				 * Evento para leer la Anotacion Troodon en index.js y darle seguridad a rutas
 				 * 
 				 */
-				'annotation:read.definition.Troodon': $injector.invokeLater(function (type, annotation, bundle, Annotations) {
+				'annotation:read.definition.Troodon4': $injector.invokeLater(function (type, annotation, bundle, Annotations) {
 
 					Events.on('securityManager:configured.Troodon', function () {
 
@@ -260,7 +264,7 @@ class TroodonNode {
 				 * Evento para leer la Anotacion Troodon en Controladores y darle seguridad a rutas
 				 * 
 				 */
-				'annotation:read.method.Troodon': $injector.invokeLater(function (type, annotation) {
+				'annotation:read.method.Troodon4': $injector.invokeLater(function (type, annotation) {
 
 					SecurityRegistry
 						.get('Troodon')
@@ -270,7 +274,7 @@ class TroodonNode {
 				/**
 				 * Lectura de anotaciones Privilege en clases
 				 */
-				'annotation:read.definition.Privilege': function (type, annotation) {
+				'annotation:read.definition.Privilege4': function (type, annotation) {
 
 					var route = AnnotationReaderCache.getDefinition('Route', annotation.filePath, annotation.target);
 					if (route) {
@@ -283,8 +287,8 @@ class TroodonNode {
 					}
 				},
 
-				'annotation:read.method.Privilege': function (type, annotation) {
-					const route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
+				'annotation:read.method.Privilege4': function (type, annotation) {
+					const route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation);
 					if (route) {
 						var comp = AnnotationReaderCache.getDefinition('Route', path.join(annotation.filePath.split('Controller')[0], 'index.js'));
 
@@ -326,12 +330,9 @@ class TroodonNode {
 
 				},
 				'artefacts:ready': function () {
-					R.bundles['templates-gen'].manifest.technologies['Troodon-' + R.bundles['troodon'].manifest.version] = require(path.join(__dirname, 'Artefacts'))
+					//R.bundles['templates-gen'].manifest.technologies['Troodon-' + R.bundles['troodon'].manifest.version] = require(path.join(__dirname, 'Artefacts'))
 				}
 			})
-
-		AnnotationFramework.registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Troodon'))
-		AnnotationFramework.registry.registerAnnotation(require.resolve(__dirname + '/Annotation/Privilege'))
 
 		var parseUrl = require('parseurl');
 

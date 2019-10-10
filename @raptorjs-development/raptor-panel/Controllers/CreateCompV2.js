@@ -5,8 +5,9 @@ var fse = require('fs-extra');
 
 /**
 * @Route("/raptor/component/create.v2")
+* @Controller
 */
-class CreateComponent extends R.Controller {
+class CreateComponent {
 
 	configure() {
 
@@ -25,16 +26,17 @@ class CreateComponent extends R.Controller {
 	 * @param {*} res 
 	 * @param {*} next 
 	 */
-	listAction(req, res, next) {
+	listAction(req, res, next, ProjectManager) {
 		
 		var vendors = {};
-		for (var i in this.R.bundles) {
-			if (!vendors[this.R.bundles[i].vendor]) {
-				vendors[this.R.bundles[i].vendor] = {};
-				vendors[this.R.bundles[i].vendor][this.R.bundles[i].name] = this.R.bundles[i];
+		for (var i in ProjectManager.components) {
+			let comp=ProjectManager.components[i];
+			if (!vendors[comp.vendor]) {
+				vendors[comp.vendor] = {};
+				vendors[comp.vendor][comp.name] = comp;
 			}
 			else {
-				vendors[this.R.bundles[i].vendor][this.R.bundles[i].name] = this.R.bundles[i];
+				vendors[comp.vendor][comp.name] = comp;
 			}
 		}
 		var tree = [];
@@ -73,24 +75,30 @@ class CreateComponent extends R.Controller {
 	 * @param {*} res 
 	 * @param {*} next 
 	 */
-	createNodeAction(req, res, next) {
+	createNodeAction(req, res, next, ProjectManager) {
 		
 		var vendor = req.body.vendor;
 		var nodeName = req.body.bundle;
 		
 		var self = this;
 		var messages = [];
-		if (!this.R.bundles[nodeName]) {
-			R.lockNodemon()
-			if (!CreateComponent.createNodeDirectory(vendor, nodeName, messages)) {
+		if (!ProjectManager.components[nodeName]) {
+			//R.lockNodemon()
+			if (!CreateComponent.createNodeDirectory(vendor, nodeName, messages, R.basePath)) {
 				res.show("Lo sentimos no se pudo crear el directorio", R.Controller.ERROR)
-				R.unlockNodemon()
+				//R.unlockNodemon()
 				return;
 			}
-			CreateComponent.createFiles(nodeName, vendor, messages);
-			R.unlockNodemon()
-			R.registerComponent(nodeName, vendor)
-			R.prepareComponent(nodeName)
+			CreateComponent.createFiles(nodeName, vendor, messages, R.basePath);
+			//R.unlockNodemon()
+			//R.registerComponent(nodeName, vendor)
+			ProjectManager.components[nodeName]={
+				name: nodeName,
+				vendor: vendor,
+				path: path.join(vendor,nodeName),
+				absolutePath: path.join(this.R.basePath,vendor,nodeName)
+			}
+			//R.prepareComponent(nodeName)
 		} else {
 			res.show("El módulo especificado ya existe.", R.Controller.ERROR);
 			return;
@@ -112,8 +120,8 @@ class CreateComponent extends R.Controller {
 	*
 	*
 	*/
-	static createNodeDirectory(vendor, nodeName, messages) {
-		var src = path.join($injector('R').basePath, 'src');
+	static createNodeDirectory(vendor, nodeName, messages, base) {
+		var src = path.join(base, 'src');
 		if (!fs.existsSync(path.join(src, vendor)))
 			fs.mkdirSync(path.join(src, vendor));
 		
@@ -141,18 +149,18 @@ class CreateComponent extends R.Controller {
 	*
 	*
 	*/
-	static createFiles(nodeName, vendor, messages) {
+	static createFiles(nodeName, vendor, messages, base) {
 
-		var index = $injector('R').template('raptor-panel:GenerateNode/node-template/index.js.ejs', {
+		var index = $injector('R').template(path.join(__dirname,'..','Views','GenerateNode/node-template/index.js.ejs'), {
 			classname: nodeName
 		});
 
-		var es6 = $injector('R').template('raptor-panel:GenerateNode/node-template/ControllerES6.js.ejs', {
+		var es6 = $injector('R').template(path.join(__dirname,'..','Views','GenerateNode/node-template/ControllerES6.js.ejs'), {
 			classname: nodeName.replace('Node', '')
 		});
 
 		
-		var src = path.join(R.basePath, 'src');
+		var src = path.join(base, 'src');
 		fs.writeFileSync(path.join(src, vendor, nodeName, 'index.js'), index);
 		fs.writeFileSync(path.join(src, vendor, nodeName, 'Controllers/DefaultController.js'), es6);
 		
@@ -198,34 +206,34 @@ class CreateComponent extends R.Controller {
 	 * @param {*} res 
 	 * @param {*} next 
 	 */
-	deleteNodeAction(req, res, next) {
+	deleteNodeAction(req, res, next, ProjectManager) {
 
 
-		if (this.R.bundles[req.body.nodecomponent] && this.R.bundles[req.body.nodecomponent].vendor=='@raptorjs') {
-			res.show('Es una pena !!<br>El componente '+req.body.nodecomponent+' no puede ser eliminado, es componente base del framework.', R.Controller.ERROR);
+		if (ProjectManager.components[req.body.nodecomponent] && ProjectManager.components[req.body.nodecomponent].vendor=='@raptorjs') {
+			res.show('Es una pena !! El componente '+req.body.nodecomponent+' no puede ser eliminado, es componente base del framework.', R.Controller.ERROR);
 			return;
 		}
 
-		if (req.body.nodecomponent && this.R.bundles[req.body.nodecomponent]) {
+		if (req.body.nodecomponent && ProjectManager.components[req.body.nodecomponent]) {
 			var self = this;
 
-			var dir = fs.readdirSync(path.join(self.R.basePath, 'src', self.R.bundles[req.body.nodecomponent].vendor));
+			var dir = fs.readdirSync(path.join(self.R.basePath, 'src', ProjectManager.components[req.body.nodecomponent].vendor));
 			var ruta=''
 			if (dir.length > 1){
-				ruta=this.R.basePath + '/src/' + this.R.bundles[req.body.nodecomponent].path;
+				ruta=this.R.basePath + '/src/' + ProjectManager.components[req.body.nodecomponent].path;
 				
 			}else{
-				ruta=this.R.basePath + '/src/' + this.R.bundles[req.body.nodecomponent].vendor;
+				ruta=this.R.basePath + '/src/' + ProjectManager.components[req.body.nodecomponent].vendor;
 			}
-			R.lockNodemon()
+			//R.lockNodemon()
 			fse.remove(ruta, function (err) {
-				R.unlockNodemon()
+				//R.unlockNodemon()
 				if (err) {
 					console.log(err);
 					return res.show('Ocurrió un error eliminando el componente, intentelo nuevamente.' + err.message, R.Controller.ERROR);
 				}
 
-				delete R.bundles[req.body.nodecomponent];
+				delete ProjectManager.components[req.body.nodecomponent];
 				res.show('El módulo fue eliminado correctamente.');
 
 			});
@@ -241,7 +249,7 @@ class CreateComponent extends R.Controller {
 	 * @param {*} res 
 	 * @param {*} next 
 	 */
-	genControllerAction(req, res, next) {
+	genControllerAction(req, res, next, ProjectManager) {
 		
 		var composed=req.body.controllername.split('/');
 		var controllerName=composed.pop();
@@ -253,10 +261,11 @@ class CreateComponent extends R.Controller {
 		});
 
 		var src = path.join(this.R.basePath, 'src');
-		R.lockNodemon()
-		fse.ensureDirSync(path.join(src, this.R.bundles[req.body.component].vendor, req.body.component, 'Controllers',prefix))
-		fs.writeFileSync(path.join(src, this.R.bundles[req.body.component].vendor, req.body.component, 'Controllers' ,prefix, controllerName + '.js'), es6);
-		R.unlockNodemon()
+		//R.lockNodemon()
+		
+		fse.ensureDirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Controllers',prefix))
+		fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Controllers' ,prefix, controllerName + '.js'), es6);
+		//R.unlockNodemon()
 		res.show('El controlador fue creado correctamente.')
 	}
 }

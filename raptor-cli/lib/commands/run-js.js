@@ -11,7 +11,7 @@ module.exports = {
 	command: 'run [verbose] [argumentos]',
 	description: 'Corre el proyecto',
 	action: function (not, value, arg) {
-		
+
 		var outputFirst = require('check-dependencies').sync({
 			packageDir: process.cwd()
 		});
@@ -42,10 +42,10 @@ module.exports = {
 				if (val == 'verbose')
 					self.verbose = true
 			})
-		if(self.verbose)
+		if (self.verbose)
 			console.log("Mode verbose activado")
 		require('nodemon/lib/monitor/match')
-		
+
 		if (!fs.existsSync(path.join(process.cwd(), 'run.app.js'))
 			|| !fs.existsSync(path.join(process.cwd(), 'config/options.json'))
 			|| !fs.existsSync(path.join(process.cwd(), 'public'))) {
@@ -75,7 +75,7 @@ module.exports = {
 
 		console.log(format.get('Cargando y configurando núcleo Raptor.js', format.YELLOW));
 
-		
+
 		try {
 			var R = require(path.join(process.cwd(), 'bootstrap')).getClass()
 
@@ -121,19 +121,19 @@ module.exports = {
 		if (config.RAPTOR_DEV_EXTERNAL_COMPONENTS) {
 			config.RAPTOR_DEV_EXTERNAL_COMPONENTS = config.RAPTOR_DEV_EXTERNAL_COMPONENTS = [
 				path.join(os.homedir(), 'raptor.cli.dev')
-				
+
 			].concat(config.RAPTOR_DEV_EXTERNAL_COMPONENTS.split(','))
 		} else
 			config.RAPTOR_DEV_EXTERNAL_COMPONENTS = [
 				path.join(os.homedir(), 'raptor.cli.dev')
 			]
 		config.RAPTOR_MODE = 'development';
-		try {
-			config.RAPTOR_SCOPES=[path.join(require.resolve('@raptorjs/raptor-panel'),'..','..')]
+		/**try {
+			config.RAPTOR_SCOPES = [path.join(require.resolve('@raptorjs/raptor-panel'), '..', '..')]
 		} catch (error) {
-			
-		}
-		
+
+		}*/
+
 		var conf = {
 			script: "run.app.js",
 			ignoreRoot: ['.git', '.nyc_output', '.sass-cache', 'bower_components', 'coverage'],
@@ -189,9 +189,27 @@ module.exports = {
 					}
 				}
 			});
-
 	},
 
+	runPanel: function () {
+		process.env.NODE_PATH = module.paths.join(';');
+		require('module').Module._initPaths();
+
+		var Raptor = require(path.join(process.cwd(), 'bootstrap')).getClass()
+
+		var basedir = process.cwd();
+		
+		Raptor.main(basedir);
+
+		Raptor.options.port=4441;
+
+		if (Raptor.options.mode == 'development')
+			console.log('panel corriendo');
+		else
+			console.log('panel corriendo');
+
+		Raptor.start()
+	},
 
 	print: function (msg) {
 		if (this.verbose) {
@@ -234,8 +252,8 @@ module.exports = {
 						self.R.extjs.preCompileApp(path.join(base, 'public', 'rmodules', relativePath))*/
 						//self.R.Compressor.markers.execute(path.join(bundle.path, 'Resources'))
 						self.print("Modificado " + path.join(publicBase, relativePath, route.split('Resources')[1]))
-							
-						self.print("Ejecutados "+self.R.Compressor.markers.length+" precompiladores")
+
+						self.print("Ejecutados " + self.R.Compressor.markers.length + " precompiladores")
 					} catch (error) {
 						format.log("raptor-cli autopublish: Error " + error.message, 'red')
 					}
@@ -277,18 +295,18 @@ module.exports = {
 	 */
 	watchManifest: function (modules) {
 		var base = process.cwd()
-		
+
 		for (var i = 0; i < modules.length; i++) {
 
 			let relativePath = path.join(modules[i].vendor, modules[i].name);
 			let bundle = modules[i];
-			
+
 			chokidar.watch(path.join(bundle.path, 'manifest.json'), { persistent: true, ignoreInitial: true, ignored: /[\/\\]\./, depth: 99 })
 				.on('all', (event, route) => {
-					var pkg=JSON.parse(fs.readFileSync(path.join(base,'package.json')));
-					pkg.dependencies['kkoko']="1.2.6"
-					fs.writeFileSync(path.join(base,'package.json'),JSON.stringify(pkg,null,1))
-					console.log(route,'cambiado')
+					var pkg = JSON.parse(fs.readFileSync(path.join(base, 'package.json')));
+					pkg.dependencies['kkoko'] = "1.2.6"
+					fs.writeFileSync(path.join(base, 'package.json'), JSON.stringify(pkg, null, 1))
+					console.log(route, 'cambiado')
 				});
 
 		}

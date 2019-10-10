@@ -90,7 +90,7 @@ app.controller("ModelController", function ($scope, $sce, $http, $location, $rou
                 })
 
                 if (items.length > 0) {
-                    $http.post('/raptor/component/model.v2/generate', {
+                    $http.post($scope.projectUrl+'/raptor/component/model.v2/generate', {
                         nodecomponent: $('.fixed-tree').jstree(true).get_selected(true)[0].original.namespace,
                         tables: items,
                         timestamps: $scope.timestamps,
@@ -119,6 +119,7 @@ app.controller("ModelController", function ($scope, $sce, $http, $location, $rou
     .controller("tableController", function ($rootScope, $scope, $http, $timeout, $compile) {
 
         setTimeout(function () {
+            
             $rootScope.table = $('.table').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -126,7 +127,7 @@ app.controller("ModelController", function ($scope, $sce, $http, $location, $rou
                 scrollCollapse: true,
                 paging: false,
                 "ajax": {
-                    "url": "/raptor/component/model.v2/list",
+                    "url": $scope.projectUrl+"/raptor/component/model.v2/list",
                     "complete": function () {
                         //self.editable()     
                     }

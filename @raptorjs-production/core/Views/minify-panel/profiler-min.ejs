@@ -1,0 +1,38 @@
+
+<div title="Tiempo respuesta" style="display:inline-block">
+	
+	<b>Tiempo: <%- time %></b> seg</div> | 
+
+<div title="Uso memoria" style="display:inline-block">
+	<%- memory %></div> |
+
+
+<div title="Sesión" class="raptorjs-node-debug-trigger" style="display:inline-block;overflow:visible">
+	<div class="raptorjs-node-debug-popup" data-title="Datos de la sesión (Passport)">
+		<div>
+			<% if(!auth){ %>
+				<span><b>Auth:</b> No autenticado</span>
+			<% }else{ %>
+				<span><b>Auth:</b> Autenticado</span>
+			<% } %>		
+		</div>
+		<br>
+		<span><b>Datos</b></span><br>
+		<div>
+			<% if(session){ %>
+				<% for(var i in session) { %>
+					<span><b><%- i %>:</b> <%- session[i] %></span><br>
+				<% } %>	
+			<% }else{ %>
+				<span>Sin datos de sesion</span>
+			<% } %>		
+		</div>
+		
+		
+	</div>
+	<b>Sesión</b>
+</div> |
+
+<div title="Lenguaje" style="display:inline-block;overflow:visible">
+	<b>Lenguaje: <%- lang %></b>
+</div>

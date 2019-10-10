@@ -5,9 +5,8 @@ var passport = require('passport')
 
 
 /**
-* 
-* @author William Amed
-*/
+ * @author William Amed
+ */
 class SecurityManager {
 
 	constructor(name) {
@@ -18,17 +17,15 @@ class SecurityManager {
 		
 	}
 
+	/**
+	 * Indica que se protegera un patron de ruta
+	 * 
+	 * @param {string} route Patron de ruta a proteger
+	 * @param {string} template Plantilla de login a mostrar
+	 * @param {string} type_auth Tipo de autenticacion a utilizar
+	 */
 	setLogin(route, template, type_auth) {
-		/**
-		 * Quitar esto
-		 */
-		/**if (this.R.options.database.state === 'off') {
-			this.R.app.all(route, function (req, res, next) {
-				throw Error("El componente de seguridad se encuentra inaccesible, la base de datos no se encuentra activa.")
-			})
-
-			return this;
-		}*/
+		
 
 		var self = this;
 		var name = 'raptor' + Math.random()
@@ -42,7 +39,7 @@ class SecurityManager {
 			}
 		));
 		//Aqui va un middleware para la autenticacion por token
-		if (type_auth == 'JWT') {
+		if (typeof type_auth=='string' && type_auth.toUpperCase() == 'JWT') {
 			this.R.app.all(route, jwt({
 				secret: this.R.options.secret
 			}), function (req, res, next) {
@@ -57,53 +54,8 @@ class SecurityManager {
 				}
 			});
 		} else {
-
-			this.R.app.all(route, function (req, res, next) {
-
-				// For Authentication Purposes
-				//passport.use(new SessionStrategy());
-
-				var passportAuth = passport.authenticate(name, function (err, user) {
-					if (err) next(err);
-					req.logIn(user, function () {
-						req.session.save(function () {
-							res.redirect(req.url)
-						})
-					})
-				});
-
-				if (self._criteria && typeof self._criteria == 'function') {
-					if (self._criteria(req, res, next)) {
-						if (req.is('application/x-www-form-urlencoded') && req.body.username && req.body.password) {
-							passportAuth(req, res, next)
-						} else {
-							res.status(401)
-							res.render(template);
-						}
-					} else {
-						next();
-					}
-
-				} else {
-
-					if (!req.isAuthenticated()) {
-
-						if (req.is('application/x-www-form-urlencoded') && req.body.username && req.body.password) {
-							passportAuth(req, res, next)
-						} else {
-							res.status(401)
-							res.render(template);
-						}
-					} else {
-						next();
-					}
-				}
-
-			})
+			this.__authenticateWithLogin(route, name, template, passport);
 		}
-
-
-
 
 
 		this.R.app.all(route, function () {
@@ -119,6 +71,56 @@ class SecurityManager {
 		}
 		
 		return this;
+	}
+
+	/**
+	 * Autenticar a traves del formulario
+	 * de login por defecto
+	 */
+	__authenticateWithLogin(route, name, template, passport){
+		var self=this;
+		this.R.app.all(route, function (req, res, next) {
+
+			// For Authentication Purposes
+			//passport.use(new SessionStrategy());
+
+			var passportAuth = passport.authenticate(name, function (err, user) {
+				if (err) next(err);
+				req.logIn(user, function () {
+					req.session.save(function () {
+						res.redirect(req.url)
+					})
+				})
+			});
+
+			if (self._criteria && typeof self._criteria == 'function') {
+				if (self._criteria(req, res, next)) {
+					if (req.is('application/x-www-form-urlencoded') && req.body.username && req.body.password) {
+						passportAuth(req, res, next)
+					} else {
+						res.status(401)
+						res.render(template);
+					}
+				} else {
+					next();
+				}
+
+			} else {
+
+				if (!req.isAuthenticated()) {
+
+					if (req.is('application/x-www-form-urlencoded') && req.body.username && req.body.password) {
+						passportAuth(req, res, next)
+					} else {
+						res.status(401)
+						res.render(template);
+					}
+				} else {
+					next();
+				}
+			}
+
+		})
 	}
 
 	setAuthentication(auth) {

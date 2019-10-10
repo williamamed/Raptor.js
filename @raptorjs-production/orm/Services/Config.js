@@ -3,10 +3,10 @@ const path=require('path')
 const fs=require('fs')
 /**
  * Raptor.js - v2
- * 
+ * @Controller
  * @Route("")
  */
-class orm extends R.Controller{
+class orm {
 
 	configure(){
 		
@@ -16,9 +16,19 @@ class orm extends R.Controller{
      * @Route("/raptor/orm")
      */
 	indexAction(req,res,next){
-		
-		res.render("orm:ngPortalApp/config.fragment.ejs",{
-			options: this.R.options
+		var options={
+			database:{
+				options:{}
+			}
+		};
+		try {
+			delete require.cache[path.join(R.basePath, 'config','options.json')]
+			options = require(path.join(R.basePath, 'config','options.json'));
+		} catch (error) {
+			console.log('Error leyendo options.json:',error.message)
+		}
+		res.render(path.join(__dirname,'..','Views',"ngPortalApp/config.fragment.ejs"),{
+			options: options
 		});
 	}
 

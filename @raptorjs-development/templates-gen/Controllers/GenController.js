@@ -14,23 +14,24 @@ class GenController extends R.Controller {
     /**
      * @Route("")
      */
-	indexAction(req, res, next) {
+	indexAction(req, res, next, ProjectManager) {
 
 		res.render("templates-gen:gen.index.ejs", {
-			config: []
+			config: [],
+			ProjectManager: ProjectManager
 		});
 	}
 
 	/**
      * @Route("/components")
      */
-	componentsAction(req, res, next, R) {
+	componentsAction(req, res, next, R, ProjectManager) {
 		var bundles = []
-		for (const key in R.bundles) {
+		for (const key in ProjectManager.components) {
 
 			bundles.push({
-				name: R.bundles[key].name,
-				external: R.bundles[key].external
+				name: ProjectManager.components[key].name,
+				external: ProjectManager.components[key].external
 			})
 		}
 		res.json(bundles)
@@ -48,7 +49,7 @@ class GenController extends R.Controller {
 	 * @Route("/create")
 	 */
 	createAction(req, res, next) {
-
+		
 		if (R.bundles['templates-gen'].manifest.technologies[req.body.tech]
 			&& R.bundles['templates-gen'].manifest.technologies[req.body.tech].templates[req.body.key]) {
 			new Promise(function (resolve) {
@@ -61,16 +62,20 @@ class GenController extends R.Controller {
 				.action,null,[req])
 			})
 			.then(function(message){
-				
-				res.show("La plantilla fue creada con éxito!! ",1,message)
+				if(!message)
+					message="";
+				res.show("La plantilla fue creada con éxito!! ",1,{
+					message: message
+				})
 			})
 			.catch(function(err){
-				next(new Error("La plantilla no pudo ser creada: "+err.message))
+				//console.log(err)
+				next("La plantilla no pudo ser creada: "+err.message)
 			})
 
 			
 		} else
-			next(new Error("La plantilla no pudo ser creada"))
+			next("La plantilla no pudo ser creada: No existe el artefacto seleccionado en el registro.")
 	}
 }
 

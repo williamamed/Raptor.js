@@ -34,6 +34,22 @@ class TemplatesGenNode {
 		Events.register({
 			'ready':function(){
 				R.bundles['templates-gen'].manifest.technologies=require('./Version')
+				$i('Artefacts',{
+					set:function(name,val){
+						R.bundles['templates-gen'].manifest.technologies[name]=val;
+					},
+					remove:function(name){
+						delete R.bundles['templates-gen'].manifest.technologies[name]
+					},
+					setTemplate:function(name,templateName,val){
+						if(R.bundles['templates-gen'].manifest.technologies[name])
+							R.bundles['templates-gen'].manifest.technologies[name][templateName]=val;
+					},
+					removeTemplate:function(name,templateName){
+						if(R.bundles['templates-gen'].manifest.technologies[name])
+							delete R.bundles['templates-gen'].manifest.technologies[name][templateName];
+					}
+				})
 				R.emit('artefacts:ready')
 			},
 			'before:middleware':function(){

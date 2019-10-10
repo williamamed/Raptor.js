@@ -16,7 +16,7 @@ module.exports = {
                 required: true
             }],
             image:"/public/"+bundle.vendor+"/extjs-designer/resources/img/extjs-logo-original.png",
-            action: function (req) {
+            action: function (req, ProjectManager) {
                 var inspect = function (obj, ident) {
                     if (!ident)
                         ident = 0
@@ -82,26 +82,26 @@ module.exports = {
 
                 if (req.body.name) {
                     
-                    if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name)))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name))
+                    if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name)))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name))
 
-                    if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app')))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app'))
+                    if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app')))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app'))
 
-                    if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'controller')))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'controller'))
+                    if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'controller')))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'controller'))
 
-                    if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'model')))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'model'))
+                    if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'model')))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'model'))
 
-                    if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'store')))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'store'))
+                    if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'store')))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'store'))
 
-                    if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'view')))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'view'))
+                    if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'view')))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'view'))
 					
-					if (!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath, 'Views', req.body.name)))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath, 'Views', req.body.name))
+					if (!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Views', req.body.name)))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Views', req.body.name))
 
                     var App = {
                         name: req.body.name,
@@ -145,20 +145,20 @@ module.exports = {
     }
                     }
 
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app.js'), R.template(__dirname + "/templates/basic/app.js.ejs", {
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app.js'), R.template(__dirname + "/templates/basic/app.js.ejs", {
                         config: inspect(App, 1)
                     }))
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'compileApp'),'')
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'controller', 'Basic.js'), R.template(__dirname + "/templates/basic/class.js.ejs", {
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'compileApp'),'')
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'controller', 'Basic.js'), R.template(__dirname + "/templates/basic/class.js.ejs", {
                         config: inspect(Controller, 1),
                         name: req.body.name + ".controller.Basic"
                     }))
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'view', 'Viewport.js'), R.template(__dirname + "/templates/basic/class.js.ejs", {
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Resources', req.body.name, 'app', 'view', 'Viewport.js'), R.template(__dirname + "/templates/basic/class.js.ejs", {
                         config: inspect(Viewport, 1),
                         name: req.body.name + ".view.Viewport"
                     }))
-					fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath, 'Views', req.body.name, 'index.ejs'), R.template(__dirname + "/templates/basic/index.ejs", {
-                        ruta: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.name+"/all-classes.js"
+					fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath, 'Views', req.body.name, 'index.ejs'), R.template(__dirname + "/templates/basic/index.ejs", {
+                        ruta: "/public/"+ProjectManager.components[req.body.component].vendor+"/"+req.body.component+"/"+req.body.name+"/all-classes.js"
                     }))
                 } else
                     throw new Error("Alguno de los argumentos obligatorios están vacíos.")

@@ -32,7 +32,7 @@ class extjs {
 	 */
 	configure(R, Events, Options) {
 		
-		if (Options.mode == 'development') {
+		if (Options.mode == 'development' || Options.raptorPanel) {
 			Events.register({
 				'after:configure': function () {
 					R.Compressor.serve({

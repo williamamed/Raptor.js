@@ -4,10 +4,8 @@ const fse = require('fs-extra')
 const path = require('path')
 const cors = require('cors')
 
-if (global.$i) {
+if (global.$i)
 	$i('CsrfFilter', [])
-	
-}
 
 /**
  * Raptor.js - Node framework
@@ -19,6 +17,20 @@ class CoreNode {
 
 	static getClass() {
 		return require('@raptorjs/core/Source/Raptor');
+	}
+
+	
+
+	/**
+	 * @Event("ready")
+	 * @Injectable
+	 */
+	onReady(Options) {
+		if (Options.mode == 'development') {
+			var DevData = require('./Source/DevData');
+			new DevData()
+				.init()
+		}
 	}
 
 	/**
@@ -46,18 +58,27 @@ class CoreNode {
 	 */
 	configure(express, Events, AnnotationFramework, AnnotationReaderCache, SessionFilter, CsrfFilter) {
 
-		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Source', 'Annotation', 'Route'))
-		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'SessionFilter'))
-		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Csrf'))
-		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Cors'))
+		//AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Source', 'Annotation', 'Route'))
+		//AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'SessionFilter'))
+		//AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Csrf'))
+		//AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Cors'))
+		//AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Inyectable'))
 		AnnotationFramework.registry.registerAnnotation(path.join(__dirname, 'Annotations', 'Controller'))
+
+		$i('RecurseUp', this.recurseUp)
+
+		var regManager = require('./Annotations/RegisterManager')
+		regManager.createRoute();
+		regManager.createCsrf();
+		regManager.createCors();
+		regManager.createSessionFilter();
 
 		Events.register({
 
 			/**
 			 * Lectura de anotaciones SessionFilter en clases
 			 */
-			'annotation:read.definition.SessionFilter': function (type, annotation) {
+			'annotation:read.definition.SessionFilter2': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getDefinition('Route', annotation.filePath, annotation.target);
 				if (route) {
@@ -70,7 +91,7 @@ class CoreNode {
 			/**
 			 * Lectura de anotaciones SessionFilter en metodos
 			 */
-			'annotation:read.method.SessionFilter': function (type, annotation) {
+			'annotation:read.method.SessionFilter2': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
 
@@ -87,7 +108,7 @@ class CoreNode {
 			/**
 			 * Lectura de anotaciones Csrf en clases
 			 */
-			'annotation:read.definition.Csrf': function (type, annotation) {
+			'annotation:read.definition.Csrf2': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getDefinition('Route', annotation.filePath, annotation.target);
 				if (route) {
@@ -100,7 +121,7 @@ class CoreNode {
 			/**
 			 * Lectura de anotaciones Csrf en metodos
 			 */
-			'annotation:read.method.Csrf': function (type, annotation) {
+			'annotation:read.method.Csrf2': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
 				if (route) {
@@ -116,7 +137,7 @@ class CoreNode {
 			/**
 			 * Lectura de anotaciones Cors en clases
 			 */
-			'annotation:read.definition.Cors': function (type, annotation) {
+			'annotation:read.definition.Cors2': function (type, annotation) {
 
 				var route = AnnotationReaderCache.getDefinition('Route', annotation.filePath, annotation.target);
 				if (route) {
@@ -129,7 +150,7 @@ class CoreNode {
 			/**
 			 * Lectura de anotaciones Cors en metodos
 			 */
-			'annotation:read.method.Cors': function (type, annotation) {
+			'annotation:read.method.Cors2': function (type, annotation) {
 				const route = AnnotationReaderCache.getMethod('Route', annotation.filePath, annotation.target);
 
 				if (!route.before)
@@ -167,12 +188,14 @@ class CoreNode {
 				for (const key in R.bundles) {
 
 					let bundle = R.bundles[key];
-					$injector.invoke(function (Annotations, AnnotationReaderCache) {
+					delete require.cache[path.join(bundle.absolutePath,'index.js')];
+					require(path.join(bundle.absolutePath,'index.js'))
+					/**$injector.invoke(function (Annotations, AnnotationReaderCache) {
 
 						var reader = new Annotations.Reader(AnnotationFramework.registry, bundle.instance);
 						reader.parse(path.join(bundle.absolutePath, 'index.js'));
 
-					})
+					})*/
 				}
 
 
@@ -183,6 +206,7 @@ class CoreNode {
 			 * 
 			 */
 			'init:controller': $i.later(function (instance, controllerPath, bundle, Annotations) {
+				return;
 				var reader = new Annotations.Reader(AnnotationFramework.registry, instance);
 				reader.parse(controllerPath);
 				var comp = AnnotationReaderCache.getDefinition('Route', path.join(bundle.absolutePath, 'index.js'));
@@ -338,6 +362,15 @@ class CoreNode {
 			next()
 		})
 
+	}
+
+	recurseUp(filePath) {
+		if (fs.existsSync(path.join(path.dirname(filePath), 'manifest.json'))) {
+			return path.join(path.dirname(filePath), 'index.json');
+		} else {
+
+			return $i('RecurseUp')(path.dirname(filePath));
+		}
 	}
 
 

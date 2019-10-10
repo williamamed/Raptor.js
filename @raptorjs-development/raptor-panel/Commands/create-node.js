@@ -16,7 +16,7 @@ module.exports={
             R.main(process.cwd());
             R.readConfig();
 		} catch (e) {
-			console.log(format.get("Error:", format.RED));
+			console.log(format.get("Error:", format.RED),e);
 			console.log("Este comando es válido solo en en la raíz de un proyecto Raptor.js, si es así es posible que el proyecto no tenga todas dependencias instaladas o presente algún error en la carga de módulos.")
 			return;
         }
@@ -59,7 +59,7 @@ module.exports={
 			      	
 			      	if(exp.test(name)){
 			      		index++;
-			      		self.onCreate(cmp,name,R)
+			      		self.onCreate(cmp,name)
 			      		rl.close()
 			      	}else{
 			      		console.log(format.getFormated('La cadena contiene caracteres no permitidos, entre de nuevo el nombre','red'));
@@ -75,13 +75,13 @@ module.exports={
 	onCreate:function(name,vendor,R){
 	    var controller=require(__dirname+"/../Controllers/CreateCompV2")
 	    var msg=[]
-		var vendorDir=path.join(R.basePath,'src',vendor)
+		var vendorDir=path.join(process.cwd(),'src',vendor)
 		if(!fs.existsSync(vendorDir))
 			fs.mkdirSync(vendorDir);
 		console.log(vendor,name)
 		if(fs.existsSync(vendorDir))
-		    if(controller.createNodeDirectory(vendor,name,msg)){
-		        controller.createFiles(name,vendor,msg)
+		    if(controller.createNodeDirectory(vendor,name,msg, process.cwd())){
+		        controller.createFiles(name,vendor,msg,process.cwd())
 		        for (var i = 0; i < msg.length; i++) {
 		            console.log(format.getFormated(msg[i],'green'));
 		        }

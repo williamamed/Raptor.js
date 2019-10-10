@@ -1,0 +1,101 @@
+<style>
+    .open-blink {
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-name: flash;
+        background-color: #4CAF50;
+        border-radius: 50%;
+        content: " ";
+        display: inline-block;
+        height: 14px;
+        margin: 0 20px;
+
+        width: 14px;
+        position: absolute;
+
+
+        margin-top: 15px;
+        margin-left: -20px;
+    }
+
+    .red {
+
+        background-color: tomato;
+
+    }
+
+    .open-blink:before {
+        background-color: #4CAF50;
+        border-radius: 50%;
+        content: " ";
+        display: inline-block;
+        height: 30px;
+        left: -8px;
+        opacity: 0.1;
+        position: absolute;
+        top: -8px;
+        width: 30px;
+    }
+
+    .open-blink.red:before {
+        background-color: tomato;
+
+    }
+</style>
+
+<script>
+
+    $(function () {
+        $('.navbar ul.mr-right').prepend('<li class="nav-item"><span class="open-blink red"></span><a class="nav-link panel-connect-status">Desconectado</a></li>')
+        var socket = io.connect('/panel-board', {
+            path: "/socket.io"
+        });
+
+        socket.on('project.online', function (data) {
+
+            $('.panel-connect-status').html('Conectado')
+            $('span.open-blink').removeClass('red')
+
+        });
+        socket.on('connect', function (data) {
+
+            $('.panel-connect-status').html('Desconectado')
+            if (!$('span.open-blink').hasClass('red'))
+                $('span.open-blink').addClass('red')
+            socket.emit('panel.ready')
+        });
+
+        socket.on('disconnect', function (data) {
+
+            $('.panel-connect-status').html('Desconectado')
+            if (!$('span.open-blink').hasClass('red'))
+                $('span.open-blink').addClass('red')
+            socket.emit('panel.ready')
+        });
+
+        socket.on('project.offline', function (data) {
+
+            $('.panel-connect-status').html('Desconectado')
+            if (!$('span.open-blink').hasClass('red'))
+                $('span.open-blink').addClass('red')
+
+        });
+        
+        socket.on('reload', function (data) {
+            window.location.reload()
+
+        });
+
+        socket.on('panel.menu', function (data) {
+
+            $('md-content > .nav-sidebar li.dynamic').remove()
+
+            for (const key in data) {
+                var item = $(data[key]).addClass('dynamic');
+                $('md-content > .nav-sidebar').append(item);
+            }
+        });
+
+
+    })
+</script>

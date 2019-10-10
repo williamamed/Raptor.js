@@ -1,9 +1,9 @@
 {
   "state": true,
   "name": "templates-gen",
-  "version": "1.0.5",
+  "version": "2.0.6",
   "technologies":{},
   "require":{
-	"extjs-designer":">=1.0.1"
+	"extjs-designer":">=2.0.1"
   }
 }

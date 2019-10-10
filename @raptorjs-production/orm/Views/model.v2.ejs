@@ -223,7 +223,7 @@
     }
 </style>
 
-<div ng-controller="ModelController" ng-cloak>
+<div ng-controller="ModelController" ng-init="projectUrl='<%-projectUrl%>'" ng-cloak>
     <div class="text-center" style="margin-top: 10px">
         <h1>Mapear modelos Sequelize</h1>
         <p class="text-muted">Mapea y genera los modelos sequelize a partir de el esquema de base de datos actual</p>

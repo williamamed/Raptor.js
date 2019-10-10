@@ -1,5 +1,10 @@
 'use strict';
-
+var mountPoint = 0;
+const fs = require('fs')
+const path = require('path')
+const exp = require('express')
+const format = require('@raptorjs/core/Source/util/format')
+const rxjs = require('rxjs')
 
 /**
  * @Biometry({
@@ -11,6 +16,193 @@
  * })
  */
 class RaptorNode {
+
+	/**
+	 * @Event("after:prepare")
+	 * @Injectable
+	 */
+	onAfterPrepare(ProjectManager){
+		for (const key in R.bundles) {
+
+
+			if (fs.existsSync(path.join(R.bundles[key].absolutePath, 'DevPanel.js'))) {
+				R.rewind(ProjectManager.staticMount)
+					.restore(function () {
+						var tag = R.bundles[key].path;
+						let tagFixed = tag.split('\\')
+						let resulting = [tagFixed.pop()]
+						let last = tagFixed.pop()
+						if (last)
+							resulting.push(last)
+						tagFixed = resulting.reverse().join('/')
+						R.app.use('/public/' + tagFixed, exp.static(path.join(path.join(R.bundles[key].absolutePath, 'Resources'))));
+					})
+				R.rewind(mountPoint)
+					.restore(function () {
+						var Dev = require(path.join(R.bundles[key].absolutePath, 'DevPanel.js'));
+						new Dev();
+					})
+			}
+
+		}
+
+		ProjectManager.components=R.filteredBundles;
+
+		for (const key in ProjectManager.components) {
+			
+			//if(!R.bundles[key]){
+				let bundle=ProjectManager.components[key];
+				
+				ProjectManager.components[key]={
+					name: key,
+					vendor: bundle.vendor,
+					path: path.join(bundle.vendor,bundle.name),
+					absolutePath: bundle.external? path.join(bundle.external,bundle.vendor,bundle.name) : path.join(R.basePath,'src',bundle.vendor,bundle.name),
+					external: bundle.external
+				}
+				bundle=ProjectManager.components[key];
+				//console.log('deac',path.join(bundle.absolutePath, 'DevPanel.js'))
+				if(!require(path.join(bundle.absolutePath, 'manifest.json')).state){
+					
+					delete ProjectManager.components[key];
+					continue;
+				}
+				
+				if (fs.existsSync(path.join(bundle.absolutePath, 'DevPanel.js'))) {
+					R.rewind(ProjectManager.staticMount)
+						.restore(function () {
+							var tag = bundle.path;
+							let tagFixed = tag.split('\\')
+							let resulting = [tagFixed.pop()]
+							let last = tagFixed.pop()
+							if (last)
+								resulting.push(last)
+							tagFixed = resulting.reverse().join('/')
+							R.app.use('/public/' + tagFixed, exp.static(path.join(bundle.absolutePath, 'Resources')));
+						})
+					R.rewind(mountPoint)
+						.restore(function () {
+							var Dev = require(path.join(bundle.absolutePath, 'DevPanel.js'));
+							new Dev();
+						})
+				}
+			//}
+		}
+		
+	}
+
+
+	/**
+	 * @Event("ready")
+	 * @Injectable
+	 */
+	onReady(io, ProjectManager) {
+		
+		
+		if (io) {
+			var boardNs = io.of('/panel-board');
+			boardNs.on('connect', function (panel) {
+				panel.on('panel.ready', function (data) {
+					
+					if (Object.keys(projectNs.connected).length > 0) {
+						
+						boardNs.emit('project.online')
+					}
+					
+				})
+				
+			})
+
+			var projectNs = io.of('/project');
+			projectNs.on('connect', function (project) {
+
+				project.on('project.ready', function (meta) {
+					var reload = false;
+					var data = meta.components;
+					
+					ProjectManager.port = meta.port;
+
+					for (const key in data) {
+						if (!ProjectManager.components[key]) {
+							reload = true;
+							//R.addComponent(data[key].absolutePath)
+							if (fs.existsSync(path.join(data[key].absolutePath, 'DevPanel.js'))) {
+								R.rewind(ProjectManager.staticMount)
+									.restore(function () {
+										var tag = data[key].path;
+										let tagFixed = tag.split('\\')
+										let resulting = [tagFixed.pop()]
+										let last = tagFixed.pop()
+										if (last)
+											resulting.push(last)
+										tagFixed = resulting.reverse().join('/')
+										R.app.use('/public/' + tagFixed, exp.static(path.join(path.join(data[key].absolutePath, 'Resources'))));
+									})
+								R.rewind(mountPoint)
+									.restore(function () {
+										var Dev = require(path.join(data[key].absolutePath, 'DevPanel.js'));
+										new Dev();
+									})
+							}
+							console.log('Detectado:', format.get(key, format.YELLOW), 'ok')
+						}
+					}
+					R.emit('artefacts:ready')
+					var activeNames = Object.keys(ProjectManager.components);
+					var incomeNames = Object.keys(data);
+
+
+					var diff = activeNames.filter(function (i) {
+						return incomeNames.indexOf(i) < 0;
+					})
+					if(diff.length>0){
+						diff.forEach(function(val){
+							console.log('Desactivado:', format.get(val, format.YELLOW), 'ok')
+						})
+						reload=true;
+					}
+					
+					ProjectManager.components = data;
+					ProjectManager.routes = meta.routes;
+					boardNs.emit('project.online')
+					if (reload)
+						boardNs.emit('reload')
+					console.log('Recargando...', format.get(reload, format.BLUE))
+
+				})
+				
+				project.on('disconnect', function (data) {
+					boardNs.emit('project.offline')
+				})
+			})
+
+			io.on('connect', function (project) {
+
+
+				project.on('project.data', function (data) {
+
+				})
+
+
+
+
+			})
+		}
+
+		
+	}
+
+	/**
+	 * @Event("config:error.middleware")
+	 * @Injectable
+	 */
+	onError(express) {
+		express.use(function (err, req, res, next) {
+			console.log('raptor-panel error control:',err)
+			next(err)
+		})
+	}
+
 	/**
 	 * Inicializacion del middleware 
 	 * para proteccion biometrico
@@ -19,16 +211,16 @@ class RaptorNode {
 	 * @param {response} res 
 	 * @param {next} next 
 	 */
-	initBio(req,res,next){
-		var ngPortalRegistry=$i('ngPortalRegistry')		
-		var portal=ngPortalRegistry.get('raptor');
-		
-		(function(logout,biologout){
-			portal.__logout=function(){
+	initBio(req, res, next) {
+		var ngPortalRegistry = $i('ngPortalRegistry')
+		var portal = ngPortalRegistry.get('raptor');
+
+		(function (logout, biologout) {
+			portal.__logout = function () {
 				biologout()
-				logout.apply(portal,arguments)
+				logout.apply(portal, arguments)
 			}
-		})(portal.__logout,this.logout)
+		})(portal.__logout, this.logout)
 
 	}
 	/**
@@ -38,9 +230,9 @@ class RaptorNode {
 	 * @param {response} res 
 	 * @param {function} done 
 	 */
-	getActiveUserBio(req,res,done){
-		done(req.session.raptor_panel?req.session.raptor_panel.username:null)
-		
+	getActiveUserBio(req, res, done) {
+		done(req.session.raptor_panel ? req.session.raptor_panel.username : null)
+
 	}
 
 	/*
@@ -51,7 +243,7 @@ class RaptorNode {
 	*
 	*/
 	middleware(router, Bio, ngPortalRegistry) {
-		
+		mountPoint = R.app._router.stack.length;
 	}
 	/*
 	* Raptor.js - Node framework
@@ -63,6 +255,19 @@ class RaptorNode {
 	*
 	*/
 	configure(R, Events) {
+
+		$i('ProjectManager', {
+			components: {},
+			menu: {},
+			staticMount: R.app._router?R.app._router.length:0,
+
+			elements: rxjs.from([]),
+
+		})
+
+		//$i('ProjectManager')._reject=_reject;
+		//$i('ProjectManager')._resolve=_resolve;
+
 
 		Events
 			.register({
@@ -85,6 +290,7 @@ class RaptorNode {
 							.viewPlugin('header', this.template('raptor-panel:ng/header.ejs'))
 							.viewPlugin('sidebar', this.template('raptor-panel:ng/sidebar.ejs'))
 							.viewPlugin('navbar', this.template('raptor-panel:ng/navbar.ejs'))
+							.viewPlugin('script', this.template('raptor-panel:ng/script.ejs'))
 							.disableProfile()
 							.disableSecurityMenu()
 
@@ -152,7 +358,7 @@ class RaptorNode {
 						routesDef: routesDef,
 						session: req.user,
 						auth: req.isAuthenticated(),
-						lang: req.language?req.language.getCurrentLanguage():'none'
+						lang: req.language ? req.language.getCurrentLanguage() : 'none'
 					}, function (err, str) {
 
 						req.viewPlugin.set('raptor_profiler', str)
@@ -160,7 +366,7 @@ class RaptorNode {
 
 				}
 			})
-		
+
 
 		R.app.use(function (req, res, next) {
 
@@ -174,8 +380,8 @@ class RaptorNode {
 		R.on('serverrunning', function () {
 			if (R.io)
 				R.io.on('connection', function (socket) {
-					console.log('Un cliente se ha conectado');
-					socket.emit('messages', { text: 'hola' });
+					//console.log('Un cliente se ha conectado');
+					//socket.emit('messages', { text: 'hola' });
 				});
 		})
 

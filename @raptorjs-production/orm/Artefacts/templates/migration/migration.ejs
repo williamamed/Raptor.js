@@ -1,0 +1,23 @@
+/**
+ * Raptor.js - Migration
+ * Generado automaticamente
+ * 
+ * 
+ */
+
+module.exports = {
+    up: $i.later(function (query, datatype, Migration<%-modelos%>) {
+        return <%-models[0]%>.sync()<% models.forEach(function(model,key){ %><%if(key!=0){%>
+            .then(function () {
+                return <%-model%>.sync()
+            })<%}%><%})%>
+        
+    }),
+    down: function (query) {
+        return query.dropTable(<%-models[0]%>.tableName)<% models.forEach(function(model,key){ %><%if(key!=0){%>
+            .then(function () {
+                return query.dropTable(<%-model%>.tableName)
+            })<%}%><%})%>
+        
+    }
+}
