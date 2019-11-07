@@ -33,10 +33,7 @@ class PanelController extends R.Controller{
 	*
 	*/
 	rootAction(req,res,next){
-	    if(this.R.options.mode!='development')
-	        next()
-	    else
-		    res.redirect('/raptor/home')
+	    res.redirect('/raptor/home')
 	}
     
     

@@ -12,7 +12,7 @@ module.exports={
                 placeholder:"ej. MiApp",
                 required: true
             }],
-            action:function(req){
+            action:function(req, ProjectManager){
                 const fs=require('fs')
                 const path=require('path')
 
@@ -22,21 +22,21 @@ module.exports={
                 
                 if(req.body.appName){
                     
-                    if(!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath,'Resources',req.body.appName)))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath,'Resources',req.body.appName))
+                    if(!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Resources',req.body.appName)))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Resources',req.body.appName))
                     
-                    if(!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath,'Views',req.body.appName)))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath,'Views',req.body.appName))
+                    if(!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Views',req.body.appName)))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Views',req.body.appName))
                     
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath,'Resources',req.body.appName,'app.js'),
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Resources',req.body.appName,'app.js'),
                     R.template(path.join(__dirname,'templates','basic','app.ejs'),{
                         appName: req.body.appName
                     }))
 
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath,'Views',req.body.appName,'index.ejs'),
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Views',req.body.appName,'index.ejs'),
                     R.template(path.join(__dirname,'templates','basic','page.ejs'),{
                         appName: req.body.appName,
-                        routeApp: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.appName+"/app.js"
+                        routeApp: "/public/"+ProjectManager.components[req.body.component].vendor+"/"+req.body.component+"/"+req.body.appName+"/app.js"
                     }))
                 }else
                     throw new Error("Alguno de los argumentos obligatorios están vacíos.")
@@ -58,7 +58,7 @@ module.exports={
                 placeholder:"ej. MiController",
                 required: true
             }],
-            action:function(req,R){
+            action:function(req,R, ProjectManager){
                 const fs=require('fs')
                 const path=require('path')
 
@@ -68,23 +68,23 @@ module.exports={
                 
                 if(req.body.appName && req.body.controllerName){
                     
-                    if(!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath,'Resources',req.body.appName)))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath,'Resources',req.body.appName))
+                    if(!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Resources',req.body.appName)))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Resources',req.body.appName))
                     
-                    if(!fs.existsSync(path.join(R.bundles[req.body.component].absolutePath,'Views',req.body.appName)))
-                        fs.mkdirSync(path.join(R.bundles[req.body.component].absolutePath,'Views',req.body.appName))
+                    if(!fs.existsSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Views',req.body.appName)))
+                        fs.mkdirSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Views',req.body.appName))
                     
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath,'Resources',req.body.appName,req.body.controllerName+'.controller.js'),
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Resources',req.body.appName,req.body.controllerName+'.controller.js'),
                     R.template(path.join(__dirname,'templates','fragment','controller.ejs'),{
                         appName: req.body.appName,
                         controllerName: req.body.controllerName
                     }))
 
-                    fs.writeFileSync(path.join(R.bundles[req.body.component].absolutePath,'Views',req.body.appName,req.body.controllerName+'.fragment.ejs'),
+                    fs.writeFileSync(path.join(ProjectManager.components[req.body.component].absolutePath,'Views',req.body.appName,req.body.controllerName+'.fragment.ejs'),
                     R.template(path.join(__dirname,'templates','fragment','fragment.ejs'),{
                         appName: req.body.appName,
                         controllerName: req.body.controllerName,
-                        controllerRoute: "/public/"+R.bundles[req.body.component].vendor+"/"+req.body.component+"/"+req.body.appName+"/"+req.body.controllerName+".controller.js"
+                        controllerRoute: "/public/"+ProjectManager.components[req.body.component].vendor+"/"+req.body.component+"/"+req.body.appName+"/"+req.body.controllerName+".controller.js"
                     }))
                 }else
                     throw new Error("Alguno de los argumentos obligatorios están vacíos.")

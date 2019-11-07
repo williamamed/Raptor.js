@@ -1716,10 +1716,10 @@ module.exports = {
 					this._cache[file] = {}
 				if (!this._cache[file][annotation])
 					this._cache[file][annotation] = {}
-				if (!this._cache[file][annotation][type])
+				if (!this._cache[file][annotation].hasOwnProperty(type))
 					this._cache[file][annotation][type] = {}
-
-				if (!this._cache[file][annotation][type][target]) {
+				
+				if (!this._cache[file][annotation][type].hasOwnProperty(target)) {
 					this._cache[file][annotation][type][target] = annota;
 					if (callback)
 						callback()
@@ -1917,7 +1917,7 @@ module.exports = {
 			this.constructorAnnotations.forEach((annotation) => {
 
 				let fn = function () {
-
+					
 					$i('AnnotationReaderCache')._register(annotation, 'constructor', function () {
 						
 						aChain.then(function () {
@@ -2127,7 +2127,9 @@ module.exports = {
 			.build('Injectable', true)
 			.on('method', function (type, annotation, data) {
 				//console.log($i('AnnotationReaderCache')._cache[annotation.filePath]['Injectable'],'-------')
-				if (data)
+				if (data){
+					
+					
 					if (data.prototype && data.prototype[annotation.target]) {
 						var fn = data.prototype[annotation.target];
 						data.prototype[annotation.target] = function () {
@@ -2142,6 +2144,20 @@ module.exports = {
 							};
 						}
 					}
+				}
+			})
+			.on('constructor',function(type,annotation,data){
+				
+				var names=$i.getRequested(data.prototype.constructor);
+				var instances=$i.getDependencies(names);
+				names.forEach((val,index)=>{
+					data.prototype[val.trim()]=instances[index];
+				})
+				
+			})
+			.on('definition',function(type,annotation,data){
+				var inst=new data();
+				$i(annotation.target,inst)
 			})
 	},
 

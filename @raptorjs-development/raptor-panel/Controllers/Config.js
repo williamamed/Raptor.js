@@ -28,8 +28,16 @@ class ConfigController extends R.Controller{
 	*
 	*/
 	renderConfigureAction(req,res,next){
+		var options={};
+		
+		try {
+			delete require.cache[path.join(R.basePath, 'config','options.json')]
+			options = require(path.join(this.R.basePath, 'config','options.json'));
+		} catch (error) {
+			console.log('Error leyendo options.json:',error.message)
+		}
 		res.render('raptor-panel:ng/config',{
-			options: this.R.options
+			options: options
 		});
 	}
 
