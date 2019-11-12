@@ -104,9 +104,9 @@ module.exports = class Register {
                         if (targetMethod) {
                             var routeMethod = AnnotationReaderCache.getMethod(targetMethod, file, methodAnnotation.target);
                             if(routeMethod && routeMethod.value)
-                                prefix = prefix + routeMethod.value;
+                                var prefixVal = prefix + routeMethod.value;
                             
-                            DynamicPrivilege.addPrivilege(methodAnnotation.value, prefix, methodAnnotation.class)
+                            DynamicPrivilege.addPrivilege(methodAnnotation.value, prefixVal, methodAnnotation.class)
 
                         }
                     })
