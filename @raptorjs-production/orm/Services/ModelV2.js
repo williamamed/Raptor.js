@@ -97,7 +97,8 @@ class ModelV2 {
 							fs.mkdirSync(repo)
 						
 						tables.forEach(element => {
-							fs.writeFileSync(path.join(repo,element+'.js'),R.template('orm:repository.ejs'));
+							if(!fs.existsSync(path.join(repo,element+'.js')))
+								fs.writeFileSync(path.join(repo,element+'.js'),R.template('orm:repository.ejs'));
 						});
 						res.show("Los modelos fueron generados correctamente")
 					}
